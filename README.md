@@ -1,4 +1,5 @@
 # COMP_3005_Final
-Final Assignment for COMP 3005
+# Andrew Dang       101297865
+# Dylan Nakamura    ...
 
-FDSKlfjal
+Final Assignment for COMP 3005
