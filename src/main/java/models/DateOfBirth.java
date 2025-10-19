@@ -6,10 +6,13 @@ import jakarta.validation.constraints.Max;
 
 @Embeddable
 public class DateOfBirth {
+
     @Min(1) @Max(31)
     private int day;
+
     @Min(1) @Max(12)
     private int month;
+
     private int year;
 
     public DateOfBirth() {} // Required by JPA
@@ -20,7 +23,7 @@ public class DateOfBirth {
         this.year = year;
     }
 
-    /* GETTERS AND SETTERS */
+    // Getters and setters
     public int getDay() { return day; }
     public void setDay(int day) { this.day = day; }
 

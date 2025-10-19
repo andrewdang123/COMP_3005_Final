@@ -1,4 +1,8 @@
-Andrew Dang 101297865 Dylan Nakamura 101306225
+# COMP_3005_Final
+**Fitness Database**
+
+Andrew Dang 101297865 
+Dylan Nakamura 101306225
 
 Final Assignment for COMP 3005
 
@@ -17,3 +21,7 @@ Enter SQL Queries for database
 
 ./run_main.sh
 ./run_h2.sh
+
+
+
+*Add Video Link Later*

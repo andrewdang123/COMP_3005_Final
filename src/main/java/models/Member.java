@@ -15,23 +15,29 @@ public class Member {
     @Column(nullable = false)
     private String name;
     
-    @Column(nullable = false)
-    private String gender;
-
     @Column(nullable = false, unique = true)
     private String email;
 
-    // @NotNull
-    // @Embedded
-    // private DateOfBirth dateOfBirth;
+    @Column(nullable = false)
+    private String gender;
+
+    
+    @NotNull
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "day", column = @Column(name = "birth_day", nullable = false)),
+        @AttributeOverride(name = "month", column = @Column(name = "birth_month", nullable = false)),
+        @AttributeOverride(name = "year", column = @Column(name = "birth_year", nullable = false))
+    })
+    private DateOfBirth dateOfBirth;
 
     public Member() {}
 
-    public Member(String name, String gender, String email) {
+    public Member(String name, String gender, String email, int day, int month, int year) {
         this.name = name;
         this.gender = gender;
         this.email = email;
-        //this.dateOfBirth = new DateOfBirth(day, month, year);
+        this.dateOfBirth = new DateOfBirth(day, month, year);
     }
 
     // Getters and setters
@@ -46,11 +52,9 @@ public class Member {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    // public DateOfBirth getDateOfBirth() { return dateOfBirth; }
-    // public void setDateOfBirth(int day, int month, int year) { 
-    //     this.dateOfBirth.setDay(day);
-    //     this.dateOfBirth.setMonth(month);
-    //     this.dateOfBirth.setYear(year);
-    // }
+    public DateOfBirth getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(int day, int month, int year) { 
+        this.dateOfBirth = new DateOfBirth(day, month, year);
+    }
 
 }

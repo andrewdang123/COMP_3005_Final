@@ -19,7 +19,8 @@ public class MainApp {
 
 
         // Create and persist a new member
-        Member member = new Member("Andrew", "Male", "andrewmtdang@gmail.com");
+        //Member member = new Member("Andrew", "Male", "andrewmtdang@gmail.com");
+        Member member = new Member("Andrew", "Male", "andrewmtdang@gmail.com", 14, 6, 2005);
         session.persist(member);
 
         // Commit and close

@@ -18,5 +18,6 @@
 
         <!-- Register entities -->
         <mapping class="models.Member"/>
+        
     </session-factory>
 </hibernate-configuration>
