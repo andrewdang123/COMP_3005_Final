@@ -14,3 +14,6 @@ Enter the directory of testdb.mv.db (include testdb without .mv.db)
 User name "sa"
 Password ""
 Enter SQL Queries for database
+
+./run_main.sh
+./run_h2.sh
