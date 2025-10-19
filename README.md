@@ -4,5 +4,5 @@ Dylan Nakamura    101306225
 
 Final Assignment for COMP 3005
 
-
-*INSERT LINK HERE*
+How to run:
+mvn exec:java -Dexec.mainClass="app.MainApp"
