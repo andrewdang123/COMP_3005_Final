@@ -24,5 +24,6 @@ public class MainApp {
         factory.close();
 
         System.out.println("Member saved: " + member.getName());
+
     }
 }
