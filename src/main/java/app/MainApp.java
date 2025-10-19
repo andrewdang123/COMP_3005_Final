@@ -1,10 +1,13 @@
 package app;
 
 import models.Member;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
+/***************************************************************
+ * MainApp
+ ***************************************************************/
 public class MainApp {
     public static void main(String[] args) {
         // Load configuration and build SessionFactory
@@ -14,8 +17,9 @@ public class MainApp {
         Session session = factory.openSession();
         session.beginTransaction();
 
+
         // Create and persist a new member
-        Member member = new Member("Alice");
+        Member member = new Member("Andrew", "Male", "andrewmtdang@gmail.com");
         session.persist(member);
 
         // Commit and close
