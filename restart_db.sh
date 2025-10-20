@@ -3,6 +3,6 @@
 rm data/testdb.mv.db
 echo "Removed database"
 
-# Populate Databas
+# Populate Database
 mvn exec:java -Dexec.mainClass="app.PopulateDatabase"
 echo "Repopulated database"

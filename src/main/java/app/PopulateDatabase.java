@@ -1,7 +1,5 @@
 package app;
 
-import app.Options;
-import app.Options.MemberFunctionEnum;
 import models.Admin;
 import models.Member;
 import models.Trainer;

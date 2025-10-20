@@ -21,7 +21,9 @@ public class MainApp {
         // Open a Hibernate session
         Session session = factory.openSession();
         session.beginTransaction();
-        Options.runView(AdminFunctionEnum.class);
+        Options.runView(MemberFunctionEnum.class);
+        //Options.runView(TrainerFunctionEnum.class);
+        //Options.runView(AdminFunctionEnum.class);
 
 
 
