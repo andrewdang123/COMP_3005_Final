@@ -44,16 +44,16 @@ public class Options {
 
 
     /***************************************************************
-     * MemberEnum
+     * MemberFunctionEnum
      ***************************************************************/
     public enum MemberFunctionEnum implements FunctionEnum {
         EXIT(0, "EXIT", () -> exit()),
-        USER_REGISTRATION(1, "Register", () -> test()),
-        PROFILE_MANAGEMENT(2, "Manage Profile", () -> test()),
-        //HEALTH_HISTORY,
-        //DASHBOARD,
-        PT_SESSION_SCHEDULING(3, "Remove an Item", () -> test()),
-        GROUP_CLASS_REGISTRATION(4, "Register for a Fitness Group", () -> test());
+        MEMBER_USER_REGISTRATION(1, "Register as a new user", () -> test()),
+        MEMBER_PROFILE_MANAGEMENT(2, "Manage your profile", () -> test()),
+        //MEMBER_HEALTH_HISTORY,
+        //MEMBER_DASHBOARD,
+        MEMBER_PT_SESSION_SCHEDULING(3, "Book or reschedule with a trainer", () -> test()),
+        MEMBER_GROUP_CLASS_REGISTRATION(4, "Register for a scheduled class", () -> test());
 
         private final int code;
         private final String description;
@@ -72,6 +72,62 @@ public class Options {
         public void execute() { action.run(); }
 
     }
+
+    /***************************************************************
+     * TrainerFunctionEnum
+     ***************************************************************/
+    public enum TrainerFunctionEnum implements FunctionEnum {
+        EXIT(0, "EXIT", () -> exit()),
+        TRAINER_SET_AVAILABILITY(1, "Define time when available for sessions or classes", () -> test()),
+        TRAINER_SCHEDULE_VIEW(2, "See assigned PT sessions and classes", () -> test());
+        //TRAINER_MEMBER_LOOKUP,
+
+        private final int code;
+        private final String description;
+        private final Runnable action;
+
+        TrainerFunctionEnum(int code, String description, Runnable action) {
+            this.code = code;
+            this.description = description;
+            this.action = action;
+        }
+        @Override
+        public int getCode() { return code; }
+        @Override
+        public String getDescription() { return description; }
+        @Override
+        public void execute() { action.run(); }
+
+    }
+
+    /***************************************************************
+     * AdminFunctionEnum
+     ***************************************************************/
+    public enum AdminFunctionEnum implements FunctionEnum {
+        EXIT(0, "EXIT", () -> exit()),
+        //ADMIN_ROOM_BOOKING,
+        ADMIN_EQUIPMENT_MAINTENANCE(1, "Log issues, track repair status, associated with equipment", () -> test()),
+        ADMIN_CLASS_MANAGEMENT(2, "Define new classes, assign trainers room/time, update schedules", () -> test());
+        //ADMIN_BILLING_AND_PAYMENT,
+
+        private final int code;
+        private final String description;
+        private final Runnable action;
+
+        AdminFunctionEnum(int code, String description, Runnable action) {
+            this.code = code;
+            this.description = description;
+            this.action = action;
+        }
+        @Override
+        public int getCode() { return code; }
+        @Override
+        public String getDescription() { return description; }
+        @Override
+        public void execute() { action.run(); }
+
+    }
+    
 
     
 

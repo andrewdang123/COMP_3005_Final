@@ -1,8 +1,9 @@
 package app;
 
-import app.Options;
+import app.Options.AdminFunctionEnum;
 import app.Options.MemberFunctionEnum;
-import models.Member;
+import app.Options.TrainerFunctionEnum;
+//import models.Member;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,7 +21,7 @@ public class MainApp {
         // Open a Hibernate session
         Session session = factory.openSession();
         session.beginTransaction();
-        Options.runView(MemberFunctionEnum.class);
+        Options.runView(AdminFunctionEnum.class);
 
         // Create and persist a new member
         //Member member = new Member("Andrew", "Male", "andrewmtdang@gmail.com");
