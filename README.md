@@ -6,24 +6,25 @@ Dylan Nakamura 101306225
 
 Final Assignment for COMP 3005
 
-How to run: mvn compile mvn clean compile
 
-Running Main: mvn exec:java -Dexec.mainClass="app.MainApp"
+Running Main:                   ./run_main.sh
+Running Main without warnings:  ./run_main2.sh
+Repopulating Database:          ./restart_db.sh
+Viewing Database:               ./run_h2.sh
 
-Running Database: mvn compile exec:java -Dexec.mainClass="app.H2Console"
+    For viewing the database, join the link. Enter the directory of "testdb".
+    Leave username as "sa" and Password as ""
 
-Join website
-Enter the directory of testdb.mv.db (include testdb without .mv.db)
-    For me it is jdbc:h2:~/SchoolCode\COMP 3005\COMP_3005_Final\data\testdb (Desktop)
-    jdbc:h2:~/COMP\COMP 3005\COMP_3005_Final\data\testdb (laptop)
 
-User name "sa"
-Password ""
-Enter SQL Queries for database
+        Andrew's Directories:
+            jdbc:h2:~/SchoolCode\COMP 3005\COMP_3005_Final\data\testdb (Desktop)
+            jdbc:h2:~/COMP\COMP 3005\COMP_3005_Final\data\testdb (laptop)
+        Dylan's Directories:
+            ...
 
-./run_main.sh
-./run_h2.sh
 
-https://maven.apache.org/download.cgi 
+Link for Dylan to download Maven: https://maven.apache.org/download.cgi 
+    Download Binary zip archive, extract to a location you know. 
+    Search Edit the System Environment Variables -> Environment Variables -> System Variables -> Path -> New -> Directory of the "bin" of the extracted Maven Folder
 
 *Add Video Link Later*
