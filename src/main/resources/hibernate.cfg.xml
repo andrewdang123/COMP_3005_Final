@@ -18,6 +18,8 @@
 
         <!-- Register entities -->
         <mapping class="models.Member"/>
+        <mapping class="models.Trainer"/>
+        <mapping class="models.Admin"/>
         
     </session-factory>
 </hibernate-configuration>

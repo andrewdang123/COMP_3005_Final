@@ -14,7 +14,9 @@ Running Database: mvn compile exec:java -Dexec.mainClass="app.H2Console"
 
 Join website
 Enter the directory of testdb.mv.db (include testdb without .mv.db)
-    For me it is jdbc:h2:~/SchoolCode\COMP 3005\COMP_3005_Final\data\testdb
+    For me it is jdbc:h2:~/SchoolCode\COMP 3005\COMP_3005_Final\data\testdb (Desktop)
+    jdbc:h2:~/COMP\COMP 3005\COMP_3005_Final\data\testdb (laptop)
+
 User name "sa"
 Password ""
 Enter SQL Queries for database

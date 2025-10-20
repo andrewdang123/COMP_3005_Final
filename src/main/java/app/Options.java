@@ -78,7 +78,7 @@ public class Options {
 
 
     /***************************************************************
-     * runView?
+     * runView
      ***************************************************************/
     public static <E extends Enum<E> & FunctionEnum> void runView(Class<E> enumClass) {
 
