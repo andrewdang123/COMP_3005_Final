@@ -87,6 +87,11 @@ public class Options {
         while (true) {
             FunctionEnum.printMenu(enumClass);
             System.out.print("Enter command number: ");
+            while (!scanner.hasNextInt()) {
+
+                scanner.next();
+                System.out.print("Enter valid command number: ");
+            }
             int code = scanner.nextInt();
 
             E function = FunctionEnum.fromCode(enumClass, code);
