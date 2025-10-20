@@ -57,4 +57,8 @@ public class Member {
         this.dateOfBirth = new DateOfBirth(day, month, year);
     }
 
+    public String toString() {
+        return id + "\t" + name + "\t" + email + "\t" + gender + "\t" + dateOfBirth.getDay() + "\t" + dateOfBirth.getMonth() + "\t" + dateOfBirth.getYear();
+    }
+
 }
