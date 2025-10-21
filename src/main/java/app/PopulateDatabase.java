@@ -27,8 +27,8 @@ public class PopulateDatabase {
         Member member2 = new Member("Valorant", "Male", "valorant@gmail.com", 14, 6, 2005);
         session.persist(member2);
 
-        Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com");
-        session.persist(trainer1);
+        //Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com");
+        //session.persist(trainer1);
         Admin admin1 = new Admin("admin1", "admin1@gmail.com");
         session.persist(admin1);
         
