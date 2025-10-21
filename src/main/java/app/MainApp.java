@@ -1,5 +1,6 @@
 package app;
 
+import app.HibernateUtil;
 import app.Options.AdminFunctionEnum;
 import app.Options.MemberFunctionEnum;
 import app.Options.TrainerFunctionEnum;
@@ -16,23 +17,14 @@ public class MainApp {
      ***************************************************************/
     public static void main(String[] args) {
         // Load configuration and build SessionFactory
-        SessionFactory factory = new Configuration().configure().buildSessionFactory();
-
-        // Open a Hibernate session
-        Session session = factory.openSession();
-        session.beginTransaction();
+        
         Options.runView(MemberFunctionEnum.class);
         //Options.runView(TrainerFunctionEnum.class);
         //Options.runView(AdminFunctionEnum.class);
 
 
 
-        // Commit and close
-        session.getTransaction().commit();
-        session.close();
-        factory.close();
-
-        //System.out.println("Member saved: " + member.getName());
+        HibernateUtil.shutdown();
 
     }
 

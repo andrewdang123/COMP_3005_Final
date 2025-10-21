@@ -1,5 +1,10 @@
 package app;
+import app.HibernateUtil;
 import java.util.Scanner;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 
 
 public class FunctionsAdmin {
