@@ -21,11 +21,11 @@ public class FunctionsMember {
                 System.out.print("Enter name: ");
                 String name = scanner.nextLine().trim();
 
-                System.out.print("Enter gender: ");
-                String gender = scanner.nextLine().trim();
-
                 System.out.print("Enter email: ");
                 String email = scanner.nextLine().trim();
+
+                System.out.print("Enter gender: ");
+                String gender = scanner.nextLine().trim();
 
                 System.out.print("Enter birth day (1-31): ");
                 int day = scanner.nextInt();
@@ -35,7 +35,7 @@ public class FunctionsMember {
                 int year = scanner.nextInt();
                 scanner.nextLine();
 
-                Member newMember = new Member(name, gender, email, day, month, year);
+                Member newMember = new Member(name, email, gender, day, month, year);
 
                 try {
                     session.persist(newMember);

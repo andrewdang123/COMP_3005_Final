@@ -22,9 +22,9 @@ public class PopulateDatabase {
         session.beginTransaction();
 
         // Create and persist a new member
-        Member member1 = new Member("Andrew", "Male", "andrewmtdang@gmail.com", 14, 6, 2005);
+        Member member1 = new Member("Andrew", "andrewmtdang@gmail.com", "Male", 14, 6, 2005);
         session.persist(member1);
-        Member member2 = new Member("Valorant", "Male", "valorant@gmail.com", 14, 6, 2005);
+        Member member2 = new Member("Valorant", "valorant@gmail.com", "Male", 14, 6, 2005);
         session.persist(member2);
 
         //Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com");
