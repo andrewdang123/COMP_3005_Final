@@ -35,41 +35,19 @@ public class PersonalTrainingSession {
     }
 
     // Getters and setters
-    public Long getSessionId() {
-        return sessionId;
-    }
+    public Long getSessionId() { return sessionId; }
 
-    public Long getMemberId() {
-        return memberId;
-    }
+    public Long getMemberId() { return memberId; }
+    public void setMemberId(Long memberId) { this.memberId = memberId; }
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
+    public Long getTrainerId() { return trainerId; }
+    public void setTrainerId(Long trainerId) { this.trainerId = trainerId; }
 
-    public Long getTrainerId() {
-        return trainerId;
-    }
+    public int getRoomNum() { return roomNum; }
+    public void setRoomNum(int roomNum) { this.roomNum = roomNum; }
 
-    public void setTrainerId(Long trainerId) {
-        this.trainerId = trainerId;
-    }
-
-    public int getRoomNum() {
-        return roomNum;
-    }
-
-    public void setRoomNum(int roomNum) {
-        this.roomNum = roomNum;
-    }
-
-    public int getSessionTime() {
-        return sessionTime;
-    }
-
-    public void setSessionTime(int sessionTime) {
-        this.sessionTime = sessionTime;
-    }
+    public int getSessionTime() { return sessionTime; }
+    public void setSessionTime(int sessionTime) { this.sessionTime = sessionTime; }
 
     @Override
     public String toString() {
