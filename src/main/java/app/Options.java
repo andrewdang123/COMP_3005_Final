@@ -12,10 +12,10 @@ import org.hibernate.SessionFactory;
 
 public class Options {
 
-    public static void test(){
+    public static void test() {
         System.out.println("TEST");
     }
-    public static void exit(){
+    public static void exit() {
         System.out.println("exit");
     }
 
@@ -57,10 +57,10 @@ public class Options {
         EXIT(0, "EXIT", () -> exit()),
         MEMBER_USER_REGISTRATION(1, "Register as a new user", () -> FunctionsMember.memberUserRegistration()),
         MEMBER_PROFILE_MANAGEMENT(2, "Manage your profile", () -> FunctionsMember.memberProfileManagement()),
-        //MEMBER_HEALTH_HISTORY,
+        MEMBER_HEALTH_HISTORY(3, "Log current health metrics", () -> FunctionsMember.memberHealthHistory()),
         //MEMBER_DASHBOARD,
-        MEMBER_PT_SESSION_SCHEDULING(3, "Book or reschedule with a trainer", () -> FunctionsMember.memberPtSessionScheduling()),
-        MEMBER_GROUP_CLASS_REGISTRATION(4, "Register for a scheduled class", () -> FunctionsMember.memberGroupClassRegistration());
+        MEMBER_PT_SESSION_SCHEDULING(4, "Book or reschedule with a trainer", () -> FunctionsMember.memberPtSessionScheduling()),
+        MEMBER_GROUP_CLASS_REGISTRATION(5, "Register for a scheduled class", () -> FunctionsMember.memberGroupClassRegistration());
 
         private final int code;
         private final String description;
@@ -86,8 +86,8 @@ public class Options {
     public enum TrainerFunctionEnum implements FunctionEnum {
         EXIT(0, "EXIT", () -> exit()),
         TRAINER_SET_AVAILABILITY(1, "Define time when available for sessions or classes", () -> FunctionsTrainer.trainerSetAvailability()),
-        TRAINER_SCHEDULE_VIEW(2, "See assigned PT sessions and classes", () -> FunctionsTrainer.trainerScheduleView());
-        //TRAINER_MEMBER_LOOKUP,
+        TRAINER_SCHEDULE_VIEW(2, "See assigned PT sessions and classes", () -> FunctionsTrainer.trainerScheduleView()),
+        TRAINER_MEMBER_LOOKUP(3, "Lookup member goals and metrics by name", () -> FunctionsTrainer.trainerMemberLookup());
 
         private final int code;
         private final String description;

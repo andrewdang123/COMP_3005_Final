@@ -16,5 +16,12 @@ public class FunctionsTrainer {
     public static void trainerScheduleView(){
         System.out.println("Viewed Schedule!");
     }
+
+    /***************************************************************
+     * trainerMemberLookup
+     ***************************************************************/
+    public static void trainerMemberLookup(){
+        System.out.println("Member Viewed!");
+    }
     
 }

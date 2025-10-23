@@ -31,6 +31,12 @@ public class Member {
     })
     private DateOfBirth dateOfBirth;
 
+    @Column
+    private int targetWeight;
+
+    @Column
+    private int targetBmi;
+
     public Member() {}
 
     public Member(String name, String email, String gender, int day, int month, int year) {
@@ -38,6 +44,8 @@ public class Member {
         this.email = email;
         this.gender = gender;
         this.dateOfBirth = new DateOfBirth(day, month, year);
+        this.targetWeight = 0;
+        this.targetBmi = 0;
     }
 
     // Getters and setters
@@ -56,6 +64,12 @@ public class Member {
     public void setDateOfBirth(int day, int month, int year) { 
         this.dateOfBirth = new DateOfBirth(day, month, year);
     }
+
+    public int getTargetWeight() { return targetWeight; }
+    public void setTargetWeight(int targetWeight) { this.targetWeight = targetWeight; }
+
+    public int getTargetBmi() { return targetBmi; }
+    public void setTargetBmi(int targetBmi) { this.targetBmi = targetBmi; }
 
     public String toString() {
         return memberId + "\t" + name + "\t" + email + "\t" + gender + "\t" + dateOfBirth.getDay() + "\t" + dateOfBirth.getMonth() + "\t" + dateOfBirth.getYear();

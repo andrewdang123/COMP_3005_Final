@@ -6,6 +6,9 @@ import app.Options.MemberFunctionEnum;
 import app.Options.TrainerFunctionEnum;
 //import models.Member;
 import org.hibernate.cfg.Configuration;
+
+import java.util.Scanner;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -25,6 +28,8 @@ public class MainApp {
 
 
         HibernateUtil.shutdown();
+        Scanner scanner = new Scanner(System.in);
+        scanner.close();
 
     }
 

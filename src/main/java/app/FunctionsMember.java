@@ -58,6 +58,17 @@ public class FunctionsMember {
      ***************************************************************/
     public static void memberProfileManagement() {
         System.out.println("Updated Profile!");
+
+
+        System.out.println("*Have this call memberHealthHistory, and force the memberID into it");
+        System.out.println("*Likely need a helper function");
+    }
+
+    /***************************************************************
+     * memberHealthHistory
+     ***************************************************************/
+    public static void memberHealthHistory() {
+        System.out.println("Health Metric Logged!");
     }
 
     /***************************************************************
