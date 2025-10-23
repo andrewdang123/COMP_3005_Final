@@ -45,7 +45,7 @@ public class PopulateDatabase {
         session.persist(equipmentManagement1);
 
         // HealthMetric
-        HealthMetric metric1 = new HealthMetric(897L, 234.7, 23.6, "TESD");
+        HealthMetric metric1 = new HealthMetric(897L, 285, 5);
         session.persist(metric1);
 
         // Commit and close

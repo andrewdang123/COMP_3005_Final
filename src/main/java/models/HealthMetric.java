@@ -34,36 +34,23 @@ public class HealthMetric {
         timestamp = LocalDateTime.now();
     }
 
-    // Getters and setters
-    /*
-     * public Long getId() { return memberId; }
-     * 
-     * public String getName() { return name; }
-     * public void setName(String name) { this.name = name; }
-     * 
-     * public String getEmail() { return email; }
-     * public void setEmail(String email) { this.email = email; }
-     * 
-     * public String getGender() { return gender; }
-     * public void setGender(String gender) { this.gender = gender; }
-     * 
-     * public DateOfBirth getDateOfBirth() { return dateOfBirth; }
-     * public void setDateOfBirth(int day, int month, int year) {
-     * this.dateOfBirth = new DateOfBirth(day, month, year);
-     * }
-     * 
-     * public int getTargetWeight() { return targetWeight; }
-     * public void setTargetWeight(int targetWeight) { this.targetWeight =
-     * targetWeight; }
-     * 
-     * public int getTargetBmi() { return targetBmi; }
-     * public void setTargetBmi(int targetBmi) { this.targetBmi = targetBmi; }
-     * 
-     * public String toString() {
-     * return memberId + "\t" + name + "\t" + email + "\t" + gender + "\t" +
-     * dateOfBirth.getDay() + "\t" + dateOfBirth.getMonth() + "\t" +
-     * dateOfBirth.getYear();
-     * }
-     */
+   // Getters and Setters
+    public Long getMetricId() { return metricId; }
+
+    public Long getMemberId() { return memberId; }
+
+    public void setMemberId(Long memberId) { this.memberId = memberId; }
+
+    public int getCurrentWeight() {
+        return currentWeight;
+    }
+
+    public void setCurrentWeight(int currentWeight) { this.currentWeight = currentWeight; }
+
+    public int getCurrentBmi() { return currentBmi; }
+    public void setCurrentBmi(int currentBMI) { this.currentBmi = currentBMI; }
+
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 
 }

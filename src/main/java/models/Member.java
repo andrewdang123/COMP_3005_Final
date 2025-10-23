@@ -49,7 +49,7 @@ public class Member {
     }
 
     // Getters and setters
-    public Long getId() { return memberId; }
+    public Long getMemberId() { return memberId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
