@@ -33,6 +33,7 @@ public class Schedule {
 
     public int getEndTime() { return endTime; }
     public void setEndTime(int endTime) { this.endTime = endTime; }
+
 }
 
 
@@ -43,5 +44,21 @@ enum DayOfWeek {
     THURSDAY,
     FRIDAY,
     SATURDAY,
-    SUNDAY
+    SUNDAY;
+
+    public static DayOfWeek fromString (String input) {
+        if (input == null) return null;
+        String normalized = input.trim().toUpperCase();
+
+        switch (normalized) {
+            case "MON": case "MONDAY": return MONDAY;
+            case "TUE": case "TUESDAY": return TUESDAY;
+            case "WED": case "WEDNESDAY": return WEDNESDAY;
+            case "THU": case "THURSDAY": return THURSDAY;
+            case "FRI": case "FRIDAY": return FRIDAY;
+            case "SAT": case "SATURDAY": return SATURDAY;
+            case "SUN": case "SUNDAY": return SUNDAY;
+            default: throw new IllegalArgumentException("Unknown Day: " + input);
+        }
+    }
 }
