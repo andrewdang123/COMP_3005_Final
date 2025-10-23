@@ -29,7 +29,7 @@ public class PopulateDatabase {
         Member member2 = new Member("Valorant", "valorant@gmail.com", "Male", 14, 6, 2005);
         session.persist(member2);
 
-        Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com", "tuesday", 8, 5);
+        Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com", "tuesday", 8, 17);
         session.persist(trainer1);
 
         Admin admin1 = new Admin("admin1", "admin1@gmail.com");
