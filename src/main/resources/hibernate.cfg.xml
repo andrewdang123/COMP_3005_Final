@@ -24,6 +24,7 @@
         <mapping class="models.Admin"/>
         <mapping class="models.PersonalTrainingSession"/>
         <mapping class="models.EquipmentManagement"/>
+        <mapping class="models.HealthMetric"/>
 
 
         

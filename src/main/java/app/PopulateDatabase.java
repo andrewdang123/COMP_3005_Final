@@ -9,6 +9,7 @@ import models.EquipmentManagement;
 import models.Member;
 import models.PersonalTrainingSession;
 import models.Trainer;
+import models.HealthMetric;
 
 public class PopulateDatabase {
 
@@ -42,6 +43,10 @@ public class PopulateDatabase {
         // EquipmentManagement
         EquipmentManagement equipmentManagement1 = new EquipmentManagement(897L, 444, "tre", "half");
         session.persist(equipmentManagement1);
+
+        // HealthMetric
+        HealthMetric metric1 = new HealthMetric(897L, 234.7, 23.6, "TESD");
+        session.persist(metric1);
 
         // Commit and close
         session.getTransaction().commit();
