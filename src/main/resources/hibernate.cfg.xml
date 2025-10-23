@@ -22,6 +22,8 @@
         <mapping class="models.Member"/>
         <mapping class="models.Trainer"/>
         <mapping class="models.Admin"/>
+        <mapping class="models.PersonalTrainingSession"/>
+
         
     </session-factory>
 </hibernate-configuration>

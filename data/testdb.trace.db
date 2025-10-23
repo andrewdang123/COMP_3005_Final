@@ -89,3 +89,18 @@ Caused by: java.lang.ClassNotFoundException: org.h2.mvstore.Chunk$PositionCompar
 	at org.codehaus.mojo.exec.URLClassLoaderBuilder$ExecJavaClassLoader.loadClass(URLClassLoaderBuilder.java:211)
 	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
 	... 18 more
+2025-10-22 20:06:31.426065-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM ADMINS ADMINS [*]ADMINS ID EMAIL MEMBERS TRAINERS NAME"; SQL statement:
+SELECT * FROM ADMINS ADMINS ADMINS ID EMAIL MEMBERS TRAINERS NAME [42000-224]
+2025-10-22 20:06:44.123230-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM ADMINS ID [*]EMAIL"; SQL statement:
+SELECT * FROM ADMINS ID EMAIL [42000-224]
+2025-10-22 20:06:49.740636-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]NAME"; SQL statement:
+NAME [42000-224]
+2025-10-22 20:06:54.330865-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]ID"; expected "INSERT"; SQL statement:
+ID [42001-224]
+2025-10-22 20:06:55.003274-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]ID"; expected "INSERT"; SQL statement:
+ID [42001-224]
