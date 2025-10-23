@@ -34,12 +34,12 @@ public class PopulateDatabase {
         session.persist(admin1);
 
         // personaltraining
-        PersonalTrainingSession tsession1 = new PersonalTrainingSession(134L, 223L, 3, 54);
-        session.persist(tsession1);
+        PersonalTrainingSession personalTrainingSession1 = new PersonalTrainingSession(134L, 223L, 3, 54);
+        session.persist(personalTrainingSession1);
 
         // EquipmentManagement
-        EquipmentManagement issue1 = new EquipmentManagement(897L, 444, "tre", "half");
-        session.persist(issue1);
+        EquipmentManagement equipmentManagement1 = new EquipmentManagement(897L, 444, "tre", "half");
+        session.persist(equipmentManagement1);
 
         // Commit and close
         session.getTransaction().commit();

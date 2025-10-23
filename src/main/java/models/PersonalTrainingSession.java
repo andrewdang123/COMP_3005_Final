@@ -21,11 +21,11 @@ public class PersonalTrainingSession {
 
     @NotNull
     @Column(nullable = false)
-    private int roomNum; // Room number
+    private int roomNum;
 
     @NotNull
     @Column(nullable = false)
-    private int sessionTime; // Time as integer (e.g., 1400 for 2 PM)
+    private int sessionTime;
 
     public PersonalTrainingSession(Long memberId, Long trainerId, int roomNum, int sessionTime) {
         this.memberId = memberId;
