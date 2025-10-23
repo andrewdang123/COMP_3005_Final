@@ -3,6 +3,8 @@ package models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import models.Schedule;
+
 @Entity
 @Table(name = "personal_training_sessions")
 public class PersonalTrainingSession {

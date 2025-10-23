@@ -9,7 +9,7 @@ public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long adminId;
 
     @Column(nullable = false)
     private String name;
@@ -25,7 +25,7 @@ public class Admin {
     }
 
     // Getters and setters
-    public Long getId() { return id; }
+    public Long getId() { return adminId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -34,7 +34,7 @@ public class Admin {
     public void setEmail(String email) { this.email = email; }
 
     public String toString() {
-        return id + "\t" + name + "\t" + email;
+        return adminId + "\t" + name + "\t" + email;
     }
 
 }

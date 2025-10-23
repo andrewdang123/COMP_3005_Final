@@ -10,7 +10,7 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long memberId;
 
     @Column(nullable = false)
     private String name;
@@ -41,7 +41,7 @@ public class Member {
     }
 
     // Getters and setters
-    public Long getId() { return id; }
+    public Long getId() { return memberId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -58,7 +58,7 @@ public class Member {
     }
 
     public String toString() {
-        return id + "\t" + name + "\t" + email + "\t" + gender + "\t" + dateOfBirth.getDay() + "\t" + dateOfBirth.getMonth() + "\t" + dateOfBirth.getYear();
+        return memberId + "\t" + name + "\t" + email + "\t" + gender + "\t" + dateOfBirth.getDay() + "\t" + dateOfBirth.getMonth() + "\t" + dateOfBirth.getYear();
     }
 
 }
