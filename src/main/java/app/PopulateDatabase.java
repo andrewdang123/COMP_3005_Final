@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import models.Admin;
+import models.EquipmentManagement;
 import models.Member;
 import models.PersonalTrainingSession;
 
@@ -35,6 +36,11 @@ public class PopulateDatabase {
         // personaltraining
         PersonalTrainingSession tsession1 = new PersonalTrainingSession(134L, 223L, 3, 54);
         session.persist(tsession1);
+
+        // EquipmentManagement
+        EquipmentManagement issue1 = new EquipmentManagement(897L, 444, "tre", "half");
+        session.persist(issue1);
+
         // Commit and close
         session.getTransaction().commit();
         session.close();

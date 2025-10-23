@@ -23,6 +23,8 @@
         <mapping class="models.Trainer"/>
         <mapping class="models.Admin"/>
         <mapping class="models.PersonalTrainingSession"/>
+        <mapping class="models.EquipmentManagement"/>
+
 
         
     </session-factory>
