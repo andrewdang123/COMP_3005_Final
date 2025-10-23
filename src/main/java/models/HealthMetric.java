@@ -1,7 +1,8 @@
 package models;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "health_metrics")
@@ -11,71 +12,58 @@ public class HealthMetric {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long metricId;
 
-    @NotNull
     @Column(nullable = false)
     private Long memberId;
 
-    @NotNull
     @Column(nullable = false)
-    private double currentWeight;
+    private int currentWeight;
 
-    @NotNull
     @Column(nullable = false)
-    private double currentBMI;
+    private int currentBmi;
 
-    @NotNull
     @Column(nullable = false)
-    private String timestamp;
+    private LocalDateTime timestamp;
 
     public HealthMetric() {
     }
 
-    public HealthMetric(Long memberId, double currentWeight, double currentBMI, String timestamp) {
+    public HealthMetric(Long memberId, int currentWeight, int currentBmi) {
         this.memberId = memberId;
         this.currentWeight = currentWeight;
-        this.currentBMI = currentBMI;
-        this.timestamp = timestamp;
+        this.currentBmi = currentBmi;
+        timestamp = LocalDateTime.now();
     }
 
-    // Getters and Setters
-    public Long getMetricId() {
-        return metricId;
-    }
+    // Getters and setters
+    /*
+     * public Long getId() { return memberId; }
+     * 
+     * public String getName() { return name; }
+     * public void setName(String name) { this.name = name; }
+     * 
+     * public String getEmail() { return email; }
+     * public void setEmail(String email) { this.email = email; }
+     * 
+     * public String getGender() { return gender; }
+     * public void setGender(String gender) { this.gender = gender; }
+     * 
+     * public DateOfBirth getDateOfBirth() { return dateOfBirth; }
+     * public void setDateOfBirth(int day, int month, int year) {
+     * this.dateOfBirth = new DateOfBirth(day, month, year);
+     * }
+     * 
+     * public int getTargetWeight() { return targetWeight; }
+     * public void setTargetWeight(int targetWeight) { this.targetWeight =
+     * targetWeight; }
+     * 
+     * public int getTargetBmi() { return targetBmi; }
+     * public void setTargetBmi(int targetBmi) { this.targetBmi = targetBmi; }
+     * 
+     * public String toString() {
+     * return memberId + "\t" + name + "\t" + email + "\t" + gender + "\t" +
+     * dateOfBirth.getDay() + "\t" + dateOfBirth.getMonth() + "\t" +
+     * dateOfBirth.getYear();
+     * }
+     */
 
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
-
-    public double getCurrentWeight() {
-        return currentWeight;
-    }
-
-    public void setCurrentWeight(double currentWeight) {
-        this.currentWeight = currentWeight;
-    }
-
-    public double getCurrentBMI() {
-        return currentBMI;
-    }
-
-    public void setCurrentBMI(double currentBMI) {
-        this.currentBMI = currentBMI;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    @Override
-    public String toString() {
-        return memberId + "\t" + metricId + "\t" + currentWeight + "\t" + currentBMI + "\t" + timestamp;
-    }
 }
