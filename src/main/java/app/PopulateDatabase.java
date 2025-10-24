@@ -41,11 +41,11 @@ public class PopulateDatabase {
         session.persist(personalTrainingSession1);
 
         // EquipmentManagement
-        EquipmentManagement equipmentManagement1 = new EquipmentManagement(897L, 444, "tre", "half");
+        EquipmentManagement equipmentManagement1 = new EquipmentManagement(1L, 444, "tre", "half");
         session.persist(equipmentManagement1);
 
         // HealthMetric
-        HealthMetric metric1 = new HealthMetric(897L, 285, 5);
+        HealthMetric metric1 = new HealthMetric(1L, 285, 5);
         session.persist(metric1);
 
         // Commit and close

@@ -117,6 +117,12 @@ public class FunctionsMember {
                 member.setEmail(newEmail);
             }
 
+            System.out.print("Enter new gender (or press Enter to keep current): ");
+            String newGender = scanner.nextLine().trim();
+            if (!newGender.isEmpty()) {
+                member.setGender(newGender);
+            }
+
             // Update fitness goals
             System.out.print("Enter your target weight (kg): ");
             int targetWeight = scanner.nextInt();
@@ -126,7 +132,6 @@ public class FunctionsMember {
 
             // Save updates
             session.beginTransaction();
-            // assuming targetWeight and targetBMI are added as fields in Member class
             member.setTargetWeight(targetWeight);
             member.setTargetBmi(targetBMI);
             session.merge(member);
@@ -137,7 +142,7 @@ public class FunctionsMember {
             System.out.println("Target Weight: " + targetWeight);
             System.out.println("Target BMI: " + targetBMI);
 
-            System.out.println("\nRedirecting to Health History...");
+            System.out.println("\nRedirecting to Health Metrics");
             memberHealthHistory(member);
 
         } catch (Exception e) {
@@ -182,33 +187,7 @@ public class FunctionsMember {
                     found = true;
                 }
             }
-
-            // Prompt for metrics
-            System.out.print("\nEnter current weight (kg, integer): ");
-            int currentWeight = scanner.nextInt();
-
-            System.out.print("Enter current BMI (integer): ");
-            int currentBMI = scanner.nextInt();
-            scanner.nextLine(); // consume newline
-
-            try {
-                session.beginTransaction();
-                HealthMetric metric = new HealthMetric(
-                        member.getMemberId(),
-                        currentWeight,
-                        currentBMI);
-                session.persist(metric);
-                session.getTransaction().commit();
-
-                System.out.println("Health metric logged successfully!");
-                System.out.println("Weight: " + currentWeight + ", BMI: " + currentBMI);
-
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-                System.out.println(
-                        "Failed to log health metric (invalid data?). Please try again.");
-            }
-
+            memberHealthHistory(member);
         } catch (Exception e) {
             System.out.println("Unexpected error: " + e.getMessage());
         } finally {
