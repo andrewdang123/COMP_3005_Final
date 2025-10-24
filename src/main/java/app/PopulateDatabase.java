@@ -39,16 +39,16 @@ public class PopulateDatabase {
         session.persist(admin1);
 
         // PersonalTrainingSession
-        PersonalTrainingSession personalTrainingSession1 = new PersonalTrainingSession(134L, 223L, 3, 54);
+        PersonalTrainingSession personalTrainingSession1 = new PersonalTrainingSession(member1, trainer1, 3, "MONDAY", 3, 4);
         session.persist(personalTrainingSession1);
 
         // EquipmentManagement
-        EquipmentManagement equipmentManagement1 = new EquipmentManagement(1L, 444, "Water Leak", "In progress");
+        EquipmentManagement equipmentManagement1 = new EquipmentManagement(admin1, 444, "Water Leak", "In progress");
         session.persist(equipmentManagement1);
 
         // HealthMetric
         HealthMetric metric1 = new HealthMetric(member1, 285, 5);
-        session.persist(metric1);
+        session.persist(metric1); 
 
         // Commit and close
         session.getTransaction().commit();

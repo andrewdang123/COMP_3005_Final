@@ -25,7 +25,7 @@ public class Admin {
     }
 
     // Getters and setters
-    public Long getId() { return adminId; }
+    public Long getAdminId() { return adminId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

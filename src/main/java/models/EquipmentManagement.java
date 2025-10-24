@@ -11,9 +11,13 @@ public class EquipmentManagement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long equipmentId;
 
-    @NotNull
-    @Column(nullable = false)
-    private Long adminId;
+    @ManyToOne(optional = false)
+    @JoinColumn(
+        name = "admin_id", 
+        referencedColumnName = "adminId",
+        foreignKey = @ForeignKey(name = "FK_equipmentManagement_admin")
+    )
+    private Admin admin;
 
     @NotNull
     @Column(nullable = false)
@@ -29,8 +33,8 @@ public class EquipmentManagement {
     public EquipmentManagement() {
     }
 
-    public EquipmentManagement(Long adminId, int roomNum, String issue, String repairStatus) {
-        this.adminId = adminId;
+    public EquipmentManagement(Admin admin, int roomNum, String issue, String repairStatus) {
+        this.admin = admin;
         this.roomNum = roomNum;
         this.issue = issue;
         this.repairStatus = repairStatus;
@@ -39,8 +43,8 @@ public class EquipmentManagement {
     // Getters and Setters
     public Long getEquipmentId() { return equipmentId; }
 
-    public Long getAdminId() { return adminId; }
-    public void setAdminId(Long adminId) { this.adminId = adminId; }
+    public Admin getAdmin() { return admin; }
+    public void setAdmin(Admin admin) { this.admin = admin; }
 
     public int getRoomNum() { return roomNum; }
     public void setRoomNum(int roomNum) { this.roomNum = roomNum; }
@@ -53,6 +57,6 @@ public class EquipmentManagement {
 
     @Override
     public String toString() {
-        return equipmentId + "\t" + adminId + "\t" + roomNum + "\t" + issue + "\t" + repairStatus;
+        return equipmentId + "\t" + admin.getAdminId() + "\t" + roomNum + "\t" + issue + "\t" + repairStatus;
     }
 }

@@ -3,8 +3,6 @@ package models;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-import models.Member;
-
 
 @Entity
 @Table(name = "health_metrics")

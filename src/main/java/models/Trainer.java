@@ -36,7 +36,7 @@ public class Trainer {
     }
 
     // Getters and setters
-    public Long getId() { return trainerId; }
+    public Long getTrainerId() { return trainerId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -46,7 +46,7 @@ public class Trainer {
 
     public Schedule getAvailability() { return availability; }
     public void setAvailability(String dayOfWeek, int startTime, int endTime) { 
-        this.availability = new Schedule(DayOfWeek.valueOf(dayOfWeek), startTime, endTime); 
+        this.availability = new Schedule(DayOfWeek.valueOf(dayOfWeek), startTime, endTime);
     }
 
     public String toString() {
