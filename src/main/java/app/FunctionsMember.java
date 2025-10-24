@@ -37,14 +37,25 @@ public class FunctionsMember {
                 int year = scanner.nextInt();
                 scanner.nextLine();
 
-                Member newMember = new Member(name, email, gender, day, month, year);
+                Member member = new Member(name, email, gender, day, month, year);
 
                 try {
-                    session.persist(newMember);
+                    session.persist(member);
                     session.getTransaction().commit();
                     success = true;
                     session.close();
                     System.out.println("User Registered!");
+                    
+                    // Display current details
+                    System.out.println("\n--- Current Profile ---");
+                    System.out.println("Member ID: " + member.getMemberId());
+                    System.out.println("Name: " + member.getName());
+                    System.out.println("Email: " + member.getEmail());
+                    System.out.println("Gender: " + member.getGender());
+                    System.out.println("Date of Birth: " + member.getDateOfBirth().getDay() + "/"
+                            + member.getDateOfBirth().getMonth() + "/"
+                            + member.getDateOfBirth().getYear());
+                    System.out.println("-----------------------");
                 } catch (Exception e) {
                     session.getTransaction().rollback();
                     System.out.println(
@@ -196,7 +207,7 @@ public class FunctionsMember {
     }
 
     /***************************************************************
-     * Member Health History (Redirect from Profile: uses given Member)
+     * memberHealthHistory
      ***************************************************************/
     public static void memberHealthHistory(Member member) {
         Scanner scanner = new Scanner(System.in);
@@ -214,7 +225,7 @@ public class FunctionsMember {
             try {
                 session.beginTransaction();
                 HealthMetric metric = new HealthMetric(
-                        member.getMemberId(),
+                        member,
                         currentWeight,
                         currentBMI);
                 session.persist(metric);

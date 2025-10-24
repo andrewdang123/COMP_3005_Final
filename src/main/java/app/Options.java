@@ -1,19 +1,12 @@
 package app;
 
-import app.FunctionsAdmin;
-import app.FunctionsMember;
-import app.FunctionsTrainer;
-import models.Member;
+
 import java.util.Scanner;
-import org.hibernate.cfg.Configuration;
-import org.h2.command.Command;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 public class Options {
 
-    public static void test() {
-        System.out.println("TEST");
+    public static void placeholder() {
+        System.out.println("FUBAR");
     }
     public static void exit() {
         System.out.println("Now exiting program...");
@@ -59,7 +52,6 @@ public class Options {
         MEMBER_USER_REGISTRATION(1, "Register as a new user", () -> FunctionsMember.memberUserRegistration()),
         MEMBER_PROFILE_MANAGEMENT(2, "Manage your profile", () -> FunctionsMember.memberProfileManagement()),
         MEMBER_HEALTH_HISTORY(3, "Log current health metrics", () -> FunctionsMember.memberHealthHistory()),
-        //MEMBER_DASHBOARD,
         MEMBER_PT_SESSION_SCHEDULING(4, "Book or reschedule with a trainer", () -> FunctionsMember.memberPtSessionScheduling()),
         MEMBER_GROUP_CLASS_REGISTRATION(5, "Register for a scheduled class", () -> FunctionsMember.memberGroupClassRegistration());
 
@@ -113,10 +105,8 @@ public class Options {
      ***************************************************************/
     public enum AdminFunctionEnum implements FunctionEnum {
         EXIT(0, "EXIT", () -> exit()),
-        //ADMIN_ROOM_BOOKING,
         ADMIN_EQUIPMENT_MAINTENANCE(1, "Log issues, track repair status, associated with equipment", () -> FunctionsAdmin.adminEquipmentMaintenance()),
         ADMIN_CLASS_MANAGEMENT(2, "Define new classes, assign trainers room/time, update schedules", () -> FunctionsAdmin.adminClassManagement());
-        //ADMIN_BILLING_AND_PAYMENT,
 
         private final int code;
         private final String description;

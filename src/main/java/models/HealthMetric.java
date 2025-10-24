@@ -1,8 +1,10 @@
 package models;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import models.Member;
+
 
 @Entity
 @Table(name = "health_metrics")
@@ -12,8 +14,13 @@ public class HealthMetric {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long metricId;
 
-    @Column(nullable = false)
-    private Long memberId;
+    @ManyToOne(optional = false)
+    @JoinColumn(
+        name = "member_id", 
+        referencedColumnName = "memberId",
+        foreignKey = @ForeignKey(name = "FK_healthMetric_member")
+    )
+    private Member member;
 
     @Column(nullable = false)
     private int currentWeight;
@@ -27,8 +34,8 @@ public class HealthMetric {
     public HealthMetric() {
     }
 
-    public HealthMetric(Long memberId, int currentWeight, int currentBmi) {
-        this.memberId = memberId;
+    public HealthMetric(Member member, int currentWeight, int currentBmi) {
+        this.member = member;
         this.currentWeight = currentWeight;
         this.currentBmi = currentBmi;
         timestamp = LocalDateTime.now();
@@ -37,9 +44,9 @@ public class HealthMetric {
    // Getters and Setters
     public Long getMetricId() { return metricId; }
 
-    public Long getMemberId() { return memberId; }
+    public Member getMember() { return member; }
 
-    public void setMemberId(Long memberId) { this.memberId = memberId; }
+    public void setMember(Member member) { this.member = member; }
 
     public int getCurrentWeight() {
         return currentWeight;
