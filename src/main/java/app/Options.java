@@ -16,7 +16,8 @@ public class Options {
         System.out.println("TEST");
     }
     public static void exit() {
-        System.out.println("exit");
+        System.out.println("Now exiting program...");
+        return;
     }
 
     /***************************************************************
@@ -135,6 +136,32 @@ public class Options {
 
     }
     
+    /***************************************************************
+     * ViewFunctionEnum
+     ***************************************************************/
+    public enum ViewFunctionEnum implements FunctionEnum {
+        EXIT(0, "EXIT", () -> exit()),
+        VIEW_MEMBER_FUNCTIONS(1, "Member Functions", () -> runView(MemberFunctionEnum.class)),
+        VIEW_TRAINER_FUNCTIONS(2, "Trainer Functions", () -> runView(TrainerFunctionEnum.class)),
+        VIEW_ADMIN_FUNCTIONS(3, "Administrative Staff Functions", () -> runView(AdminFunctionEnum.class));
+
+        private final int code;
+        private final String description;
+        private final Runnable action;
+
+        ViewFunctionEnum(int code, String description, Runnable action) {
+            this.code = code;
+            this.description = description;
+            this.action = action;
+        }
+        @Override
+        public int getCode() { return code; }
+        @Override
+        public String getDescription() { return description; }
+        @Override
+        public void execute() { action.run(); }
+
+    }
 
     
 
@@ -170,8 +197,6 @@ public class Options {
                 if (function == exitEnum) break;
             } catch (IllegalArgumentException ignored) {}
         }
-
-        scanner.close();
     }
 
         

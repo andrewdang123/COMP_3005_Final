@@ -1,9 +1,7 @@
 package app;
 
 import app.HibernateUtil;
-import app.Options.AdminFunctionEnum;
-import app.Options.MemberFunctionEnum;
-import app.Options.TrainerFunctionEnum;
+import app.Options.ViewFunctionEnum;
 //import models.Member;
 import org.hibernate.cfg.Configuration;
 
@@ -21,11 +19,7 @@ public class MainApp {
     public static void main(String[] args) {
         // Load configuration and build SessionFactory
         
-        Options.runView(MemberFunctionEnum.class);
-        //Options.runView(TrainerFunctionEnum.class);
-        //Options.runView(AdminFunctionEnum.class);
-
-
+        Options.runView(ViewFunctionEnum.class);
 
         HibernateUtil.shutdown();
         Scanner scanner = new Scanner(System.in);
