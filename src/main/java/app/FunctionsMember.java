@@ -2,6 +2,7 @@ package app;
 
 import java.util.Scanner;
 
+import models.HealthMetric;
 import models.Member;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.Session;
@@ -131,10 +132,13 @@ public class FunctionsMember {
             session.merge(member);
             session.getTransaction().commit();
 
-            System.out.println("\n✅ Profile updated successfully!");
+            System.out.println("Profile updated successfully!");
             System.out.println("Member ID: " + member.getMemberId());
             System.out.println("Target Weight: " + targetWeight);
             System.out.println("Target BMI: " + targetBMI);
+
+            System.out.println("\nRedirecting to Health History...");
+            memberHealthHistory(member);
 
         } catch (Exception e) {
             System.out.println("Error updating profile: " + e.getMessage());
@@ -147,7 +151,110 @@ public class FunctionsMember {
      * memberHealthHistory
      ***************************************************************/
     public static void memberHealthHistory() {
-        System.out.println("Health Metric Logged!");
+        Scanner scanner = new Scanner(System.in);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        try {
+            boolean found = false;
+            Member member = null;
+
+            while (!found) {
+                System.out.print("\nEnter your Member ID to log health metrics: ");
+                Long memberId = scanner.nextLong();
+                scanner.nextLine(); // consume newline
+
+                member = session.get(Member.class, memberId);
+
+                if (member == null) {
+                    System.out.println("\nNo member found with ID: " + memberId);
+                    System.out.println("1. Retry");
+                    System.out.println("2. Quit");
+                    System.out.print("Enter your choice: ");
+                    int choice = scanner.nextInt();
+                    scanner.nextLine();
+
+                    if (choice == 2) {
+                        System.out.println("Returning to main menu...");
+                        session.close();
+                        return;
+                    }
+                } else {
+                    found = true;
+                }
+            }
+
+            // Prompt for metrics
+            System.out.print("\nEnter current weight (kg, integer): ");
+            int currentWeight = scanner.nextInt();
+
+            System.out.print("Enter current BMI (integer): ");
+            int currentBMI = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            try {
+                session.beginTransaction();
+                HealthMetric metric = new HealthMetric(
+                        member.getMemberId(),
+                        currentWeight,
+                        currentBMI);
+                session.persist(metric);
+                session.getTransaction().commit();
+
+                System.out.println("Health metric logged successfully!");
+                System.out.println("Weight: " + currentWeight + ", BMI: " + currentBMI);
+
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                System.out.println(
+                        "Failed to log health metric (invalid data?). Please try again.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+
+    /***************************************************************
+     * Member Health History (Redirect from Profile: uses given Member)
+     ***************************************************************/
+    public static void memberHealthHistory(Member member) {
+        Scanner scanner = new Scanner(System.in);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        try {
+            // Prompt for metrics only, no ID
+            System.out.print("\nEnter current weight (kg, integer): ");
+            int currentWeight = scanner.nextInt();
+
+            System.out.print("Enter current BMI (integer): ");
+            int currentBMI = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            try {
+                session.beginTransaction();
+                HealthMetric metric = new HealthMetric(
+                        member.getMemberId(),
+                        currentWeight,
+                        currentBMI);
+                session.persist(metric);
+                session.getTransaction().commit();
+
+                System.out.println("Health metric logged successfully!");
+                System.out.println("Weight: " + currentWeight + ", BMI: " + currentBMI);
+
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                System.out.println(
+                        "Failed to log health metric (invalid data?). Please try again.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+        } finally {
+            session.close();
+        }
     }
 
     /***************************************************************
