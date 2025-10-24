@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 C:\Users\user\OneDrive\Desktop\COMP 3005\COMP_3005_Final\src\main\java\app\FunctionsAdmin.java
 C:\Users\user\OneDrive\Desktop\COMP 3005\COMP_3005_Final\src\main\java\app\FunctionsMember.java
 C:\Users\user\OneDrive\Desktop\COMP 3005\COMP_3005_Final\src\main\java\app\FunctionsTrainer.java
@@ -15,20 +14,3 @@ C:\Users\user\OneDrive\Desktop\COMP 3005\COMP_3005_Final\src\main\java\models\Me
 C:\Users\user\OneDrive\Desktop\COMP 3005\COMP_3005_Final\src\main\java\models\PersonalTrainingSession.java
 C:\Users\user\OneDrive\Desktop\COMP 3005\COMP_3005_Final\src\main\java\models\Schedule.java
 C:\Users\user\OneDrive\Desktop\COMP 3005\COMP_3005_Final\src\main\java\models\Trainer.java
-=======
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\app\FunctionsAdmin.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\app\FunctionsMember.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\app\FunctionsTrainer.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\app\H2Console.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\app\HibernateUtil.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\app\MainApp.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\app\Options.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\app\PopulateDatabase.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\models\Admin.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\models\DateOfBirth.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\models\EquipmentManagement.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\models\Member.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\models\PersonalTrainingSession.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\models\Schedule.java
-C:\Users\andre\SchoolCode\COMP 3005\COMP_3005_Final\src\main\java\models\Trainer.java
->>>>>>> b6df4a03354db0bb8a1ee6ec2bede8cc7b0d6c18
