@@ -2,6 +2,7 @@ package models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.*;
 
 
 @Entity
@@ -18,21 +19,14 @@ public class Trainer {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotNull
-    @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "dayOfWeek", column = @Column(name = "available_Day", nullable = false)),
-        @AttributeOverride(name = "startTime", column = @Column(name = "available_StartTime", nullable = false)),
-        @AttributeOverride(name = "endTime", column = @Column(name = "available_EndTime", nullable = false))
-    })
-    private Schedule availability;
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TrainerAvailability> availabilities = new ArrayList<>();
 
     public Trainer() {}
 
-    public Trainer(String name, String email, String dayOfWeek, int startTime, int endTime) {
+    public Trainer(String name, String email) {
         this.name = name;
         this.email = email;
-        this.availability = new Schedule(DayOfWeek.fromString(dayOfWeek), startTime, endTime);
     }
 
     // Getters and setters
@@ -44,13 +38,19 @@ public class Trainer {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public Schedule getAvailability() { return availability; }
-    public void setAvailability(String dayOfWeek, int startTime, int endTime) { 
-        this.availability = new Schedule(DayOfWeek.valueOf(dayOfWeek), startTime, endTime);
+    public List<TrainerAvailability> getAvailabilities() { return availabilities; }
+
+    public void addAvailability(TrainerAvailability availability) {
+        availabilities.add(availability);
+        availability.setTrainer(this);
+    }
+
+    public void removeAvailability(TrainerAvailability availability) {
+        availabilities.remove(availability);
+        availability.setTrainer(null);
     }
 
     public String toString() {
-        return trainerId + "\t" + name + "\t" + email + "\t" 
-            + availability.getDayOfWeek().toString() + "\t"+ availability.getStartTime() + availability.getEndTime();
+        return trainerId + "\t" + name + "\t" + email;
     }
 }

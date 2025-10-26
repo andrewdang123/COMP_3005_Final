@@ -4,12 +4,15 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+
 import models.Admin;
 import models.EquipmentManagement;
+import models.HealthMetric;
 import models.Member;
 import models.PersonalTrainingSession;
 import models.Trainer;
-import models.HealthMetric;
+import models.TrainerAvailability;
+
 
 public class PopulateDatabase {
 
@@ -31,8 +34,11 @@ public class PopulateDatabase {
         session.persist(member2);
 
         // Trainer
-        Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com", "tuesday", 8, 17);
+        Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com");
+        TrainerAvailability trainerAvailability = new TrainerAvailability(trainer1, "Sunday", 1, 5);
+        trainer1.addAvailability(trainerAvailability);
         session.persist(trainer1);
+        session.persist(trainerAvailability);
 
         // Admin
         Admin admin1 = new Admin("admin1", "admin1@gmail.com");

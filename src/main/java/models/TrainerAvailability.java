@@ -1,13 +1,26 @@
 package models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import java.time.DayOfWeek;
 
-@Embeddable
-public class Schedule {
+@Entity
+@Table(name = "trainer_availability")
+public class TrainerAvailability {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long trainerAvailabilityId;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(
+        name = "trainer_id", 
+        referencedColumnName = "trainerId",
+        foreignKey = @ForeignKey(name = "FK_trainerAvailability_trainer")
+    )
+    private Trainer trainer;
 
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
@@ -18,21 +31,29 @@ public class Schedule {
     @Min(0) @Max(24)
     private int endTime;
 
-    public Schedule() {} // Required by JPA
+    public TrainerAvailability() {
+    }
 
-    public Schedule(DayOfWeek dayOfWeek, int startTime, int endTime) {
+    public TrainerAvailability(Trainer trainer, DayOfWeek dayOfWeek, int startTime, int endTime) {
+        this.trainer = trainer;
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public Schedule(String dayOfWeek, int startTime, int endTime) {
+    public TrainerAvailability(Trainer trainer, String dayOfWeek, int startTime, int endTime) {
+        this.trainer = trainer;
         this.dayOfWeek = DayOfWeek.valueOf(dayOfWeek.toUpperCase());
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    // Getters and setters
+    // Getters and Setters
+    public Long getTrainerAvailabilityId() { return trainerAvailabilityId; }
+
+    public Trainer getTrainer() { return trainer; }
+    public void setTrainer(Trainer trainer) { this.trainer = trainer; }
+
     public DayOfWeek getDayOfWeek() { return dayOfWeek; }
     public void setDayOfWeek(DayOfWeek dayOfWeek) { this.dayOfWeek = dayOfWeek; }
     public void setDayOfWeek(String dayOfWeek) { this.dayOfWeek = DayOfWeek.valueOf(dayOfWeek.toUpperCase()); }

@@ -28,6 +28,7 @@
         <!-- Register entities -->
         <mapping class="models.Member"/>
         <mapping class="models.Trainer"/>
+        <mapping class="models.TrainerAvailability"/>
         <mapping class="models.Admin"/>
         <mapping class="models.PersonalTrainingSession"/>
         <mapping class="models.EquipmentManagement"/>

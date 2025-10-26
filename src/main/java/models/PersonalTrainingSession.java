@@ -2,10 +2,12 @@ package models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.DayOfWeek;
 
 import models.Schedule;
 import models.Member;
 import models.Trainer;
+
 
 @Entity
 @Table(name = "personal_training_sessions")
@@ -48,7 +50,14 @@ public class PersonalTrainingSession {
         this.member = member;
         this.trainer = trainer;
         this.roomNum = roomNum;
-        this.sessionTime = new Schedule(DayOfWeek.fromString(dayOfWeek), startTime, endTime);
+        this.sessionTime = new Schedule(dayOfWeek, startTime, endTime);
+    }
+
+    public PersonalTrainingSession(Member member, Trainer trainer, int roomNum, DayOfWeek dayOfWeek, int startTime, int endTime) {
+        this.member = member;
+        this.trainer = trainer;
+        this.roomNum = roomNum;
+        this.sessionTime = new Schedule(dayOfWeek, startTime, endTime);
     }
 
     // Getters and setters
@@ -65,7 +74,7 @@ public class PersonalTrainingSession {
 
     public Schedule getSessionTime() { return sessionTime; }
     public void setSessionTime(String dayOfWeek, int startTime, int endTime) { 
-        this.sessionTime = new Schedule(DayOfWeek.valueOf(dayOfWeek), startTime, endTime);
+        this.sessionTime = new Schedule(dayOfWeek, startTime, endTime);
     }
 
     @Override

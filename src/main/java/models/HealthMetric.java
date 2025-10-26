@@ -39,17 +39,14 @@ public class HealthMetric {
         timestamp = LocalDateTime.now();
     }
 
-   // Getters and Setters
+    // Getters and Setters
     public Long getMetricId() { return metricId; }
 
     public Member getMember() { return member; }
 
     public void setMember(Member member) { this.member = member; }
 
-    public int getCurrentWeight() {
-        return currentWeight;
-    }
-
+    public int getCurrentWeight() { return currentWeight; }
     public void setCurrentWeight(int currentWeight) { this.currentWeight = currentWeight; }
 
     public int getCurrentBmi() { return currentBmi; }
