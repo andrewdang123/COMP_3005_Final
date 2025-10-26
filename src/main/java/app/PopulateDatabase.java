@@ -4,7 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-
 import models.Admin;
 import models.EquipmentManagement;
 import models.HealthMetric;
@@ -12,7 +11,6 @@ import models.Member;
 import models.PersonalTrainingSession;
 import models.Trainer;
 import models.TrainerAvailability;
-
 
 public class PopulateDatabase {
 
@@ -45,7 +43,8 @@ public class PopulateDatabase {
         session.persist(admin1);
 
         // PersonalTrainingSession
-        PersonalTrainingSession personalTrainingSession1 = new PersonalTrainingSession(member1, trainer1, 3, "MONDAY", 3, 4);
+        PersonalTrainingSession personalTrainingSession1 = new PersonalTrainingSession(member1, trainer1, 3, "MONDAY",
+                3, 4);
         session.persist(personalTrainingSession1);
 
         // EquipmentManagement
@@ -54,7 +53,7 @@ public class PopulateDatabase {
 
         // HealthMetric
         HealthMetric metric1 = new HealthMetric(member1, 285, 5);
-        session.persist(metric1); 
+        session.persist(metric1);
 
         // Commit and close
         session.getTransaction().commit();

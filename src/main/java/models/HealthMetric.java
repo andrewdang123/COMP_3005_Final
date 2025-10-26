@@ -3,7 +3,6 @@ package models;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-
 @Entity
 @Table(name = "health_metrics")
 public class HealthMetric {
@@ -13,11 +12,7 @@ public class HealthMetric {
     private Long metricId;
 
     @ManyToOne(optional = false)
-    @JoinColumn(
-        name = "member_id", 
-        referencedColumnName = "memberId",
-        foreignKey = @ForeignKey(name = "FK_healthMetric_member")
-    )
+    @JoinColumn(name = "member_id", referencedColumnName = "memberId", foreignKey = @ForeignKey(name = "FK_healthMetric_member"))
     private Member member;
 
     @Column(nullable = false)
@@ -36,23 +31,57 @@ public class HealthMetric {
         this.member = member;
         this.currentWeight = currentWeight;
         this.currentBmi = currentBmi;
+    }
+
+    // TRIGGERS
+    // --- Lifecycle triggers ---
+    @PrePersist
+    public void onPrePersist() {
+        // runs before insert
+        timestamp = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        // runs before update
         timestamp = LocalDateTime.now();
     }
 
     // Getters and Setters
-    public Long getMetricId() { return metricId; }
+    public Long getMetricId() {
+        return metricId;
+    }
 
-    public Member getMember() { return member; }
+    public Member getMember() {
+        return member;
+    }
 
-    public void setMember(Member member) { this.member = member; }
+    public void setMember(Member member) {
+        this.member = member;
+    }
 
-    public int getCurrentWeight() { return currentWeight; }
-    public void setCurrentWeight(int currentWeight) { this.currentWeight = currentWeight; }
+    public int getCurrentWeight() {
+        return currentWeight;
+    }
 
-    public int getCurrentBmi() { return currentBmi; }
-    public void setCurrentBmi(int currentBMI) { this.currentBmi = currentBMI; }
+    public void setCurrentWeight(int currentWeight) {
+        this.currentWeight = currentWeight;
+    }
 
-    public LocalDateTime getTimestamp() { return timestamp; }
-    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    public int getCurrentBmi() {
+        return currentBmi;
+    }
+
+    public void setCurrentBmi(int currentBMI) {
+        this.currentBmi = currentBMI;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 
 }

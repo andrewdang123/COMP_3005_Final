@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 
-import models.Schedule;
-import models.Member;
-import models.Trainer;
-
 
 @Entity
 @Table(name = "personal_training_sessions")

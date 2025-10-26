@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
 
 import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 @Embeddable
 public class Schedule {
@@ -13,23 +14,23 @@ public class Schedule {
     private DayOfWeek dayOfWeek;
 
     @Min(0) @Max(24)
-    private int startTime;
+    private LocalTime startTime;
 
     @Min(0) @Max(24)
-    private int endTime;
+    private LocalTime endTime;
 
     public Schedule() {} // Required by JPA
 
     public Schedule(DayOfWeek dayOfWeek, int startTime, int endTime) {
         this.dayOfWeek = dayOfWeek;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = LocalTime.of(startTime, 0);
+        this.endTime = LocalTime.of(endTime, 0);
     }
 
     public Schedule(String dayOfWeek, int startTime, int endTime) {
         this.dayOfWeek = DayOfWeek.valueOf(dayOfWeek.toUpperCase());
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = LocalTime.of(startTime, 0);
+        this.endTime = LocalTime.of(endTime, 0);
     }
 
     // Getters and setters
@@ -37,10 +38,10 @@ public class Schedule {
     public void setDayOfWeek(DayOfWeek dayOfWeek) { this.dayOfWeek = dayOfWeek; }
     public void setDayOfWeek(String dayOfWeek) { this.dayOfWeek = DayOfWeek.valueOf(dayOfWeek.toUpperCase()); }
 
-    public int getStartTime() { return startTime; }
-    public void setStartTime(int startTime) { this.startTime = startTime; }
+    public LocalTime getStartTime() { return startTime; }
+    public void setStartTime(int startTime) { this.startTime = LocalTime.of(startTime, 0); }
 
-    public int getEndTime() { return endTime; }
-    public void setEndTime(int endTime) { this.endTime = endTime; }
+    public LocalTime getEndTime() { return endTime; }
+    public void setEndTime(int endTime) { this.endTime = LocalTime.of(endTime, 0); }
 
 }

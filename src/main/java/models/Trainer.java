@@ -1,9 +1,7 @@
 package models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.util.*;
-
 
 @Entity
 @Table(name = "trainers")
@@ -15,14 +13,15 @@ public class Trainer {
 
     @Column(nullable = false)
     private String name;
-    
+
     @Column(nullable = false, unique = true)
     private String email;
 
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrainerAvailability> availabilities = new ArrayList<>();
 
-    public Trainer() {}
+    public Trainer() {
+    }
 
     public Trainer(String name, String email) {
         this.name = name;
@@ -30,15 +29,29 @@ public class Trainer {
     }
 
     // Getters and setters
-    public Long getTrainerId() { return trainerId; }
+    public Long getTrainerId() {
+        return trainerId;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public List<TrainerAvailability> getAvailabilities() { return availabilities; }
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<TrainerAvailability> getAvailabilities() {
+        return availabilities;
+    }
 
     public void addAvailability(TrainerAvailability availability) {
         availabilities.add(availability);

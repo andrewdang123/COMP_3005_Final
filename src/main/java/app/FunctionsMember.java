@@ -45,17 +45,9 @@ public class FunctionsMember {
                     success = true;
                     session.close();
                     System.out.println("User Registered!");
-                    
+
                     // Display current details
-                    System.out.println("\n--- Current Profile ---");
-                    System.out.println("Member ID: " + member.getMemberId());
-                    System.out.println("Name: " + member.getName());
-                    System.out.println("Email: " + member.getEmail());
-                    System.out.println("Gender: " + member.getGender());
-                    System.out.println("Date of Birth: " + member.getDateOfBirth().getDay() + "/"
-                            + member.getDateOfBirth().getMonth() + "/"
-                            + member.getDateOfBirth().getYear());
-                    System.out.println("-----------------------");
+                    member.memberPrint();
                 } catch (Exception e) {
                     session.getTransaction().rollback();
                     System.out.println(
@@ -105,15 +97,7 @@ public class FunctionsMember {
             }
 
             // Display current details
-            System.out.println("\n--- Current Profile ---");
-            System.out.println("Member ID: " + member.getMemberId());
-            System.out.println("Name: " + member.getName());
-            System.out.println("Email: " + member.getEmail());
-            System.out.println("Gender: " + member.getGender());
-            System.out.println("Date of Birth: " + member.getDateOfBirth().getDay() + "/"
-                    + member.getDateOfBirth().getMonth() + "/"
-                    + member.getDateOfBirth().getYear());
-            System.out.println("-----------------------");
+            member.memberPrint();
 
             // Update personal details
             System.out.print("Enter new name (or press Enter to keep current): ");
