@@ -243,6 +243,10 @@ public class FunctionsMember {
      ***************************************************************/
     public static void memberGroupClassRegistration() {
         System.out.println("Group Class Registered!");
+
+        // groupFitnessClass.addMember(member);
+        // session.persist(groupFitnessClass);
+
     }
 
 }

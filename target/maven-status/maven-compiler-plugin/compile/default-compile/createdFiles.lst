@@ -1,5 +1,6 @@
 app\FunctionsTrainer.class
 app\H2Console.class
+models\GroupFitnessClassMembers.class
 app\FunctionsAdmin.class
 app\Options$ViewFunctionEnum.class
 app\Options.class

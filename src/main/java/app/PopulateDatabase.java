@@ -1,11 +1,15 @@
 package app;
 
+import javax.swing.GroupLayout.Group;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import models.Admin;
 import models.EquipmentManagement;
+import models.GroupFitnessClass;
+import models.GroupFitnessClassMembers;
 import models.HealthMetric;
 import models.Member;
 import models.PersonalTrainingSession;
@@ -54,6 +58,21 @@ public class PopulateDatabase {
         // HealthMetric
         HealthMetric metric1 = new HealthMetric(member1, 285, 5);
         session.persist(metric1);
+
+        // GroupFitnessClass
+        GroupFitnessClass yoga = new GroupFitnessClass(trainer1, "Yoga");
+        GroupFitnessClassMembers groupFitnessClassMembers1 = new GroupFitnessClassMembers(yoga, member1);
+
+        session.persist(yoga);
+        session.persist(groupFitnessClassMembers1);
+
+        // GroupFitnessClass
+        GroupFitnessClass calisthenics = new GroupFitnessClass(trainer1, "Calisthenics");
+        GroupFitnessClassMembers groupFitnessClassMembers2 = new GroupFitnessClassMembers(calisthenics, member1);
+        GroupFitnessClassMembers groupFitnessClassMembers3 = new GroupFitnessClassMembers(calisthenics, member2);
+        session.persist(calisthenics);
+        session.persist(groupFitnessClassMembers2);
+        session.persist(groupFitnessClassMembers3);
 
         // Commit and close
         session.getTransaction().commit();

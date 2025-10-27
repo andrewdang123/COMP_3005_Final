@@ -33,6 +33,8 @@
         <mapping class="models.PersonalTrainingSession"/>
         <mapping class="models.EquipmentManagement"/>
         <mapping class="models.HealthMetric"/>
+        <mapping class="models.GroupFitnessClass"/>
+        <mapping class="models.GroupFitnessClassMembers"/>
 
 
         
