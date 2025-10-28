@@ -86,6 +86,10 @@ public class PersonalTrainingSession {
         this.sessionTime = new Schedule(dayOfWeek, startTime, endTime);
     }
 
+    public void setSessionTime(DayOfWeek dayOfWeek, int startTime, int endTime) {
+        this.sessionTime = new Schedule(dayOfWeek, startTime, endTime);
+    }
+
     @Override
     public String toString() {
         return sessionId + "\t" + member.getMemberId() + "\t" + trainer.getTrainerId() + "\t" + roomNum + "\t"
