@@ -12,18 +12,15 @@ import org.hibernate.SessionFactory;
 
 public class MainApp {
 
-
     /***************************************************************
      * MainApp
      ***************************************************************/
     public static void main(String[] args) {
         // Load configuration and build SessionFactory
-        
+
         Options.runView(ViewFunctionEnum.class);
 
         HibernateUtil.shutdown();
-        Scanner scanner = new Scanner(System.in);
-        scanner.close();
 
     }
 

@@ -13,7 +13,7 @@ public class FunctionsMember {
      * memberUserRegistration
      ***************************************************************/
     public static void memberUserRegistration() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = HibernateUtil.getScanner();
         boolean success = false;
 
         while (!success) {
@@ -63,7 +63,7 @@ public class FunctionsMember {
      * memberProfileManagement
      ***************************************************************/
     public static void memberProfileManagement() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = HibernateUtil.getScanner();
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
@@ -151,7 +151,7 @@ public class FunctionsMember {
      * memberHealthHistory
      ***************************************************************/
     public static void memberHealthHistory() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = HibernateUtil.getScanner();
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
@@ -194,7 +194,7 @@ public class FunctionsMember {
      * memberHealthHistory
      ***************************************************************/
     public static void memberHealthHistory(Member member) {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = HibernateUtil.getScanner();
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
