@@ -211,6 +211,7 @@ public class Options {
                 System.out.print("Enter valid command number: ");
             }
             int code = scanner.nextInt();
+            scanner.nextLine();
 
             E function = FunctionEnum.fromCode(enumClass, code);
             if (function == null) {

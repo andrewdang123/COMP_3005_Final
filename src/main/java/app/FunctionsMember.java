@@ -31,8 +31,10 @@ public class FunctionsMember {
 
                 System.out.print("Enter birth day (1-31): ");
                 int day = scanner.nextInt();
+                scanner.nextLine();
                 System.out.print("Enter birth month (1-12): ");
                 int month = scanner.nextInt();
+                scanner.nextLine();
                 System.out.print("Enter birth year (e.g., 2005): ");
                 int year = scanner.nextInt();
                 scanner.nextLine();
@@ -121,9 +123,11 @@ public class FunctionsMember {
             // Update fitness goals
             System.out.print("Enter your target weight (kg): ");
             int targetWeight = scanner.nextInt();
+            scanner.nextLine();
 
             System.out.print("Enter your target BMI: ");
             int targetBMI = scanner.nextInt();
+            scanner.nextLine();
 
             // Save updates
             session.beginTransaction();
@@ -201,6 +205,7 @@ public class FunctionsMember {
             // Prompt for metrics only, no ID
             System.out.print("\nEnter current weight (kg, integer): ");
             int currentWeight = scanner.nextInt();
+            scanner.nextLine();
 
             System.out.print("Enter current BMI (integer): ");
             int currentBMI = scanner.nextInt();
