@@ -76,7 +76,7 @@ public class FunctionsMember {
             while (!found) {
                 System.out.print("\nEnter your Member ID to access your profile: ");
                 Long memberId = scanner.nextLong();
-                scanner.nextLine(); // consume newline
+                scanner.nextLine();
 
                 member = session.get(Member.class, memberId);
 
@@ -86,7 +86,7 @@ public class FunctionsMember {
                     System.out.println("2. Quit");
                     System.out.print("Enter your choice: ");
                     int choice = scanner.nextInt();
-                    scanner.nextLine(); // consume newline
+                    scanner.nextLine();
 
                     if (choice == 2) {
                         System.out.println("Returning to main menu...");
@@ -165,7 +165,7 @@ public class FunctionsMember {
             while (!found) {
                 System.out.print("\nEnter your Member ID to log health metrics: ");
                 Long memberId = scanner.nextLong();
-                scanner.nextLine(); // consume newline
+                scanner.nextLine();
 
                 member = session.get(Member.class, memberId);
 
@@ -209,7 +209,7 @@ public class FunctionsMember {
 
             System.out.print("Enter current BMI (integer): ");
             int currentBMI = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            scanner.nextLine();
 
             try {
                 session.beginTransaction();
