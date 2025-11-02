@@ -38,9 +38,10 @@ public class PopulateDatabase {
         // Trainer
         Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com");
         TrainerAvailability trainerAvailability = new TrainerAvailability(trainer1, "Sunday", 1, 5);
+        TrainerAvailability trainerAvailability2 = new TrainerAvailability(trainer1, "Monday", 1, 5);
         trainer1.addAvailability(trainerAvailability);
+        trainer1.addAvailability(trainerAvailability2);
         session.persist(trainer1);
-        session.persist(trainerAvailability);
 
         // Admin
         Admin admin1 = new Admin("admin1", "admin1@gmail.com");
@@ -68,11 +69,10 @@ public class PopulateDatabase {
 
         // GroupFitnessClass
         GroupFitnessClass calisthenics = new GroupFitnessClass(trainer1, "Calisthenics");
-        GroupFitnessClassMembers groupFitnessClassMembers2 = new GroupFitnessClassMembers(calisthenics, member1);
-        GroupFitnessClassMembers groupFitnessClassMembers3 = new GroupFitnessClassMembers(calisthenics, member2);
+
+        calisthenics.addMember(member1);
+        calisthenics.addMember(member2);
         session.persist(calisthenics);
-        session.persist(groupFitnessClassMembers2);
-        session.persist(groupFitnessClassMembers3);
 
         // Commit and close
         session.getTransaction().commit();

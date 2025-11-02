@@ -72,6 +72,22 @@ public class GroupFitnessClass {
         return currentMembers;
     }
 
+    public void addMember(Member member) {
+        GroupFitnessClassMembers classMember = new GroupFitnessClassMembers(this, member);
+        members.add(classMember);
+    }
+
+    public void removeMember(Member member) {
+        GroupFitnessClassMembers toRemove = members.stream()
+                .filter(m -> m.getMember().equals(member))
+                .findFirst()
+                .orElse(null);
+
+        if (toRemove != null) {
+            members.remove(toRemove);
+        }
+    }
+
     public Set<GroupFitnessClassMembers> getMembers() {
         return members;
     }

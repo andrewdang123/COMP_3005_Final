@@ -252,6 +252,18 @@ public class FunctionsMember {
         // groupFitnessClass.addMember(member);
         // session.persist(groupFitnessClass);
 
+        /*
+         * Mention that this uses a trigger in it which automatically increments the
+         * current member count
+         */
+
+        // GroupFitnessClassMembers groupFitnessClassMembers2 = new
+        // GroupFitnessClassMembers(calisthenics, member1);
+        // GroupFitnessClassMembers groupFitnessClassMembers3 = new
+        // GroupFitnessClassMembers(calisthenics, member2);
+        // session.persist(groupFitnessClassMembers2);
+        // session.persist(groupFitnessClassMembers3);
+
     }
 
 }

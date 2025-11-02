@@ -25,3 +25,4 @@ models\GroupFitnessClass.class
 app\PopulateDatabase.class
 app\Options$TrainerFunctionEnum.class
 app\HibernateUtil.class
+models\PersonalTrainingSessionDetails.class

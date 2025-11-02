@@ -15,6 +15,7 @@ public class MemberService {
         this.session = session;
     }
 
+    // View
     public List<LatestHealthMetricDTO> getLatestHealthMetrics() {
         return session.createQuery(
                 "SELECT new models.LatestHealthMetricDTO(m.memberId, m.name, hm.currentWeight, hm.currentBmi, hm.timestamp) "
