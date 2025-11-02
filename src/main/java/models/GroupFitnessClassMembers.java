@@ -26,10 +26,26 @@ public class GroupFitnessClassMembers {
         this.member = member;
     }
 
-    // --- SAFE trigger ---
     @PrePersist
     public void onPrePersist() {
         if (groupFitnessClass != null) {
+            boolean alreadyExists = groupFitnessClass.getMembers().stream()
+                    .anyMatch(m -> m != this && m.getMember().equals(member));
+
+            if (alreadyExists) {
+                throw new RuntimeException("Cannot add member: '" + member.getName()
+                        + "' is already registered in class '"
+                        + groupFitnessClass.getClassName() + "'.");
+            }
+
+            if (groupFitnessClass.getCurrentMembers() >= groupFitnessClass.getCapacity()) {
+                throw new RuntimeException("Cannot add member: Class '"
+                        + groupFitnessClass.getClassName()
+                        + "' is already full (capacity "
+                        + groupFitnessClass.getCapacity() + ").");
+            }
+
+            // Safe increment
             groupFitnessClass.incrementMembers();
         }
     }

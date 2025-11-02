@@ -9,7 +9,7 @@ public class Options {
     }
 
     public static void exit() {
-        System.out.println("Now exiting program...");
+        System.out.println("Exiting...");
         return;
     }
 
@@ -210,8 +210,7 @@ public class Options {
                 scanner.next();
                 System.out.print("Enter valid command number: ");
             }
-            int code = scanner.nextInt();
-            scanner.nextLine();
+            int code = Integer.parseInt(scanner.nextLine().trim());
 
             E function = FunctionEnum.fromCode(enumClass, code);
             if (function == null) {

@@ -32,15 +32,13 @@ public class ClassSchedule {
     }
 
     // --- Helper method to set details ---
-    public void setDetails(int roomNum, String dayOfWeek, int startTime, int endTime, int capacity) {
-        ClassScheduleDetails newDetails = new ClassScheduleDetails(this, roomNum, dayOfWeek, startTime, endTime,
-                capacity);
+    public void setDetails(int roomNum, String dayOfWeek, int startTime, int endTime) {
+        ClassScheduleDetails newDetails = new ClassScheduleDetails(this, roomNum, dayOfWeek, startTime, endTime);
         this.details = newDetails;
     }
 
-    public void setDetails(int roomNum, DayOfWeek dayOfWeek, int startTime, int endTime, int capacity) {
-        ClassScheduleDetails newDetails = new ClassScheduleDetails(this, roomNum, dayOfWeek, startTime, endTime,
-                capacity);
+    public void setDetails(int roomNum, DayOfWeek dayOfWeek, int startTime, int endTime) {
+        ClassScheduleDetails newDetails = new ClassScheduleDetails(this, roomNum, dayOfWeek, startTime, endTime);
         this.details = newDetails;
     }
 

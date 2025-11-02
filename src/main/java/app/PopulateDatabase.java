@@ -33,6 +33,7 @@ public class PopulateDatabase {
         // Member
         Member member1 = new Member("Andrew", "andrewmtdang@gmail.com", "Male", 14, 6, 2005);
         session.persist(member1);
+
         // HealthMetric
         HealthMetric metric1 = new HealthMetric(member1, 285, 5);
         session.persist(metric1);
@@ -41,6 +42,13 @@ public class PopulateDatabase {
         member2.addHealthMetric(400, 50);
         member2.addHealthMetric(300, 50);
         session.persist(member2);
+
+        Member member3 = new Member("Dylan", "andrewmtdang1@gmail.com", "Male", 14, 6, 2005);
+        Member member4 = new Member("Kenny", "andrewmtdang2@gmail.com", "Male", 14, 6, 2005);
+        Member member5 = new Member("David", "andrewmtdang3@gmail.com", "Male", 14, 6, 2005);
+        session.persist(member3);
+        session.persist(member4);
+        session.persist(member5);
 
         // Trainer
         Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com");
@@ -73,14 +81,13 @@ public class PopulateDatabase {
 
         // GroupFitnessClass
         GroupFitnessClass calisthenics = new GroupFitnessClass(trainer1, "Calisthenics");
-
+        session.persist(calisthenics);
         calisthenics.addMember(member1);
         calisthenics.addMember(member2);
-        session.persist(calisthenics);
 
         ClassSchedule classSchedule = new ClassSchedule(calisthenics, admin1);
-        classSchedule.setDetails(4, "MONDAY", 5, 7, 20);
         session.persist(classSchedule);
+        classSchedule.setDetails(4, "MONDAY", 5, 7);
 
         // Commit and close
         session.getTransaction().commit();

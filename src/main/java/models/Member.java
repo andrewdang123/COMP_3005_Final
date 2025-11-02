@@ -140,7 +140,6 @@ public class Member {
 
     @Override
     public String toString() {
-        return memberId + "\t" + name + "\t" + email + "\t" + gender + "\t" + dateOfBirth.getDay() + "\t"
-                + dateOfBirth.getMonth() + "\t" + dateOfBirth.getYear();
+        return "ID: " + getMemberId() + " | Name: " + getName();
     }
 }

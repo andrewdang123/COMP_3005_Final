@@ -30,28 +30,21 @@ public class ClassScheduleDetails {
     })
     private Schedule scheduleTime;
 
-    @NotNull
-    @Column(nullable = false)
-    private int capacity;
-
     public ClassScheduleDetails() {
     }
 
-    public ClassScheduleDetails(ClassSchedule classSchedule, int roomNum, String dayOfWeek, int startTime, int endTime,
-            int capacity) {
+    public ClassScheduleDetails(ClassSchedule classSchedule, int roomNum, String dayOfWeek, int startTime,
+            int endTime) {
         this.classSchedule = classSchedule;
         this.roomNum = roomNum;
         this.scheduleTime = new Schedule(dayOfWeek, startTime, endTime);
-        this.capacity = capacity;
     }
 
     public ClassScheduleDetails(ClassSchedule classSchedule, int roomNum, DayOfWeek dayOfWeek, int startTime,
-            int endTime,
-            int capacity) {
+            int endTime) {
         this.classSchedule = classSchedule;
         this.roomNum = roomNum;
         this.scheduleTime = new Schedule(dayOfWeek, startTime, endTime);
-        this.capacity = capacity;
     }
 
     // Getters and setters
@@ -83,17 +76,9 @@ public class ClassScheduleDetails {
         this.scheduleTime = scheduleTime;
     }
 
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
     @Override
     public String toString() {
         return "ClassScheduleDetails [scheduleId=" + classSchedule.getScheduleId() + ", roomNum=" + roomNum
-                + ", scheduleTime=" + scheduleTime + ", capacity=" + capacity + "]";
+                + ", scheduleTime=" + scheduleTime + "]";
     }
 }

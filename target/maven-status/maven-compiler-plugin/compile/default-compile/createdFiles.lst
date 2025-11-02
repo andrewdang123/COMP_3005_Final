@@ -16,6 +16,7 @@ app\Options$AdminFunctionEnum.class
 models\EquipmentManagementDetails.class
 app\MainApp.class
 models\Admin.class
+app\FunctionsExtra.class
 app\FunctionsMember.class
 models\ClassScheduleDetails.class
 services\MemberService.class

@@ -25,6 +25,10 @@ public class GroupFitnessClass {
     @Column(nullable = false)
     private int currentMembers;
 
+    @NotNull
+    @Column(nullable = false)
+    private int capacity;
+
     @OneToMany(mappedBy = "groupFitnessClass", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<GroupFitnessClassMembers> members = new HashSet<>();
 
@@ -35,6 +39,7 @@ public class GroupFitnessClass {
         this.trainer = trainer;
         this.className = className;
         this.currentMembers = 0;
+        this.capacity = 3;
     }
 
     // --- Safe counter adjustment ---
@@ -72,12 +77,37 @@ public class GroupFitnessClass {
         return currentMembers;
     }
 
-    public void addMember(Member member) {
-        GroupFitnessClassMembers classMember = new GroupFitnessClassMembers(this, member);
-        members.add(classMember);
+    public int getCapacity() {
+        return capacity;
     }
 
-    public void removeMember(Member member) {
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public boolean addMember(Member member) {
+        // Check if class is already full
+        if (currentMembers >= capacity) {
+            System.out.println("Cannot add member. Class \"" + className + "\" is already full.");
+            return false;
+        }
+
+        // Check if member already exists in this class
+        boolean alreadyExists = members.stream()
+                .anyMatch(m -> m.getMember().equals(member));
+        if (alreadyExists) {
+            System.out.println("Member is already registered in this class.");
+            return false;
+        }
+
+        // Add new member
+        GroupFitnessClassMembers classMember = new GroupFitnessClassMembers(this, member);
+        members.add(classMember);
+        System.out.println("Member added successfully to class: " + className);
+        return true;
+    }
+
+    public boolean removeMember(Member member) {
         GroupFitnessClassMembers toRemove = members.stream()
                 .filter(m -> m.getMember().equals(member))
                 .findFirst()
@@ -85,10 +115,22 @@ public class GroupFitnessClass {
 
         if (toRemove != null) {
             members.remove(toRemove);
+            decrementMembers();
+            System.out.println("Member removed from class: " + className);
+            return true;
         }
+
+        System.out.println("Member not found in this class.");
+        return false;
     }
 
     public Set<GroupFitnessClassMembers> getMembers() {
         return members;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + getClassId() + " | Name: " + getClassName();
+    }
+
 }

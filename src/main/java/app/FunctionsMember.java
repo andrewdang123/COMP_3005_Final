@@ -2,13 +2,70 @@ package app;
 
 import java.util.Scanner;
 
+import models.GroupFitnessClass;
+import models.GroupFitnessClassMembers;
 import models.HealthMetric;
 import models.Member;
+
 import org.hibernate.cfg.Configuration;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 public class FunctionsMember {
+
+    /***************************************************************
+     * retrieveMember
+     ***************************************************************/
+    public static Member retrieveMember(Session session) {
+        Scanner scanner = HibernateUtil.getScanner();
+
+        try {
+            System.out.println("\n=== Existing Members ===");
+            var members = session.createQuery("from Member", Member.class).list();
+
+            if (members.isEmpty()) {
+                System.out.println("No members found in the system");
+                return null;
+            }
+
+            for (Member m : members) {
+                System.out.println(m.toString());
+            }
+            System.out.println("=========================");
+
+            Member member = null;
+            boolean found = false;
+
+            while (!found) {
+                System.out.print("\nEnter the Member ID: ");
+                Long memberId = Long.parseLong(scanner.nextLine().trim());
+
+                member = session.get(Member.class, memberId);
+
+                if (member == null) {
+                    System.out.println("\nNo member found with ID: " + memberId);
+                    System.out.println("1. Retry");
+                    System.out.println("2. Quit");
+                    System.out.print("Enter your choice: ");
+                    int choice = Integer.parseInt(scanner.nextLine().trim());
+
+                    if (choice == 2) {
+                        System.out.println("Returning to main menu...");
+                        return null;
+                    }
+                } else {
+                    found = true;
+                }
+            }
+
+            return member;
+
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+            return null;
+        }
+    }
+
     /***************************************************************
      * memberUserRegistration
      ***************************************************************/
@@ -30,14 +87,11 @@ public class FunctionsMember {
                 String gender = scanner.nextLine().trim();
 
                 System.out.print("Enter birth day (1-31): ");
-                int day = scanner.nextInt();
-                scanner.nextLine();
+                int day = Integer.parseInt(scanner.nextLine().trim());
                 System.out.print("Enter birth month (1-12): ");
-                int month = scanner.nextInt();
-                scanner.nextLine();
+                int month = Integer.parseInt(scanner.nextLine().trim());
                 System.out.print("Enter birth year (e.g., 2005): ");
-                int year = scanner.nextInt();
-                scanner.nextLine();
+                int year = Integer.parseInt(scanner.nextLine().trim());
 
                 Member member = new Member(name, email, gender, day, month, year);
 
@@ -69,33 +123,9 @@ public class FunctionsMember {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            boolean found = false;
-            Member member = null;
-
-            // Ask for ID until found or user quits
-            while (!found) {
-                System.out.print("\nEnter your Member ID to access your profile: ");
-                Long memberId = scanner.nextLong();
-                scanner.nextLine();
-
-                member = session.get(Member.class, memberId);
-
-                if (member == null) {
-                    System.out.println("\nNo member found with ID: " + memberId);
-                    System.out.println("1. Retry");
-                    System.out.println("2. Quit");
-                    System.out.print("Enter your choice: ");
-                    int choice = scanner.nextInt();
-                    scanner.nextLine();
-
-                    if (choice == 2) {
-                        System.out.println("Returning to main menu...");
-                        session.close();
-                        return;
-                    }
-                } else {
-                    found = true;
-                }
+            Member member = retrieveMember(session);
+            if (member == null) {
+                return;
             }
 
             // Display current details
@@ -122,12 +152,10 @@ public class FunctionsMember {
 
             // Update fitness goals
             System.out.print("Enter your target weight (kg): ");
-            int targetWeight = scanner.nextInt();
-            scanner.nextLine();
+            int targetWeight = Integer.parseInt(scanner.nextLine().trim());
 
             System.out.print("Enter your target BMI: ");
-            int targetBMI = scanner.nextInt();
-            scanner.nextLine();
+            int targetBMI = Integer.parseInt(scanner.nextLine().trim());
 
             // Save updates
             session.beginTransaction();
@@ -155,36 +183,11 @@ public class FunctionsMember {
      * memberHealthHistory
      ***************************************************************/
     public static void memberHealthHistory() {
-        Scanner scanner = HibernateUtil.getScanner();
         Session session = HibernateUtil.getSessionFactory().openSession();
-
         try {
-            boolean found = false;
-            Member member = null;
-
-            while (!found) {
-                System.out.print("\nEnter your Member ID to log health metrics: ");
-                Long memberId = scanner.nextLong();
-                scanner.nextLine();
-
-                member = session.get(Member.class, memberId);
-
-                if (member == null) {
-                    System.out.println("\nNo member found with ID: " + memberId);
-                    System.out.println("1. Retry");
-                    System.out.println("2. Quit");
-                    System.out.print("Enter your choice: ");
-                    int choice = scanner.nextInt();
-                    scanner.nextLine();
-
-                    if (choice == 2) {
-                        System.out.println("Returning to main menu...");
-                        session.close();
-                        return;
-                    }
-                } else {
-                    found = true;
-                }
+            Member member = retrieveMember(session);
+            if (member == null) {
+                return;
             }
             memberHealthHistory(member);
         } catch (Exception e) {
@@ -204,12 +207,10 @@ public class FunctionsMember {
         try {
             // Prompt for metrics only, no ID
             System.out.print("\nEnter current weight (kg, integer): ");
-            int currentWeight = scanner.nextInt();
-            scanner.nextLine();
+            int currentWeight = Integer.parseInt(scanner.nextLine().trim());
 
             System.out.print("Enter current BMI (integer): ");
-            int currentBMI = scanner.nextInt();
-            scanner.nextLine();
+            int currentBMI = Integer.parseInt(scanner.nextLine().trim());
 
             try {
                 session.beginTransaction();
@@ -247,23 +248,36 @@ public class FunctionsMember {
      * memberGroupClassRegistration
      ***************************************************************/
     public static void memberGroupClassRegistration() {
-        System.out.println("Group Class Registered!");
+        Session session = HibernateUtil.getSessionFactory().openSession();
 
-        // groupFitnessClass.addMember(member);
-        // session.persist(groupFitnessClass);
-
-        /*
-         * Mention that this uses a trigger in it which automatically increments the
-         * current member count
-         */
-
-        // GroupFitnessClassMembers groupFitnessClassMembers2 = new
-        // GroupFitnessClassMembers(calisthenics, member1);
-        // GroupFitnessClassMembers groupFitnessClassMembers3 = new
-        // GroupFitnessClassMembers(calisthenics, member2);
-        // session.persist(groupFitnessClassMembers2);
-        // session.persist(groupFitnessClassMembers3);
-
+        try {
+            Member member = retrieveMember(session);
+            if (member == null) {
+                return;
+            }
+            GroupFitnessClass groupFitnessClass = FunctionsExtra.retrieveGroupFitnessClass(session);
+            if (groupFitnessClass == null) {
+                return;
+            }
+            System.out.println(groupFitnessClass.toString());
+            try {
+                /*
+                 * Mention that this uses a trigger in it which automatically increments the
+                 * current member count
+                 */
+                session.beginTransaction();
+                session.persist(new GroupFitnessClassMembers(groupFitnessClass, member));
+                session.getTransaction().commit();
+                System.out.println("Member successfully added to Group!");
+            } catch (RuntimeException e) {
+                session.getTransaction().rollback();
+                System.out.println("Error: " + e.getMessage());
+            }
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+        } finally {
+            session.close();
+        }
     }
 
 }
