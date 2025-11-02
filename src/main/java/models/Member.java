@@ -2,6 +2,8 @@ package models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "members")
@@ -35,6 +37,9 @@ public class Member {
     @Column
     private int targetBmi;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HealthMetric> healthMetrics = new ArrayList<>();
+
     public Member() {
     }
 
@@ -47,7 +52,7 @@ public class Member {
         this.targetBmi = 0;
     }
 
-    // Getters and setters
+    // --- Getters and setters ---
     public Long getMemberId() {
         return memberId;
     }
@@ -100,6 +105,26 @@ public class Member {
         this.targetBmi = targetBmi;
     }
 
+    public List<HealthMetric> getHealthMetrics() {
+        return healthMetrics;
+    }
+
+    public void addHealthMetric(HealthMetric metric) {
+        healthMetrics.add(metric);
+        metric.setMember(this);
+    }
+
+    public void addHealthMetric(int currentWeight, int currentBmi) {
+        HealthMetric metric = new HealthMetric(this, currentWeight, currentBmi);
+        healthMetrics.add(metric);
+        metric.setMember(this);
+    }
+
+    public void removeHealthMetric(HealthMetric metric) {
+        healthMetrics.remove(metric);
+        metric.setMember(null);
+    }
+
     public void memberPrint() {
         System.out.println("\n--- Current Profile ---");
         System.out.println("Member ID: " + this.getMemberId());
@@ -109,12 +134,13 @@ public class Member {
         System.out.println("Date of Birth: " + this.getDateOfBirth().getDay() + "/"
                 + this.getDateOfBirth().getMonth() + "/"
                 + this.getDateOfBirth().getYear());
+        System.out.println("Health Metrics Count: " + this.getHealthMetrics().size());
         System.out.println("-----------------------");
     }
 
+    @Override
     public String toString() {
         return memberId + "\t" + name + "\t" + email + "\t" + gender + "\t" + dateOfBirth.getDay() + "\t"
                 + dateOfBirth.getMonth() + "\t" + dateOfBirth.getYear();
     }
-
 }

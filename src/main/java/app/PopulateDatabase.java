@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import models.Admin;
+import models.ClassSchedule;
 import models.EquipmentManagement;
 import models.GroupFitnessClass;
 import models.GroupFitnessClassMembers;
@@ -32,7 +33,13 @@ public class PopulateDatabase {
         // Member
         Member member1 = new Member("Andrew", "andrewmtdang@gmail.com", "Male", 14, 6, 2005);
         session.persist(member1);
+        // HealthMetric
+        HealthMetric metric1 = new HealthMetric(member1, 285, 5);
+        session.persist(metric1);
+
         Member member2 = new Member("Valorant", "valorant@gmail.com", "Male", 14, 6, 2005);
+        member2.addHealthMetric(400, 50);
+        member2.addHealthMetric(300, 50);
         session.persist(member2);
 
         // Trainer
@@ -53,12 +60,9 @@ public class PopulateDatabase {
         session.persist(personalTrainingSession1);
 
         // EquipmentManagement
-        EquipmentManagement equipmentManagement1 = new EquipmentManagement(admin1, 444, "Water Leak", "In progress");
+        EquipmentManagement equipmentManagement1 = new EquipmentManagement(admin1);
+        equipmentManagement1.setDetails(444, "Water Leak", "In progress");
         session.persist(equipmentManagement1);
-
-        // HealthMetric
-        HealthMetric metric1 = new HealthMetric(member1, 285, 5);
-        session.persist(metric1);
 
         // GroupFitnessClass
         GroupFitnessClass yoga = new GroupFitnessClass(trainer1, "Yoga");
@@ -73,6 +77,10 @@ public class PopulateDatabase {
         calisthenics.addMember(member1);
         calisthenics.addMember(member2);
         session.persist(calisthenics);
+
+        ClassSchedule classSchedule = new ClassSchedule(calisthenics, admin1);
+        classSchedule.setDetails(4, "MONDAY", 5, 7, 20);
+        session.persist(classSchedule);
 
         // Commit and close
         session.getTransaction().commit();

@@ -33,9 +33,12 @@
         <mapping class="models.PersonalTrainingSession"/>
         <mapping class="models.PersonalTrainingSessionDetails"/>
         <mapping class="models.EquipmentManagement"/>
+        <mapping class="models.EquipmentManagementDetails"/>
         <mapping class="models.HealthMetric"/>
         <mapping class="models.GroupFitnessClass"/>
         <mapping class="models.GroupFitnessClassMembers"/>
+        <mapping class="models.ClassSchedule"/>
+        <mapping class="models.ClassScheduleDetails"/>
 
 
         

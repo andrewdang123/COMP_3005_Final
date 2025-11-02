@@ -3,7 +3,6 @@ package models;
 import java.time.DayOfWeek;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "class_schedule")
@@ -21,46 +20,32 @@ public class ClassSchedule {
     @JoinColumn(name = "admin_id", referencedColumnName = "adminId", foreignKey = @ForeignKey(name = "FK_classSchedule_admin"))
     private Admin admin;
 
-    @NotNull
-    @Column(nullable = false)
-    private int roomNum;
-
-    @NotNull
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "dayOfWeek", column = @Column(name = "schedule_Day", nullable = false)),
-            @AttributeOverride(name = "startTime", column = @Column(name = "schedule_StartTime", nullable = false)),
-            @AttributeOverride(name = "endTime", column = @Column(name = "schedule_EndTime", nullable = false))
-    })
-    private Schedule scheduleTime;
-
-    @NotNull
-    @Column(nullable = false)
-    private int capacity;
+    @OneToOne(mappedBy = "classSchedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ClassScheduleDetails details;
 
     public ClassSchedule() {
     }
 
-    public ClassSchedule(GroupFitnessClass groupFitnessClass, Admin admin, int roomNum, DayOfWeek dayOfWeek,
-            int startTime, int endTime, int capacity) {
+    public ClassSchedule(GroupFitnessClass groupFitnessClass, Admin admin) {
         this.groupFitnessClass = groupFitnessClass;
         this.admin = admin;
-        this.roomNum = roomNum;
-        this.scheduleTime = new Schedule(dayOfWeek, startTime, endTime);
-        this.capacity = capacity;
     }
 
-    public ClassSchedule(GroupFitnessClass groupFitnessClass, Admin admin, int roomNum, String dayOfWeek,
-            int startTime, int endTime, int capacity) {
-        this.groupFitnessClass = groupFitnessClass;
-        this.admin = admin;
-        this.roomNum = roomNum;
-        this.scheduleTime = new Schedule(dayOfWeek, startTime, endTime);
-        this.capacity = capacity;
+    // --- Helper method to set details ---
+    public void setDetails(int roomNum, String dayOfWeek, int startTime, int endTime, int capacity) {
+        ClassScheduleDetails newDetails = new ClassScheduleDetails(this, roomNum, dayOfWeek, startTime, endTime,
+                capacity);
+        this.details = newDetails;
     }
 
-    // --- Getters and Setters ---
-    public Long getClassMemberId() {
+    public void setDetails(int roomNum, DayOfWeek dayOfWeek, int startTime, int endTime, int capacity) {
+        ClassScheduleDetails newDetails = new ClassScheduleDetails(this, roomNum, dayOfWeek, startTime, endTime,
+                capacity);
+        this.details = newDetails;
+    }
+
+    // Getters and setters
+    public Long getScheduleId() {
         return scheduleId;
     }
 
@@ -80,31 +65,13 @@ public class ClassSchedule {
         this.admin = admin;
     }
 
-    public int getRoomNum() {
-        return roomNum;
+    public ClassScheduleDetails getDetails() {
+        return details;
     }
 
-    public void setRoomNum(int roomNum) {
-        this.roomNum = roomNum;
-    }
-
-    public Schedule getScheduleTime() {
-        return scheduleTime;
-    }
-
-    public void setScheduleTime(String dayOfWeek, int startTime, int endTime) {
-        this.scheduleTime = new Schedule(dayOfWeek, startTime, endTime);
-    }
-
-    public void setScheduleTime(DayOfWeek dayOfWeek, int startTime, int endTime) {
-        this.scheduleTime = new Schedule(dayOfWeek, startTime, endTime);
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    @Override
+    public String toString() {
+        return "ClassSchedule [scheduleId=" + scheduleId + ", classId=" + groupFitnessClass.getClassId()
+                + ", adminId=" + admin.getAdminId() + "]";
     }
 }
