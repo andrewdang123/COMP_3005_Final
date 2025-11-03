@@ -1,15 +1,19 @@
 package app;
 
-import java.util.Scanner;
-
 import models.GroupFitnessClass;
 import models.GroupFitnessClassMembers;
 import models.HealthMetric;
 import models.Member;
+import models.PersonalTrainingSession;
+import models.PersonalTrainingSessionDetails;
+import models.Trainer;
+import models.TrainerAvailability;
+import models.Schedule;
 
-import org.hibernate.cfg.Configuration;
+import java.util.*;
+import java.time.LocalTime;
+
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 public class FunctionsMember {
 
@@ -241,7 +245,305 @@ public class FunctionsMember {
      * memberPtSessionScheduling
      ***************************************************************/
     public static void memberPtSessionScheduling() {
-        System.out.println("PT Session Scheduled!");
+        Scanner scanner = HibernateUtil.getScanner();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        try {
+            Member member = retrieveMember(session);
+            if (member == null)
+                return;
+
+            Trainer trainer = FunctionsTrainer.retrieveTrainer(session);
+            if (trainer == null)
+                return;
+
+            // Ask user if they want to reschedule first
+            while (true) {
+                System.out.println("\nDo you want to:");
+                System.out.println("1. Book a new PT session");
+                System.out.println("2. Reschedule an existing session");
+                System.out.print("Enter choice (1 or 2): ");
+                String choiceInput = scanner.nextLine().trim();
+
+                if (choiceInput.equals("2")) {
+                    memberPtSessionSchedulingReschedule(session, member, trainer);
+                    break;
+                } else if (choiceInput.equals("1")) {
+                    memberPtSessionSchedulingBookPrompt(session, member, trainer);
+                    break;
+                } else {
+                    System.out.println("Invalid choice.");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error scheduling PT session: " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+
+    /***************************************************************
+     * memberPtSessionSchedulingBook
+     ***************************************************************/
+    public static void memberPtSessionSchedulingBook(Session session, Member member, Trainer trainer,
+            String dayInput, int startHour, int endHour, int roomNum) {
+        try {
+            session.beginTransaction();
+
+            PersonalTrainingSession ptSession = new PersonalTrainingSession();
+            ptSession.setMember(member);
+            ptSession.setTrainer(trainer);
+
+            PersonalTrainingSessionDetails details = new PersonalTrainingSessionDetails();
+            details.setRoomNum(roomNum);
+            details.setSessionTime(new Schedule(dayInput, startHour, endHour));
+
+            // link both sides
+            ptSession.setSessionDetails(details);
+
+            session.persist(ptSession);
+
+            // Update trainer availability (split or adjust slots)
+            List<TrainerAvailability> updatedAvailabilities = new ArrayList<>();
+            for (TrainerAvailability a : trainer.getAvailabilities()) {
+                if (a.getDayOfWeek().equals(java.time.DayOfWeek.valueOf(dayInput))) {
+                    LocalTime availStart = a.getStartTime();
+                    LocalTime availEnd = a.getEndTime();
+                    if (availStart.getHour() <= startHour && availEnd.getHour() >= endHour) {
+                        if (availStart.getHour() < startHour) {
+                            updatedAvailabilities.add(new TrainerAvailability(
+                                    trainer,
+                                    a.getDayOfWeek().toString(),
+                                    availStart.getHour(),
+                                    startHour));
+                        }
+                        if (availEnd.getHour() > endHour) {
+                            updatedAvailabilities.add(new TrainerAvailability(
+                                    trainer,
+                                    a.getDayOfWeek().toString(),
+                                    endHour,
+                                    availEnd.getHour()));
+                        }
+                    } else {
+                        updatedAvailabilities.add(a);
+                    }
+                } else {
+                    updatedAvailabilities.add(a);
+                }
+            }
+            trainer.getAvailabilities().clear();
+            trainer.getAvailabilities().addAll(updatedAvailabilities);
+
+            session.merge(trainer);
+            session.getTransaction().commit();
+
+            ptSession.print();
+
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+            if (session.getTransaction().isActive())
+                session.getTransaction().rollback();
+            e.printStackTrace();
+        }
+    }
+
+    private static void memberPtSessionSchedulingBookPrompt(Session session, Member member, Trainer trainer) {
+        Scanner scanner = HibernateUtil.getScanner();
+
+        try {
+
+            System.out.println("\n--- Trainer Availability ---");
+            for (var avail : trainer.getAvailabilities()) {
+                System.out.println(trainer.getName() + " available on " + avail.getDayOfWeek()
+                        + " from " + avail.getStartTime() + " to " + avail.getEndTime());
+            }
+            System.out.println("----------------------------");
+
+            System.out.print("Enter training day (e.g., MONDAY): ");
+            String dayInput = scanner.nextLine().trim().toUpperCase();
+            try {
+                java.time.DayOfWeek.valueOf(dayInput);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid day entered. Cancelling booking.");
+                return;
+            }
+
+            int startHour, endHour, roomNum;
+            try {
+                System.out.print("Enter start time (hour 0-23): ");
+                startHour = Integer.parseInt(scanner.nextLine().trim());
+
+                System.out.print("Enter end time (hour 0-23): ");
+                endHour = Integer.parseInt(scanner.nextLine().trim());
+
+                System.out.print("Enter room number: ");
+                roomNum = Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Cancelling booking.");
+                return;
+            }
+
+            // --- Check trainer availability ---
+            boolean available = trainer.getAvailabilities().stream()
+                    .anyMatch(a -> a.getDayOfWeek().toString().equalsIgnoreCase(dayInput)
+                            && startHour >= a.getStartTime().getHour()
+                            && endHour <= a.getEndTime().getHour());
+
+            if (!available) {
+                System.out.println("Trainer is not available on that day/time. Cancelling booking.");
+                return;
+            }
+
+            // --- Check room conflicts ---
+            boolean roomConflict = session.createQuery(
+                    "SELECT COUNT(p) FROM PersonalTrainingSessionDetails p " +
+                            "WHERE p.roomNum = :roomNum " +
+                            "AND p.sessionTime.dayOfWeek = :day " +
+                            "AND ((:startHour BETWEEN p.sessionTime.startTime AND p.sessionTime.endTime) " +
+                            "OR (:endHour BETWEEN p.sessionTime.startTime AND p.sessionTime.endTime))",
+                    Long.class)
+                    .setParameter("roomNum", roomNum)
+                    .setParameter("day", java.time.DayOfWeek.valueOf(dayInput))
+                    .setParameter("startHour", LocalTime.of(startHour, 0))
+                    .setParameter("endHour", LocalTime.of(endHour, 0))
+                    .uniqueResult() > 0;
+
+            if (roomConflict) {
+                System.out.println("Room conflict detected. Cancelling booking.");
+                return;
+            }
+
+            // --- Book the session ---
+            memberPtSessionSchedulingBook(session, member, trainer, dayInput, startHour, endHour, roomNum);
+
+        } catch (Exception e) {
+            System.out.println("Error during booking: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /***************************************************************
+     * memberPtSessionSchedulingReschedule
+     ***************************************************************/
+    public static void memberPtSessionSchedulingReschedule(Session session, Member member, Trainer trainer) {
+        Scanner scanner = HibernateUtil.getScanner();
+
+        try {
+            // --- Retrieve existing sessions for this member with this trainer ---
+            List<PersonalTrainingSession> sessions = session.createQuery(
+                    "FROM PersonalTrainingSession s WHERE s.member = :member AND s.trainer = :trainer",
+                    PersonalTrainingSession.class)
+                    .setParameter("member", member)
+                    .setParameter("trainer", trainer)
+                    .list();
+
+            if (sessions.isEmpty()) {
+                System.out.println("No existing sessions found with this trainer. Booking a new session instead.");
+                memberPtSessionSchedulingBookPrompt(session, member, trainer);
+                return;
+            }
+
+            // --- Display sessions ---
+            System.out.println("\nExisting sessions with " + trainer.getName() + ":");
+            for (int i = 0; i < sessions.size(); i++) {
+                PersonalTrainingSession s = sessions.get(i);
+                Schedule time = s.getSessionDetails().getSessionTime();
+                System.out.println((i + 1) + ". " + time.getDayOfWeek() + " " +
+                        time.getStartTime().getHour() + "-" + time.getEndTime().getHour() +
+                        " in Room " + s.getSessionDetails().getRoomNum());
+            }
+
+            // --- Choose session to cancel ---
+            System.out.print("Enter the number of the session to reschedule (or 0 to cancel): ");
+            int choice;
+            try {
+                choice = Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Cancelling operation.");
+                return;
+            }
+
+            if (choice == 0) {
+                System.out.println("Rescheduling cancelled.");
+                return;
+            }
+
+            if (choice < 1 || choice > sessions.size()) {
+                System.out.println("Invalid selection. Cancelling operation.");
+                return;
+            }
+
+            PersonalTrainingSession toCancel = sessions.get(choice - 1);
+            Schedule canceledTime = toCancel.getSessionDetails().getSessionTime();
+
+            session.beginTransaction();
+
+            // Remove session
+            session.remove(toCancel);
+
+            // --- Restore trainer availability ---
+            boolean restored = false;
+            for (TrainerAvailability avail : trainer.getAvailabilities()) {
+                if (avail.getDayOfWeek().equals(canceledTime.getDayOfWeek())) {
+                    LocalTime availStart = avail.getStartTime();
+                    LocalTime availEnd = avail.getEndTime();
+
+                    if (availEnd.getHour() <= canceledTime.getStartTime().getHour() ||
+                            availStart.getHour() >= canceledTime.getEndTime().getHour())
+                        continue;
+
+                    // Split availability
+                    List<TrainerAvailability> newAvailabilities = new ArrayList<>();
+                    if (availStart.getHour() < canceledTime.getStartTime().getHour()) {
+                        newAvailabilities.add(new TrainerAvailability(trainer,
+                                avail.getDayOfWeek().toString(),
+                                availStart.getHour(),
+                                canceledTime.getStartTime().getHour()));
+                    }
+                    if (availEnd.getHour() > canceledTime.getEndTime().getHour()) {
+                        newAvailabilities.add(new TrainerAvailability(trainer,
+                                avail.getDayOfWeek().toString(),
+                                canceledTime.getEndTime().getHour(),
+                                availEnd.getHour()));
+                    }
+
+                    session.remove(avail);
+                    for (TrainerAvailability t : newAvailabilities) {
+                        session.persist(t);
+                        trainer.getAvailabilities().add(t);
+                    }
+
+                    restored = true;
+                    break;
+                }
+            }
+
+            if (!restored) {
+                TrainerAvailability restoredSlot = new TrainerAvailability(trainer,
+                        canceledTime.getDayOfWeek().toString(),
+                        canceledTime.getStartTime().getHour(),
+                        canceledTime.getEndTime().getHour());
+                session.persist(restoredSlot);
+                trainer.getAvailabilities().add(restoredSlot);
+            }
+
+            session.merge(trainer);
+            session.getTransaction().commit();
+
+            System.out.println("Session cancelled and trainer availability restored.");
+            System.out.println("Please enter new session details to reschedule.");
+
+            // --- Prompt for new session booking ---
+            memberPtSessionSchedulingBookPrompt(session, member, trainer);
+
+        } catch (Exception e) {
+            if (session.getTransaction().isActive())
+                session.getTransaction().rollback();
+            System.out.println("Error rescheduling session: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /***************************************************************

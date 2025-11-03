@@ -69,8 +69,24 @@ public class PersonalTrainingSession {
         return personalTrainingSesssionDetails;
     }
 
-    public void setSessionDetails(PersonalTrainingSessionDetails personalTrainingSesssionDetails) {
-        this.personalTrainingSesssionDetails = personalTrainingSesssionDetails;
-        personalTrainingSesssionDetails.setPersonalTrainingSession(this);
+    public void print() {
+        System.out.println("Personal training session booked successfully!");
+        System.out.println("Trainer: " + trainer.getName());
+        System.out.println("Member: " + member.getName());
+        System.out.println("Day: " + personalTrainingSesssionDetails.getSessionTime().getDayOfWeek().toString());
+        System.out.println("Time: " + personalTrainingSesssionDetails.getSessionTime().getStartTime() + " - "
+                + personalTrainingSesssionDetails.getSessionTime().getEndTime());
+        System.out.println("Room: " + personalTrainingSesssionDetails.getRoomNum());
     }
+
+    public void setSessionDetails(PersonalTrainingSessionDetails details) {
+        if (this.personalTrainingSesssionDetails != null && details != this.personalTrainingSesssionDetails) {
+            throw new IllegalStateException("Session details already exist. Modify them instead of replacing.");
+        }
+        this.personalTrainingSesssionDetails = details;
+        if (details != null) {
+            details.setPersonalTrainingSession(this);
+        }
+    }
+
 }

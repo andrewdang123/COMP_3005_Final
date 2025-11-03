@@ -64,6 +64,6 @@ public class Trainer {
     }
 
     public String toString() {
-        return trainerId + "\t" + name + "\t" + email;
+        return "ID: " + getTrainerId() + " | Name: " + getName() + " | Email: " + getEmail();
     }
 }
