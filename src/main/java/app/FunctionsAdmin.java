@@ -87,13 +87,11 @@ public class FunctionsAdmin {
                 String choice = scanner.nextLine().trim();
                 switch (choice) {
                     case "1":
-                    EquipmentManagement equipmentManagement = FunctionsExtra.retrieveEquipmentManagement(session);
-                    if (equipmentManagement == null) {break;}
-                        equipViewAndUpdate(session, scanner);
+                        adminEquipmentMaintenanceUpdate(session);
                         break;
 
                     case "2":
-                        equipAddIssue(session, scanner, admin);
+                        adminEquipmentMaintenanceAdd(session, admin);
                         break;
 
                     case "0":
@@ -111,104 +109,65 @@ public class FunctionsAdmin {
         }
     }
     /***************************************************************
-     * update/view equipment details
+     * adminEquipmentMaintenanceUpdate
      ***************************************************************/
-    private static void equipViewAndUpdate(Session session, Scanner scanner) {
-        while (true) {
-            // any details not resolved
-            List<EquipmentManagementDetails> list = session.createQuery(
-                "FROM EquipmentManagementDetails d WHERE d.repairStatus IS NULL OR LOWER(d.repairStatus) <> 'resolved'",
-                EquipmentManagementDetails.class
-            ).list();
+    private static void adminEquipmentMaintenanceUpdate(Session session) {
+        Scanner scanner = HibernateUtil.getScanner();
+        try {
+            EquipmentManagement equipmentManagement = FunctionsExtra.retrieveEquipmentManagement(session);
+                if (equipmentManagement == null) {
+                    return;
+                } 
 
-            System.out.println("\n=== Equipment with Current Issues (from details) ===");
-            if (list.isEmpty()) {
-                System.out.println("No equipment currently flagged with issues.");
-                return;
-            }
 
-            System.out.printf("%-12s %-8s %-40s %-18s%n", "equipmentId", "Room", "Issue", "RepairStatus");
-            System.out.println("--------------------------------------------------------------------------------------");
-            for (EquipmentManagementDetails d : list) {
-                Long eqId = (d.getEquipment() == null) ? null : d.getEquipment().getEquipmentId();
-                System.out.printf("%-12s %-8s %-40s %-18s%n",
-                    eqId == null ? "-" : String.valueOf(eqId),
-                    String.valueOf(d.getRoomNum()),
-                    Objects.toString(d.getIssue()),
-                    Objects.toString(d.getRepairStatus()));
-            }
+            // // ----- collect updates -----
+        
+            // session.refresh(selected);
 
-            System.out.println("\nEnter an equipmentId to update, or 0 to go back.");
-            System.out.print("Choice: ");
+            // System.out.println("\nUpdating equipmentId " + equipmentId +
+            //     " – current Issue: " + Objects.toString(selected.getIssue()) +
+            //     ", Status: " + Objects.toString(selected.getRepairStatus()));
+            // System.out.println("(Press Enter to skip any field)");
 
-            String raw = scanner.nextLine().trim();
-            long equipmentId;
-            try {
-                equipmentId = Long.parseLong(raw);
-            } catch (NumberFormatException nfe) {
-                System.out.println("Invalid input.");
-                continue;
-            }
-            if (equipmentId == 0) return;
+            // System.out.print("New RepairStatus (e.g., In progress / Out of service / Resolved): ");
+            // String newStatus = scanner.nextLine().trim();
 
-            // Find details row by equipmentId (join via the relation)
-            EquipmentManagementDetails selected = session.createQuery(
-                "FROM EquipmentManagementDetails d WHERE d.equipment.equipmentId = :eid",
-                EquipmentManagementDetails.class
-            ).setParameter("eid", equipmentId).uniqueResult();
+            // System.out.print("New/Updated Issue description: ");
+            // String newIssue = scanner.nextLine().trim();
 
-            if (selected == null) {
-                System.out.println("No details found for equipmentId " + equipmentId + ".");
-                continue;
-            }
+            // System.out.print("Room number (int): ");
+            // String roomRaw = scanner.nextLine().trim();
 
-            // ----- collect updates -----
-            try {
-                session.refresh(selected);
+            // session.beginTransaction();
 
-                System.out.println("\nUpdating equipmentId " + equipmentId +
-                    " – current Issue: " + Objects.toString(selected.getIssue()) +
-                    ", Status: " + Objects.toString(selected.getRepairStatus()));
-                System.out.println("(Press Enter to skip any field)");
+            // if (!newStatus.isEmpty()) selected.setRepairStatus(newStatus);
+            // if (!newIssue.isEmpty())  selected.setIssue(newIssue);
+            // if (!roomRaw.isEmpty()) {
+            //     try {
+            //         selected.setRoomNum(Integer.parseInt(roomRaw));
+            //     } catch (NumberFormatException bad) {
+            //         System.out.println("  (Skipped invalid room number: " + roomRaw + ")");
+            //     }
+            // }
 
-                System.out.print("New RepairStatus (e.g., In progress / Out of service / Resolved): ");
-                String newStatus = scanner.nextLine().trim();
-
-                System.out.print("New/Updated Issue description: ");
-                String newIssue = scanner.nextLine().trim();
-
-                System.out.print("Room number (int): ");
-                String roomRaw = scanner.nextLine().trim();
-
-                session.beginTransaction();
-
-                if (!newStatus.isEmpty()) selected.setRepairStatus(newStatus);
-                if (!newIssue.isEmpty())  selected.setIssue(newIssue);
-                if (!roomRaw.isEmpty()) {
-                    try {
-                        selected.setRoomNum(Integer.parseInt(roomRaw));
-                    } catch (NumberFormatException bad) {
-                        System.out.println("  (Skipped invalid room number: " + roomRaw + ")");
-                    }
-                }
-
-                session.merge(selected);
-                session.getTransaction().commit();
-                System.out.println("Update complete.");
-                // loop re-lists with fresh data
-            } catch (Exception ex) {
-                if (session.getTransaction().isActive()) session.getTransaction().rollback();
-                System.out.println("Failed to update details: " + ex.getMessage());
-                ex.printStackTrace();
-            }
+            // session.merge(selected);
+            // session.getTransaction().commit();
+            // System.out.println("Update complete.");
+            // // loop re-lists with fresh data
+        } catch (Exception ex) {
+            if (session.getTransaction().isActive()) session.getTransaction().rollback();
+            System.out.println("Failed to update details: " + ex.getMessage());
+            ex.printStackTrace();
         }
+        
     }
     /***************************************************************
-     * add equipment issues
+     * adminEquipmentMaintenanceAdd
      ***************************************************************/
-    private static void equipAddIssue(Session session, Scanner scanner, Admin admin) {
+    private static void adminEquipmentMaintenanceAdd(Session session, Admin admin) {
+        Scanner scanner = HibernateUtil.getScanner();
         try {
-            System.out.print("Room number (int): ");
+            System.out.print("Room number");
             int room = Integer.parseInt(scanner.nextLine().trim());
 
             System.out.print("Issue/Description: ");
@@ -221,15 +180,13 @@ public class FunctionsAdmin {
             session.beginTransaction();
 
             // parent EquipmentManagement row to satisfy FK
-            EquipmentManagement parent = new EquipmentManagement(admin);
-            session.persist(parent);
-
-            EquipmentManagementDetails det = new EquipmentManagementDetails(parent, room, issue, status);
-            session.persist(det);
+            EquipmentManagement equipmentManagement = new EquipmentManagement(admin);
+            equipmentManagement.setDetails(room, issue, status);
+            session.persist(equipmentManagement);
 
             session.getTransaction().commit();
 
-            System.out.println("New issue recorded for equipmentId " + parent.getEquipmentId() + ".");
+            System.out.println("New issue recorded for equipmentId " + equipmentManagement.getEquipmentId() + ".");
         } catch (NumberFormatException nfe) {
             System.out.println("Invalid room number. Cancelled.");
         } catch (Exception e) {
