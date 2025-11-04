@@ -4,6 +4,12 @@
 # Log files
 *.log
 
+# Maven Status Files
+*.lst
+
+# Database Files
+*.db
+
 # BlueJ files
 *.ctxt
 
