@@ -48,6 +48,8 @@ public class EquipmentManagement {
 
     @Override
     public String toString() {
-        return "EquipmentManagement [equipmentId=" + equipmentId + ", adminId=" + admin.getAdminId() + "]";
+        return "ID: " + equipmentId + " | Last updated by Admin: " + admin.getName() + " | Room Num: "
+                + details.getRoomNum()
+                + " | Issue: " + details.getIssue() + " | Status: " + details.getRepairStatus();
     }
 }

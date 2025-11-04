@@ -5,6 +5,7 @@ import java.util.*;
 import org.hibernate.Session;
 
 import models.LatestHealthMetricDTO;
+import models.Member;
 import models.Trainer;
 import services.MemberService;
 
@@ -81,27 +82,96 @@ public class FunctionsTrainer {
      * trainerMemberLookup
      ***************************************************************/
     public static void trainerMemberLookup() {
-        System.out.println("Member Viewed!");
         Session session = HibernateUtil.getSessionFactory().openSession();
+        Scanner scanner = HibernateUtil.getScanner();
         try {
-            MemberService memberService = new MemberService(session);
-
-            // Begin transaction
-            session.beginTransaction();
-
-            // Fetch latest health metrics
-            List<LatestHealthMetricDTO> latestMetrics = memberService.getLatestHealthMetrics();
-
-            // Display results
-            for (LatestHealthMetricDTO metric : latestMetrics) {
-                System.out.println(metric.getMemberName() +
-                        " | Weight: " + metric.getCurrentWeight() +
-                        " | BMI: " + metric.getCurrentBmi() +
-                        " | Timestamp: " + metric.getTimestamp());
+            Trainer trainer = retrieveTrainer(session);
+            if (trainer == null) {
+                return;
             }
 
-            // Commit transaction
+            session.beginTransaction();
+
+            List<Member> members = session.createQuery(
+                    "SELECT DISTINCT p.member FROM PersonalTrainingSession p WHERE p.trainer = :trainer",
+                    Member.class)
+                    .setParameter("trainer", trainer)
+                    .getResultList();
+
+            if (members.isEmpty()) {
+                System.out.println("\nNo members have a personal training session with trainer: " + trainer.getName());
+                session.getTransaction().commit();
+                return;
+            }
+
+            System.out.println("\nMembers who have a personal training session with trainer: " + trainer.getName());
+            System.out.println("=============================================================");
+            for (Member m : members) {
+                System.out.println("ID: " + m.getMemberId() + " | Name: " + m.getName());
+            }
+            System.out.println("=============================================================");
+
+            Member selectedMember = null;
+            boolean found = false;
+
+            while (!found) {
+                try {
+                    System.out.print("\nEnter the Member ID to view their latest health metric: ");
+                    Long memberId = Long.parseLong(scanner.nextLine().trim());
+                    for (Member m : members) {
+                        if (m.getMemberId().equals(memberId)) {
+                            selectedMember = m;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        System.out.println("No member found with ID: " + memberId);
+                        System.out.println("1. Retry");
+                        System.out.println("2. Quit");
+                        System.out.print("Enter your choice: ");
+                        int choice = Integer.parseInt(scanner.nextLine().trim());
+                        if (choice == 2) {
+                            System.out.println("Returning to main menu...");
+                            session.getTransaction().commit();
+                            return;
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid number.");
+                }
+            }
+
+            // Retrieve latest health metric for the selected member
+            MemberService memberService = new MemberService(session);
+            List<LatestHealthMetricDTO> latestMetrics = memberService.getLatestHealthMetrics();
+
+            boolean metricFound = false;
+            for (LatestHealthMetricDTO metric : latestMetrics) {
+                if (metric.getMemberName().equalsIgnoreCase(selectedMember.getName())) {
+                    System.out.println("\nLatest Health Metric for " + selectedMember.getName() + ":");
+                    System.out.println("-------------------------------------------------------------");
+                    System.out.println("Weight: " + metric.getCurrentWeight());
+                    System.out.println("BMI: " + metric.getCurrentBmi());
+                    System.out.println("Timestamp: " + metric.getTimestamp());
+                    System.out.println("-------------------------------------------------------------");
+                    metricFound = true;
+                    break;
+                }
+            }
+
+            if (!metricFound) {
+                System.out.println("\nNo health metrics found for " + selectedMember.getName());
+            }
+
             session.getTransaction().commit();
+
+        } catch (Exception e) {
+            System.out.println("Error during member lookup: " + e.getMessage());
+            e.printStackTrace();
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
         } finally {
             session.close();
         }
