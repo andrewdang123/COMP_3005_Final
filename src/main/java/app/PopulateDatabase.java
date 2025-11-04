@@ -1,7 +1,5 @@
 package app;
 
-import javax.swing.GroupLayout.Group;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -50,9 +48,6 @@ public class PopulateDatabase {
         session.persist(member4);
         session.persist(member5);
 
-        member2.addHealthMetric(999, 999);
-        session.persist(member2);
-
         // Trainer
         Trainer trainer1 = new Trainer("trainer1", "trainer1@gmail.com");
         TrainerAvailability trainerAvailability = new TrainerAvailability(trainer1, "Sunday", 1, 5);
@@ -60,8 +55,6 @@ public class PopulateDatabase {
         trainer1.addAvailability(trainerAvailability);
         trainer1.addAvailability(trainerAvailability2);
         session.persist(trainer1);
-        Trainer trainer2 = new Trainer("trainer2", "trainer2@gmail.com");
-        session.persist(trainer2);
 
         // Admin
         Admin admin1 = new Admin("admin1", "admin1@gmail.com");
@@ -72,18 +65,21 @@ public class PopulateDatabase {
                 3, 4);
         session.persist(personalTrainingSession1);
 
-        PersonalTrainingSession personalTrainingSession2 = new PersonalTrainingSession(member2, trainer1, 6, "SUNDAY",
-                5, 7);
-        session.persist(personalTrainingSession2);
-
-        PersonalTrainingSession personalTrainingSession3 = new PersonalTrainingSession(member3, trainer2, 7, "TUESDAY",
-                8, 9);
-        session.persist(personalTrainingSession3);
-
         // EquipmentManagement
         EquipmentManagement equipmentManagement1 = new EquipmentManagement(admin1);
-        equipmentManagement1.setDetails(444, "Water Leak", "In progress");
+        EquipmentManagement equipmentManagement2 = new EquipmentManagement(admin1);
+        EquipmentManagement equipmentManagement3 = new EquipmentManagement(admin1);
+        EquipmentManagement equipmentManagement4 = new EquipmentManagement(admin1);
+
+        equipmentManagement1.setDetails(444, "Pipe: Water Leak", "In progress");
+        equipmentManagement2.setDetails(333, "Yoga Mat: Has Hole", "In progress");
+        equipmentManagement3.setDetails(555, "Rowing Machine: Cable Broken", "In progress");
+        equipmentManagement4.setDetails(876, "Dumbbell: Handle Bent", "In progress");
+
         session.persist(equipmentManagement1);
+        session.persist(equipmentManagement2);
+        session.persist(equipmentManagement3);
+        session.persist(equipmentManagement4);
 
         // GroupFitnessClass
         GroupFitnessClass yoga = new GroupFitnessClass(trainer1, "Yoga");
