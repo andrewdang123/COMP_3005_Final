@@ -1,12 +1,10 @@
 package app;
 
-import app.HibernateUtil;
-import models.Admin;
-
 import java.util.Scanner;
-import org.hibernate.cfg.Configuration;
+
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+
+import models.Admin;
 
 public class FunctionsAdmin {
 
@@ -68,6 +66,8 @@ public class FunctionsAdmin {
      ***************************************************************/
     public static void adminEquipmentMaintenance() {
         System.out.println("Reported on Equipment!");
+        Scanner scanner = HibernateUtil.getScanner();
+
     }
 
     /***************************************************************
