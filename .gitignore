@@ -41,3 +41,10 @@ hs_err_pid*
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+
+inputFiles.lst
+createdFiles.lst
+testdb.mv.db
+target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
