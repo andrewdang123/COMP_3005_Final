@@ -1,7 +1,13 @@
 package app;
 
 import app.HibernateUtil;
+import app.FunctionsExtra;
 import models.Admin;
+import models.EquipmentManagement;
+import models.LatestHealthMetricDTO;
+import models.Member;
+import models.Trainer;
+import services.MemberService;
 
 import java.util.Scanner;
 import org.hibernate.cfg.Configuration;
@@ -67,7 +73,22 @@ public class FunctionsAdmin {
      * adminEquipmentMaintenance
      ***************************************************************/
     public static void adminEquipmentMaintenance() {
-        System.out.println("Reported on Equipment!");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            Admin admin = retrieveAdmin(session);
+            if (admin == null) {
+                return;
+            }
+            EquipmentManagement equipmentManagement = FunctionsExtra.retrieveEquipmentManagement(session);
+            if (equipmentManagement == null) {
+                return;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error updating profile: " + e.getMessage());
+        } finally {
+            session.close();
+        }
     }
 
     /***************************************************************
