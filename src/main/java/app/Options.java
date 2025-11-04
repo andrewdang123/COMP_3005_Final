@@ -199,18 +199,21 @@ public class Options {
      * runView
      ***************************************************************/
     public static <E extends Enum<E> & FunctionEnum> void runView(Class<E> enumClass) {
-
         Scanner scanner = HibernateUtil.getScanner();
 
         while (true) {
             FunctionEnum.printMenu(enumClass);
             System.out.print("Enter command number: ");
-            while (!scanner.hasNextInt()) {
 
-                scanner.next();
-                System.out.print("Enter valid command number: ");
+            String input = scanner.nextLine().trim();
+            int code;
+
+            try {
+                code = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid command number.");
+                continue;
             }
-            int code = Integer.parseInt(scanner.nextLine().trim());
 
             E function = FunctionEnum.fromCode(enumClass, code);
             if (function == null) {
@@ -228,5 +231,6 @@ public class Options {
             }
         }
     }
+
 
 }
