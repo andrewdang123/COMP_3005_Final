@@ -45,6 +45,9 @@ public class EquipmentManagement {
         EquipmentManagementDetails newDetails = new EquipmentManagementDetails(this, roomNum, issue, repairStatus);
         this.details = newDetails;
     }
+    public void setDetails(EquipmentManagementDetails details) {
+        this.details = details;
+    }
 
     @Override
     public String toString() {

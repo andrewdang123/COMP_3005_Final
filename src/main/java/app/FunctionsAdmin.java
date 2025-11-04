@@ -80,14 +80,14 @@ public class FunctionsAdmin {
             while (true) {
                 System.out.println("\nDo you want to:");
                 System.out.println("0. Exit");
-                System.out.println("1. Update/View details");
-                System.out.println("2. Add New Issue");
+                System.out.println("1. Update/View reports");
+                System.out.println("2. Report another Issue");
                 System.out.print("Enter choice (0 - 2): ");
 
                 String choice = scanner.nextLine().trim();
                 switch (choice) {
                     case "1":
-                        adminEquipmentMaintenanceUpdate(session);
+                        adminEquipmentMaintenanceUpdate(session, admin);
                         break;
 
                     case "2":
@@ -108,72 +108,83 @@ public class FunctionsAdmin {
             session.close();
         }
     }
+
     /***************************************************************
      * adminEquipmentMaintenanceUpdate
      ***************************************************************/
-    private static void adminEquipmentMaintenanceUpdate(Session session) {
+    private static void adminEquipmentMaintenanceUpdate(Session session, Admin admin) {
         Scanner scanner = HibernateUtil.getScanner();
         try {
             EquipmentManagement equipmentManagement = FunctionsExtra.retrieveEquipmentManagement(session);
-                if (equipmentManagement == null) {
-                    return;
-                } 
+            if (equipmentManagement == null) {
+                System.out.println("No equipment found to update.");
+                return;
+            } 
 
+            // Validate room number input
+            Integer roomNum = null;
+            while (roomNum == null) {
+                System.out.print("Room number: ");
+                String input = scanner.nextLine().trim();
+                try {
+                    roomNum = Integer.parseInt(input);
+                    if (roomNum <= 0) {
+                        System.out.println("Room number must be a positive integer.");
+                        roomNum = null;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid integer room number.");
+                }
+            }
 
-            // // ----- collect updates -----
-        
-            // session.refresh(selected);
+            System.out.print("Issue: ");
+            String issue = scanner.nextLine().trim();
 
-            // System.out.println("\nUpdating equipmentId " + equipmentId +
-            //     " – current Issue: " + Objects.toString(selected.getIssue()) +
-            //     ", Status: " + Objects.toString(selected.getRepairStatus()));
-            // System.out.println("(Press Enter to skip any field)");
+            System.out.print("RepairStatus: ");
+            String repairStatus = scanner.nextLine().trim();
+            if (repairStatus.isEmpty()) repairStatus = "In progress";
 
-            // System.out.print("New RepairStatus (e.g., In progress / Out of service / Resolved): ");
-            // String newStatus = scanner.nextLine().trim();
+            session.beginTransaction();
+            equipmentManagement.setAdmin(admin);
 
-            // System.out.print("New/Updated Issue description: ");
-            // String newIssue = scanner.nextLine().trim();
+            // Update existing details instead of replacing
+            EquipmentManagementDetails details = equipmentManagement.getDetails();
+            if (details == null) {
+                details = new EquipmentManagementDetails();
+                details.setEquipment(equipmentManagement);
+                equipmentManagement.setDetails(details);
+            }
 
-            // System.out.print("Room number (int): ");
-            // String roomRaw = scanner.nextLine().trim();
+            details.setRoomNum(roomNum);
+            details.setIssue(issue);
+            details.setRepairStatus(repairStatus);
 
-            // session.beginTransaction();
+            session.merge(equipmentManagement);
+            session.getTransaction().commit();
 
-            // if (!newStatus.isEmpty()) selected.setRepairStatus(newStatus);
-            // if (!newIssue.isEmpty())  selected.setIssue(newIssue);
-            // if (!roomRaw.isEmpty()) {
-            //     try {
-            //         selected.setRoomNum(Integer.parseInt(roomRaw));
-            //     } catch (NumberFormatException bad) {
-            //         System.out.println("  (Skipped invalid room number: " + roomRaw + ")");
-            //     }
-            // }
+            System.out.println("Equipment details updated successfully!");
 
-            // session.merge(selected);
-            // session.getTransaction().commit();
-            // System.out.println("Update complete.");
-            // // loop re-lists with fresh data
         } catch (Exception ex) {
             if (session.getTransaction().isActive()) session.getTransaction().rollback();
             System.out.println("Failed to update details: " + ex.getMessage());
             ex.printStackTrace();
         }
-        
     }
+
+
     /***************************************************************
      * adminEquipmentMaintenanceAdd
      ***************************************************************/
     private static void adminEquipmentMaintenanceAdd(Session session, Admin admin) {
         Scanner scanner = HibernateUtil.getScanner();
         try {
-            System.out.print("Room number");
+            System.out.print("Room number: ");
             int room = Integer.parseInt(scanner.nextLine().trim());
 
-            System.out.print("Issue/Description: ");
+            System.out.print("Issue: ");
             String issue = scanner.nextLine().trim();
 
-            System.out.print("RepairStatus (default: In progress): ");
+            System.out.print("RepairStatus: ");
             String status = scanner.nextLine().trim();
             if (status.isEmpty()) status = "In progress";
 
