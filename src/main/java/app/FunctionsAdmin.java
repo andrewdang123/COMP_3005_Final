@@ -23,7 +23,7 @@ public class FunctionsAdmin {
         Scanner scanner = HibernateUtil.getScanner();
 
         try {
-            System.out.println("\n=== Existing Admins ===");
+            System.out.println("\n===================== Existing Admins ===================== ");
             var admins = session.createQuery("from Admin", Admin.class).list();
 
             if (admins.isEmpty()) {
@@ -34,7 +34,7 @@ public class FunctionsAdmin {
             for (Admin a : admins) {
                 System.out.println(a.toString());
             }
-            System.out.println("=========================");
+            System.out.println("===========================================================");
 
             Admin admin = null;
             boolean found = false;

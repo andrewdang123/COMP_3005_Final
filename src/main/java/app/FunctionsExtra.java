@@ -70,7 +70,7 @@ public class FunctionsExtra {
         Scanner scanner = HibernateUtil.getScanner();
 
         try {
-            System.out.println("\n=== Existing Equipment Management ===");
+            System.out.println("\n========================= Existing Equipment Management =========================");
             var equipmentManagements = session.createQuery("from EquipmentManagement", EquipmentManagement.class)
                     .list();
 
@@ -82,7 +82,7 @@ public class FunctionsExtra {
             for (EquipmentManagement e : equipmentManagements) {
                 System.out.println(e.toString());
             }
-            System.out.println("=========================");
+            System.out.println("=================================================================================");
 
             EquipmentManagement equipmentManagement = null;
             boolean found = false;
@@ -91,7 +91,7 @@ public class FunctionsExtra {
                 System.out.print("\nEnter the EquipmentManagement ID: ");
                 Long equipmentId = Long.parseLong(scanner.nextLine().trim());
 
-                equipmentManagement = session.get(EquipmentManagement.class, equipmentManagement);
+                equipmentManagement = session.get(EquipmentManagement.class, equipmentId);
 
                 if (equipmentManagement == null) {
                     System.out.println("\nNo EquipmentManagement found with ID: " + equipmentId);
