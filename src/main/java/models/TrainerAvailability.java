@@ -88,4 +88,8 @@ public class TrainerAvailability {
         this.endTime = LocalTime.of(endTime, 0);
     }
 
+    public String toString() {
+        return dayOfWeek.toString() + " " + startTime.toString() + " - " + endTime.toString();
+    }
+
 }

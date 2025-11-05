@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import models.LatestHealthMetricDTO;
 import models.Member;
 import models.Trainer;
+import models.TrainerAvailability;
 import services.MemberService;
 
 public class FunctionsTrainer {
@@ -68,7 +69,170 @@ public class FunctionsTrainer {
      * trainerSetAvailability
      ***************************************************************/
     public static void trainerSetAvailability() {
-        System.out.println("Availability Set!");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Scanner scanner = HibernateUtil.getScanner();
+        try {
+            Trainer trainer = retrieveTrainer(session);
+            if (trainer == null) {
+                return;
+            }
+            trainer.printAvailabilities();
+            while (true) {
+                System.out.println("\nDo you want to:");
+                System.out.println("0. Exit");
+                System.out.println("1. Update a prexisting availability");
+                System.out.println("2. Add time when available for sessions or classes");
+                System.out.print("Enter choice (0 - 2): ");
+
+                String choice = scanner.nextLine().trim();
+                switch (choice) {
+                    case "1":
+                        trainerSetAvailabilityUpdate(session, trainer);
+                        break;
+                    case "2":
+                        trainerSetAvailabilityAdd(session, trainer);
+                        break;
+                    case "0":
+                        System.out.println("Returning...");
+                        return;
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    /***************************************************************
+     * trainerSetAvailabilityUpdate
+     ***************************************************************/
+    public static void trainerSetAvailabilityUpdate(Session session, Trainer trainer) {
+        Scanner scanner = HibernateUtil.getScanner();
+
+        if (trainer.getAvailabilities().isEmpty()) {
+            System.out.println("\nNo existing availabilities to update.");
+            return;
+        }
+
+        trainer.printAvailabilities();
+
+        System.out.print("\nEnter the Availability ID you wish to update: ");
+        Long availabilityId = null;
+        try {
+            availabilityId = Long.parseLong(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid ID entered.");
+            return;
+        }
+
+        // Retrieve the specific availability
+        TrainerAvailability selectedAvailability = null;
+        for (TrainerAvailability avail : trainer.getAvailabilities()) {
+            if (avail.getTrainerAvailabilityId().equals(availabilityId)) {
+                selectedAvailability = avail;
+                break;
+            }
+        }
+
+        if (selectedAvailability == null) {
+            System.out.println("No availability found with ID: " + availabilityId);
+            return;
+        }
+
+        System.out.println("\nSelected Availability: " + selectedAvailability.toString());
+
+        try {
+            System.out.print(
+                    "Enter new training day (press Enter to keep " + selectedAvailability.getDayOfWeek() + "): ");
+            String dayInput = scanner.nextLine().trim();
+            if (!dayInput.isEmpty()) {
+                dayInput = dayInput.toUpperCase();
+                try {
+                    java.time.DayOfWeek.valueOf(dayInput);
+                    selectedAvailability.setDayOfWeek(dayInput);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid day entered. Keeping previous day.");
+                }
+            }
+
+            System.out.print("Enter new start time (hour 0-23, press Enter to keep "
+                    + selectedAvailability.getStartTime() + "): ");
+            String startInput = scanner.nextLine().trim();
+            if (!startInput.isEmpty()) {
+                try {
+                    int startHour = Integer.parseInt(startInput);
+                    selectedAvailability.setStartTime(startHour);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid start time. Keeping previous value.");
+                }
+            }
+
+            System.out.print(
+                    "Enter new end time (hour 0-23, press Enter to keep " + selectedAvailability.getEndTime() + "): ");
+            String endInput = scanner.nextLine().trim();
+            if (!endInput.isEmpty()) {
+                try {
+                    int endHour = Integer.parseInt(endInput);
+                    selectedAvailability.setEndTime(endHour);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid end time. Keeping previous value.");
+                }
+            }
+
+            session.beginTransaction();
+            session.merge(selectedAvailability);
+            session.getTransaction().commit();
+
+            System.out.println("Successfully updated availability: " + selectedAvailability.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+        }
+    }
+
+    /***************************************************************
+     * trainerSetAvailabilityAdd
+     ***************************************************************/
+    public static void trainerSetAvailabilityAdd(Session session, Trainer trainer) {
+        Scanner scanner = HibernateUtil.getScanner();
+        System.out.print("Enter training day (e.g., MONDAY): ");
+        String dayInput = scanner.nextLine().trim().toUpperCase();
+        try {
+            java.time.DayOfWeek.valueOf(dayInput);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid day entered.");
+            return;
+        }
+
+        int startHour, endHour;
+        try {
+            System.out.print("Enter start time (hour 0-23): ");
+            startHour = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.print("Enter end time (hour 0-23): ");
+            endHour = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+            return;
+        }
+        try {
+            session.beginTransaction();
+            TrainerAvailability trainerAvailability = new TrainerAvailability(trainer, dayInput, startHour, endHour);
+            trainer.addAvailability(trainerAvailability);
+            session.getTransaction().commit();
+            System.out.println("Successfully Added: " + trainerAvailability.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /***************************************************************

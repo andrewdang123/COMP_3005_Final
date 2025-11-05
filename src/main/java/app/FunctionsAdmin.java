@@ -74,8 +74,10 @@ public class FunctionsAdmin {
 
         try {
             Admin admin = retrieveAdmin(session);
-            if (admin == null) {return;}
-    
+            if (admin == null) {
+                return;
+            }
+
             // Submenu loop
             while (true) {
                 System.out.println("\nDo you want to:");
@@ -89,15 +91,12 @@ public class FunctionsAdmin {
                     case "1":
                         adminEquipmentMaintenanceUpdate(session, admin);
                         break;
-
                     case "2":
                         adminEquipmentMaintenanceAdd(session, admin);
                         break;
-
                     case "0":
                         System.out.println("Returning...");
                         return;
-
                     default:
                         System.out.println("Invalid choice.");
                 }
@@ -119,7 +118,7 @@ public class FunctionsAdmin {
             if (equipmentManagement == null) {
                 System.out.println("No equipment found to update.");
                 return;
-            } 
+            }
 
             // Validate room number input
             Integer roomNum = null;
@@ -142,7 +141,8 @@ public class FunctionsAdmin {
 
             System.out.print("RepairStatus: ");
             String repairStatus = scanner.nextLine().trim();
-            if (repairStatus.isEmpty()) repairStatus = "In progress";
+            if (repairStatus.isEmpty())
+                repairStatus = "In progress";
 
             session.beginTransaction();
             equipmentManagement.setAdmin(admin);
@@ -165,12 +165,12 @@ public class FunctionsAdmin {
             System.out.println("Equipment details updated successfully!");
 
         } catch (Exception ex) {
-            if (session.getTransaction().isActive()) session.getTransaction().rollback();
+            if (session.getTransaction().isActive())
+                session.getTransaction().rollback();
             System.out.println("Failed to update details: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
-
 
     /***************************************************************
      * adminEquipmentMaintenanceAdd
@@ -186,7 +186,8 @@ public class FunctionsAdmin {
 
             System.out.print("RepairStatus: ");
             String status = scanner.nextLine().trim();
-            if (status.isEmpty()) status = "In progress";
+            if (status.isEmpty())
+                status = "In progress";
 
             session.beginTransaction();
 
@@ -201,11 +202,13 @@ public class FunctionsAdmin {
         } catch (NumberFormatException nfe) {
             System.out.println("Invalid room number. Cancelled.");
         } catch (Exception e) {
-            if (session.getTransaction().isActive()) session.getTransaction().rollback();
+            if (session.getTransaction().isActive())
+                session.getTransaction().rollback();
             System.out.println("Failed to add issue: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
     /***************************************************************
      * adminClassManagement
      ***************************************************************/

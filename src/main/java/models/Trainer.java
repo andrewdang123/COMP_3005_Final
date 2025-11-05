@@ -63,6 +63,16 @@ public class Trainer {
         availability.setTrainer(null);
     }
 
+    public void printAvailabilities() {
+        System.out.println("\n----------------- Trainer Availability -----------------");
+        for (var avail : this.getAvailabilities()) {
+            System.out.println(
+                    avail.getTrainerAvailabilityId() + ": " + this.getName() + " available on " + avail.getDayOfWeek()
+                            + " from " + avail.getStartTime() + " to " + avail.getEndTime());
+        }
+        System.out.println("--------------------------------------------------------");
+    }
+
     public String toString() {
         return "ID: " + getTrainerId() + " | Name: " + getName() + " | Email: " + getEmail();
     }

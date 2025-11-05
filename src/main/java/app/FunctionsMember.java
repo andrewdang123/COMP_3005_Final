@@ -351,15 +351,8 @@ public class FunctionsMember {
 
     private static void memberPtSessionSchedulingBookPrompt(Session session, Member member, Trainer trainer) {
         Scanner scanner = HibernateUtil.getScanner();
-
         try {
-
-            System.out.println("\n--- Trainer Availability ---");
-            for (var avail : trainer.getAvailabilities()) {
-                System.out.println(trainer.getName() + " available on " + avail.getDayOfWeek()
-                        + " from " + avail.getStartTime() + " to " + avail.getEndTime());
-            }
-            System.out.println("----------------------------");
+            trainer.printAvailabilities();
 
             System.out.print("Enter training day (e.g., MONDAY): ");
             String dayInput = scanner.nextLine().trim().toUpperCase();
