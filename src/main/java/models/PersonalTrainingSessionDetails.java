@@ -68,4 +68,8 @@ public class PersonalTrainingSessionDetails {
         this.sessionTime = sessionTime;
     }
 
+    public String toString() {
+        return "Room " + roomNum + " at " + sessionTime.toString();
+    }
+
 }

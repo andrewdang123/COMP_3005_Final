@@ -6,6 +6,8 @@ import org.hibernate.Session;
 
 import models.LatestHealthMetricDTO;
 import models.Member;
+import models.PersonalTrainingSession;
+import models.PersonalTrainingSessionDetails;
 import models.Trainer;
 import models.TrainerAvailability;
 import services.MemberService;
@@ -239,7 +241,35 @@ public class FunctionsTrainer {
      * trainerScheduleView
      ***************************************************************/
     public static void trainerScheduleView() {
-        System.out.println("Viewed Schedule!");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            Trainer trainer = retrieveTrainer(session);
+            if (trainer == null) {
+                return;
+            }
+
+            // Retrieve all personal training sessions for this trainer
+            List<PersonalTrainingSession> sessions = session.createQuery(
+                    "FROM PersonalTrainingSession p WHERE p.trainer = :trainer",
+                    PersonalTrainingSession.class)
+                    .setParameter("trainer", trainer)
+                    .getResultList();
+
+            if (sessions.isEmpty()) {
+                System.out.println("\nNo scheduled sessions found for trainer: " + trainer.getName());
+                // return;
+            }
+            System.out.println("\n====================== Trainer Schedule ======================");
+            for (PersonalTrainingSession s : sessions) {
+                System.out.println(s.toString());
+            }
+            System.out.println("==============================================================");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 
     /***************************************************************

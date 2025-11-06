@@ -89,4 +89,9 @@ public class PersonalTrainingSession {
         }
     }
 
+    public String toString() {
+        return "Trainer: " + trainer.getTrainerId() + " " + trainer.getName() + " | Member: " + member.getName() + " | "
+                + personalTrainingSesssionDetails.toString();
+    }
+
 }
