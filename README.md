@@ -8,9 +8,9 @@ Final Assignment for COMP 3005
 
 
 Running Main:                   ./run_main.sh
-Running Main without warnings:  ./run_main2.sh
+Running Main with traces:       ./debugging.sh
 Repopulating Database:          ./restart_db.sh
-Viewing Database:               ./run_h2.sh
+Viewing Database:               ./show_db.sh
 
     For viewing the database, join the link. Enter the directory of "testdb".
     Leave username as "sa" and Password as ""

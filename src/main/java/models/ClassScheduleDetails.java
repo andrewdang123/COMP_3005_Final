@@ -1,7 +1,6 @@
 package models;
 
 import java.time.DayOfWeek;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,10 +9,10 @@ import jakarta.validation.constraints.NotNull;
 public class ClassScheduleDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long detailsId;
+    private Long scheduleId;
 
     @OneToOne(optional = false)
+    @MapsId
     @JoinColumn(name = "schedule_id", referencedColumnName = "scheduleId", foreignKey = @ForeignKey(name = "FK_classScheduleDetails_schedule"))
     private ClassSchedule classSchedule;
 
@@ -47,9 +46,14 @@ public class ClassScheduleDetails {
         this.scheduleTime = new Schedule(dayOfWeek, startTime, endTime);
     }
 
+    // Convenience getter to display the classId
+    public Long getClassId() {
+        return classSchedule.getGroupFitnessClass().getClassId();
+    }
+
     // Getters and setters
-    public Long getDetailsId() {
-        return detailsId;
+    public Long getScheduleId() {
+        return scheduleId;
     }
 
     public ClassSchedule getClassSchedule() {
@@ -78,7 +82,9 @@ public class ClassScheduleDetails {
 
     @Override
     public String toString() {
-        return "ClassScheduleDetails [scheduleId=" + classSchedule.getScheduleId() + ", roomNum=" + roomNum
+        return "ClassScheduleDetails"
+                + "classId=" + getClassId()
+                + ", roomNum=" + roomNum
                 + ", scheduleTime=" + scheduleTime + "]";
     }
 }

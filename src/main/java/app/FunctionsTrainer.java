@@ -4,6 +4,10 @@ import java.util.*;
 
 import org.hibernate.Session;
 
+import jakarta.persistence.TypedQuery;
+import models.ClassSchedule;
+import models.ClassScheduleDetails;
+import models.GroupFitnessClass;
 import models.LatestHealthMetricDTO;
 import models.Member;
 import models.PersonalTrainingSession;
@@ -259,12 +263,53 @@ public class FunctionsTrainer {
                 System.out.println("\nNo scheduled sessions found for trainer: " + trainer.getName());
                 // return;
             }
-            System.out.println("\n====================== Trainer Schedule ======================");
+            System.out.println("\n===================== Personal Trainer Schedule =====================");
             for (PersonalTrainingSession s : sessions) {
                 System.out.println(s.toString());
             }
-            System.out.println("==============================================================");
+            System.out.println("=====================================================================");
 
+            List<GroupFitnessClass> classes = session.createQuery(
+                    "FROM GroupFitnessClass g WHERE g.trainer = :trainer",
+                    GroupFitnessClass.class)
+                    .setParameter("trainer", trainer)
+                    .getResultList();
+
+            if (classes.isEmpty()) {
+                System.out.println("No classes found for trainer: " + trainer.getName());
+                return;
+            }
+
+            System.out.println("\n======================== Group Trainer Schedule ========================");
+            // THIS USES THAT INDEX
+            for (GroupFitnessClass gfc : classes) {
+                List<ClassSchedule> schedules = session.createQuery(
+                        "FROM ClassSchedule cs WHERE cs.groupFitnessClass = :gfc",
+                        ClassSchedule.class)
+                        .setParameter("gfc", gfc)
+                        .getResultList();
+
+                if (schedules.isEmpty()) {
+                    System.out.println("No schedule found for class: " + gfc.getClassName());
+                    continue;
+                }
+
+                for (ClassSchedule cs : schedules) {
+                    ClassScheduleDetails details = cs.getDetails();
+                    if (details != null) {
+                        System.out.println("Class: " + gfc.getClassName() +
+                                ", ScheduleId: " + cs.getScheduleId() +
+                                ", Room: " + details.getRoomNum() +
+                                ", Day: " + details.getScheduleTime().getDayOfWeek() +
+                                ", Start: " + details.getScheduleTime().getStartTime() +
+                                ", End: " + details.getScheduleTime().getEndTime());
+                    } else {
+                        System.out.println("Class: " + gfc.getClassName() + " has no schedule details.");
+                    }
+                }
+            }
+
+            System.out.println("========================================================================");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

@@ -5,7 +5,9 @@ import java.time.DayOfWeek;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "class_schedule")
+@Table(name = "class_schedule", indexes = {
+        @Index(name = "uq_class_schedule_class_schedule", columnList = "class_id, schedule_id", unique = true)
+})
 public class ClassSchedule {
 
     @Id
