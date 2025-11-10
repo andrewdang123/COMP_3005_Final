@@ -5,5 +5,5 @@ echo "Removed database"
 
 # Populate Database
 mvn clean compile
-mvn exec:java -Dexec.mainClass="app.PopulateDatabase"
+mvn exec:java -Dexec.mainClass="app.V2PopulateDB"
 echo "Repopulated database"
