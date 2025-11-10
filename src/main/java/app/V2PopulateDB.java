@@ -26,53 +26,53 @@ public class V2PopulateDB {
         session.beginTransaction();
 
         // ===== Members =====
-        Member member1  = new Member("Alice Nguyen",   "alice_nguyen@gmail.com",   "Female", 12, 5, 2002);
+        Member member1 = new Member("Alice Nguyen", "alice_nguyen@gmail.com", "Female", 12, 5, 2002);
+        member1.addHealthMetric(new HealthMetric(member1, 245, 12));
         session.persist(member1);
-        session.persist(new HealthMetric(member1, 245, 12));
 
-        Member member2  = new Member("Bruno Castillo", "bruno_castillo@gmail.com", "Male",    8, 9, 2001);
+        Member member2 = new Member("Bruno Castillo", "bruno_castillo@gmail.com", "Male", 8, 9, 2001);
         member2.addHealthMetric(315, 18);
         member2.addHealthMetric(290, 16);
         session.persist(member2);
 
-        Member member3  = new Member("Chloe Rossi",    "chloe_rossi@gmail.com",    "Female", 21, 3, 1999);
+        Member member3 = new Member("Chloe Rossi", "chloe_rossi@gmail.com", "Female", 21, 3, 1999);
+        member3.addHealthMetric(new HealthMetric(member3, 275, 10));
         session.persist(member3);
-        session.persist(new HealthMetric(member3, 275, 10));
 
-        Member member4  = new Member("Dev Patel",      "dev_patel@gmail.com",      "Male",    1, 1, 2000);
+        Member member4 = new Member("Dev Patel", "dev_patel@gmail.com", "Male", 1, 1, 2000);
+        member4.addHealthMetric(new HealthMetric(member4, 265, 11));
         session.persist(member4);
-        session.persist(new HealthMetric(member4, 265, 11));
 
-        Member member5  = new Member("Emma Wu",        "emma_wu@gmail.com",        "Female",  7, 7, 2003);
+        Member member5 = new Member("Emma Wu", "emma_wu@gmail.com", "Female", 7, 7, 2003);
+        member5.addHealthMetric(new HealthMetric(member5, 230, 9));
         session.persist(member5);
-        session.persist(new HealthMetric(member5, 230,  9));
 
-        Member member6  = new Member("Farah Ahmed",    "farah_ahmed@gmail.com",    "Female", 14, 2, 2002);
+        Member member6 = new Member("Farah Ahmed", "farah_ahmed@gmail.com", "Female", 14, 2, 2002);
+        member6.addHealthMetric(new HealthMetric(member6, 255, 13));
         session.persist(member6);
-        session.persist(new HealthMetric(member6, 255, 13));
 
-        Member member7  = new Member("Gabriel Sousa",  "gabriel_sousa@gmail.com",  "Male",   19, 6, 2001);
+        Member member7 = new Member("Gabriel Sousa", "gabriel_sousa@gmail.com", "Male", 19, 6, 2001);
+        member7.addHealthMetric(new HealthMetric(member7, 300, 17));
         session.persist(member7);
-        session.persist(new HealthMetric(member7, 300, 17));
 
-        Member member8  = new Member("Hana Kim",       "hana_kim@gmail.com",       "Female", 28, 4, 1998);
+        Member member8 = new Member("Hana Kim", "hana_kim@gmail.com", "Female", 28, 4, 1998);
+        member8.addHealthMetric(new HealthMetric(member8, 240, 12));
         session.persist(member8);
-        session.persist(new HealthMetric(member8, 240, 12));
 
-        Member member9  = new Member("Ivan Popov",     "ivan_popov@gmail.com",     "Male",    5,12, 1999);
+        Member member9 = new Member("Ivan Popov", "ivan_popov@gmail.com", "Male", 5, 12, 1999);
+        member9.addHealthMetric(new HealthMetric(member9, 285, 14));
         session.persist(member9);
-        session.persist(new HealthMetric(member9, 285, 14));
 
-        Member member10 = new Member("Julia Marquez",  "julia_marquez@gmail.com",  "Female", 16,10, 2000);
+        Member member10 = new Member("Julia Marquez", "julia_marquez@gmail.com", "Female", 16, 10, 2000);
+        member10.addHealthMetric(new HealthMetric(member10, 260, 11));
         session.persist(member10);
-        session.persist(new HealthMetric(member10, 260, 11));
 
         // ===== Trainers =====
-        Trainer trainer1 = new Trainer("Taylor Reed",  "taylor_reed@gmail.com");
-        TrainerAvailability t1a1 = new TrainerAvailability(trainer1, "MONDAY",     9, 12);
-        TrainerAvailability t1a2 = new TrainerAvailability(trainer1, "MONDAY",    13, 17);
+        Trainer trainer1 = new Trainer("Taylor Reed", "taylor_reed@gmail.com");
+        TrainerAvailability t1a1 = new TrainerAvailability(trainer1, "MONDAY", 9, 12);
+        TrainerAvailability t1a2 = new TrainerAvailability(trainer1, "MONDAY", 13, 17);
         TrainerAvailability t1a3 = new TrainerAvailability(trainer1, "WEDNESDAY", 10, 14);
-        TrainerAvailability t1a4 = new TrainerAvailability(trainer1, "THURSDAY",   9, 11);
+        TrainerAvailability t1a4 = new TrainerAvailability(trainer1, "THURSDAY", 9, 11);
         trainer1.addAvailability(t1a1);
         trainer1.addAvailability(t1a2);
         trainer1.addAvailability(t1a3);
@@ -80,50 +80,50 @@ public class V2PopulateDB {
         session.persist(trainer1);
 
         Trainer trainer2 = new Trainer("Jordan Price", "jordan_price@gmail.com");
-        TrainerAvailability t2a1 = new TrainerAvailability(trainer2, "TUESDAY",    8, 12);
-        TrainerAvailability t2a2 = new TrainerAvailability(trainer2, "THURSDAY",  14, 18);
-        TrainerAvailability t2a3 = new TrainerAvailability(trainer2, "MONDAY",    16, 18);
+        TrainerAvailability t2a1 = new TrainerAvailability(trainer2, "TUESDAY", 8, 12);
+        TrainerAvailability t2a2 = new TrainerAvailability(trainer2, "THURSDAY", 14, 18);
+        TrainerAvailability t2a3 = new TrainerAvailability(trainer2, "MONDAY", 16, 18);
         trainer2.addAvailability(t2a1);
         trainer2.addAvailability(t2a2);
         trainer2.addAvailability(t2a3);
         session.persist(trainer2);
 
         Trainer trainer3 = new Trainer("Casey Morgan", "casey_morgan@gmail.com");
-        TrainerAvailability t3a1 = new TrainerAvailability(trainer3, "FRIDAY",     9, 13);
-        TrainerAvailability t3a2 = new TrainerAvailability(trainer3, "FRIDAY",    14, 17);
-        TrainerAvailability t3a3 = new TrainerAvailability(trainer3, "WEDNESDAY",  8, 10);
+        TrainerAvailability t3a1 = new TrainerAvailability(trainer3, "FRIDAY", 9, 13);
+        TrainerAvailability t3a2 = new TrainerAvailability(trainer3, "FRIDAY", 14, 17);
+        TrainerAvailability t3a3 = new TrainerAvailability(trainer3, "WEDNESDAY", 8, 10);
         trainer3.addAvailability(t3a1);
         trainer3.addAvailability(t3a2);
         trainer3.addAvailability(t3a3);
         session.persist(trainer3);
 
-        Trainer trainer4 = new Trainer("Riley Chen",   "riley_chen@gmail.com");
-        TrainerAvailability t4a1 = new TrainerAvailability(trainer4, "SATURDAY",   9, 12);
-        TrainerAvailability t4a2 = new TrainerAvailability(trainer4, "SATURDAY",  13, 16);
-        TrainerAvailability t4a3 = new TrainerAvailability(trainer4, "SUNDAY",    10, 13);
+        Trainer trainer4 = new Trainer("Riley Chen", "riley_chen@gmail.com");
+        TrainerAvailability t4a1 = new TrainerAvailability(trainer4, "SATURDAY", 9, 12);
+        TrainerAvailability t4a2 = new TrainerAvailability(trainer4, "SATURDAY", 13, 16);
+        TrainerAvailability t4a3 = new TrainerAvailability(trainer4, "SUNDAY", 10, 13);
         trainer4.addAvailability(t4a1);
         trainer4.addAvailability(t4a2);
         trainer4.addAvailability(t4a3);
         session.persist(trainer4);
 
         // ===== Admins =====
-        Admin admin1 = new Admin("Morgan Hale",  "morgan_hale@gmail.com");
+        Admin admin1 = new Admin("Morgan Hale", "morgan_hale@gmail.com");
         session.persist(admin1);
-        Admin admin2 = new Admin("Alex Rivera",  "alex_rivera@gmail.com");
+        Admin admin2 = new Admin("Alex Rivera", "alex_rivera@gmail.com");
         session.persist(admin2);
-        Admin admin3 = new Admin("Jamie Koh",    "jamie_koh@gmail.com");
+        Admin admin3 = new Admin("Jamie Koh", "jamie_koh@gmail.com");
         session.persist(admin3);
 
         // ===== PersonalTrainingSessions =====
-        session.persist(new PersonalTrainingSession(member1,  trainer1, 1, "MONDAY",    9, 10));
-        session.persist(new PersonalTrainingSession(member2,  trainer1, 1, "MONDAY",   10, 11));
-        session.persist(new PersonalTrainingSession(member3,  trainer1, 1, "MONDAY",   14, 15));
-        session.persist(new PersonalTrainingSession(member4,  trainer1, 1, "WEDNESDAY",11, 12));
-        session.persist(new PersonalTrainingSession(member5,  trainer2, 1, "TUESDAY",   9, 10));
-        session.persist(new PersonalTrainingSession(member6,  trainer2, 1, "TUESDAY",  10, 11));
-        session.persist(new PersonalTrainingSession(member7,  trainer3, 1, "FRIDAY",    9, 10));
-        session.persist(new PersonalTrainingSession(member8,  trainer3, 1, "FRIDAY",   15, 16));
-        session.persist(new PersonalTrainingSession(member9,  trainer4, 1, "SATURDAY", 10, 11));
+        session.persist(new PersonalTrainingSession(member1, trainer1, 1, "MONDAY", 9, 10));
+        session.persist(new PersonalTrainingSession(member2, trainer1, 1, "MONDAY", 10, 11));
+        session.persist(new PersonalTrainingSession(member3, trainer1, 1, "MONDAY", 14, 15));
+        session.persist(new PersonalTrainingSession(member4, trainer1, 1, "WEDNESDAY", 11, 12));
+        session.persist(new PersonalTrainingSession(member5, trainer2, 1, "TUESDAY", 9, 10));
+        session.persist(new PersonalTrainingSession(member6, trainer2, 1, "TUESDAY", 10, 11));
+        session.persist(new PersonalTrainingSession(member7, trainer3, 1, "FRIDAY", 9, 10));
+        session.persist(new PersonalTrainingSession(member8, trainer3, 1, "FRIDAY", 15, 16));
+        session.persist(new PersonalTrainingSession(member9, trainer4, 1, "SATURDAY", 10, 11));
         session.persist(new PersonalTrainingSession(member10, trainer4, 1, "SATURDAY", 13, 14));
 
         // ===== EquipmentManagement =====
