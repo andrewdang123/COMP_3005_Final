@@ -1,14 +1,19 @@
 package app;
 
+import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 import org.hibernate.Session;
 
 import models.Admin;
+import models.ClassSchedule;
+import models.ClassScheduleDetails;
 import models.EquipmentManagement;
 import models.EquipmentManagementDetails;
+import models.GroupFitnessClass;
+import models.Schedule;
+import models.Trainer;
 
 public class FunctionsAdmin {
 
@@ -213,7 +218,253 @@ public class FunctionsAdmin {
      * adminClassManagement
      ***************************************************************/
     public static void adminClassManagement() {
-        System.out.println("Classes Managed!");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Scanner scanner = HibernateUtil.getScanner();
+
+        try {
+            Admin admin = retrieveAdmin(session);
+            if (admin == null) {
+                return;
+            }
+
+            while (true) {
+                System.out.println("\n===================== Class Management =====================");
+                System.out.println("0. Exit");
+                System.out.println("1. Define new class");
+                System.out.println("2. Assign trainer / room / time to a class");
+                System.out.println("3. Update existing class schedule");
+                System.out.print("Enter choice (0 - 3): ");
+
+                String choice = scanner.nextLine().trim();
+                switch (choice) {
+                    case "1":
+                        adminDefineNewClass(session);
+                        break;
+                    case "2":
+                        adminAssignTrainerRoomTime(session, admin);
+                        break;
+                    case "3":
+                        adminUpdateSchedule(session);
+                        break;
+                    case "0":
+                        System.out.println("Returning...");
+                        return;
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error during class management: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    /***************************************************************
+     * retrieveClass
+     ***************************************************************/
+    private static GroupFitnessClass retrieveClass(Session session) {
+        Scanner scanner = HibernateUtil.getScanner();
+
+        System.out.println("\n=================== Existing Classes ===================== ");
+        List<GroupFitnessClass> classes = session.createQuery(
+                "FROM GroupFitnessClass",
+                GroupFitnessClass.class
+        ).getResultList();
+
+        if (classes.isEmpty()) {
+            System.out.println("No classes found in the system");
+            return null;
+        }
+
+        for (GroupFitnessClass gfc : classes) {
+            System.out.println(
+                "ID: " + gfc.getClassId() +
+                " | Name: " + gfc.getClassName() +
+                " | Capacity: " + gfc.getCapacity() +
+                " | Current: " + gfc.getCurrentMembers() +
+                " | Trainer: " + (gfc.getTrainer() != null ? gfc.getTrainer().getName() : "None")
+            );
+        }
+        System.out.println("===========================================================");
+
+        GroupFitnessClass selected = null;
+
+        while (selected == null) {
+            try {
+                System.out.print("\nEnter the Class ID: ");
+                Long classId = Long.parseLong(scanner.nextLine().trim());
+
+                // PK lookup on classId
+                selected = session.get(GroupFitnessClass.class, classId);
+
+                if (selected == null) {
+                    System.out.println("No class found with ID: " + classId);
+                    System.out.println("1. Retry");
+                    System.out.println("2. Quit");
+                    System.out.print("Enter your choice: ");
+                    int choice = Integer.parseInt(scanner.nextLine().trim());
+                    if (choice == 2) {
+                        return null;
+                    }
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a numeric class ID.");
+            }
+        }
+
+        return selected;
+    }
+
+    // ====== just for testing ======
+
+    /***************************************************************
+     * 1) Define new classes
+     ***************************************************************/
+    private static void adminDefineNewClass(Session session) {
+        Scanner scanner = HibernateUtil.getScanner();
+
+        try {
+            System.out.print("Enter class name: ");
+            String className = scanner.nextLine().trim();
+
+            if (className.isEmpty()) {
+                System.out.println("Class name cannot be empty.");
+                return;
+            }
+
+            System.out.print("Assign a trainer now? (y/n): ");
+            String ans = scanner.nextLine().trim().toLowerCase();
+
+            Trainer trainer = null;
+            if (ans.equals("y")) {
+                trainer = FunctionsTrainer.retrieveTrainer(session);
+                if (trainer == null) {
+                    System.out.println("No trainer selected. Class will be created without a trainer.");
+                }
+            }
+
+            session.beginTransaction();
+
+            GroupFitnessClass gfc = new GroupFitnessClass();
+            gfc.setClassName(className);
+            if (trainer != null) {
+                gfc.setTrainer(trainer);
+            }
+
+            session.persist(gfc);
+            session.getTransaction().commit();
+
+            System.out.println("New class created with ID " + gfc.getClassId() + ".");
+
+        } catch (Exception e) {
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+            System.out.println("Failed to define new class: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+        /***************************************************************
+     * 2) Assign trainer / room / time to a class
+     ***************************************************************/
+        private static void adminAssignTrainerRoomTime(Session session, Admin admin) {
+        Scanner scanner = HibernateUtil.getScanner();
+
+        try {
+            GroupFitnessClass gfc = retrieveClass(session);
+            if (gfc == null) {
+                return;
+            }
+
+            Trainer trainer = FunctionsTrainer.retrieveTrainer(session);
+            if (trainer == null) {
+                System.out.println("No trainer selected. Aborting.");
+                return;
+            }
+
+            System.out.print("Room number: ");
+            int roomNum = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.print("Day of week (e.g., MONDAY): ");
+            String dayInput = scanner.nextLine().trim().toUpperCase();
+
+            DayOfWeek dayOfWeek;
+            try {
+                dayOfWeek = DayOfWeek.valueOf(dayInput);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid day of week. Aborting.");
+                return;
+            }
+
+            System.out.print("Start time (hour 0-23): ");
+            int startHour = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.print("End time (hour 0-23): ");
+            int endHour = Integer.parseInt(scanner.nextLine().trim());
+
+            session.beginTransaction();
+
+            gfc.setTrainer(trainer);
+
+            List<ClassSchedule> schedules = session.createQuery(
+                    "FROM ClassSchedule cs WHERE cs.groupFitnessClass = :gfc",
+                    ClassSchedule.class
+            ).setParameter("gfc", gfc)
+            .getResultList();
+
+            ClassSchedule schedule;
+
+            if (schedules.isEmpty()) {
+                schedule = new ClassSchedule(gfc, admin);
+                schedule.setDetails(roomNum, dayOfWeek, startHour, endHour);
+                session.persist(schedule);
+
+            } else {
+                schedule = schedules.get(0);
+                ClassScheduleDetails details = schedule.getDetails();
+                if (details == null) {
+                    schedule.setDetails(roomNum, dayOfWeek, startHour, endHour);
+                } else {
+                    details.setRoomNum(roomNum);
+                    Schedule scheduleTime = details.getScheduleTime();
+                    if (scheduleTime == null) {
+                        scheduleTime = new Schedule(dayOfWeek, startHour, endHour);
+                        details.setScheduleTime(scheduleTime);
+                    } else {
+                        scheduleTime.setDayOfWeek(dayOfWeek);
+                        scheduleTime.setStartTime(startHour);
+                        scheduleTime.setEndTime(endHour);
+                    }
+                }
+            }
+
+            session.getTransaction().commit();
+
+            System.out.println("Trainer, room, and time assigned for class \"" +
+                    gfc.getClassName() + "\" (Class ID: " + gfc.getClassId() + ").");
+
+        } catch (NumberFormatException nfe) {
+            System.out.println("Invalid numeric input. Cancelled.");
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+        } catch (Exception e) {
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+            System.out.println("Failed to assign trainer/room/time: " + e.getMessage());
+            e.printStackTrace();
+        }
+}
+
+
+
+    private static void adminUpdateSchedule(Session session) {
+        System.out.println("[TODO] Update class schedule");
     }
 
 }
