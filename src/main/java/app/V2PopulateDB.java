@@ -168,17 +168,17 @@ public class V2PopulateDB {
         sched2.setDetails(1, "THURSDAY", 16, 17);
 
         GroupFitnessClass coreBlast = new GroupFitnessClass(trainer3, "Core Blast");
+        coreBlast.addMember(member7);
+        coreBlast.addMember(member8);
         session.persist(coreBlast);
-        session.persist(new GroupFitnessClassMembers(coreBlast, member7));
-        session.persist(new GroupFitnessClassMembers(coreBlast, member8));
         ClassSchedule sched3 = new ClassSchedule(coreBlast, admin3);
         session.persist(sched3);
         sched3.setDetails(1, "FRIDAY", 11, 12);
 
         GroupFitnessClass sundayStretch = new GroupFitnessClass(trainer4, "Sunday Stretch");
+        sundayStretch.addMember(member9);
+        sundayStretch.addMember(member10);
         session.persist(sundayStretch);
-        session.persist(new GroupFitnessClassMembers(sundayStretch, member9));
-        session.persist(new GroupFitnessClassMembers(sundayStretch, member10));
         ClassSchedule sched4 = new ClassSchedule(sundayStretch, admin1);
         session.persist(sched4);
         sched4.setDetails(1, "SUNDAY", 11, 12);

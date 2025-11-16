@@ -238,13 +238,13 @@ public class FunctionsAdmin {
                 String choice = scanner.nextLine().trim();
                 switch (choice) {
                     case "1":
-                        adminDefineNewClass(session);
+                        adminClassManagementDefineNewClass(session);
                         break;
                     case "2":
-                        adminAssignTrainerRoomTime(session, admin);
+                        adminClassManagementAssignTrainerRoomTime(session, admin);
                         break;
                     case "3":
-                        adminUpdateSchedule(session);
+                        adminClassManagementUpdateSchedule(session);
                         break;
                     case "0":
                         System.out.println("Returning...");
@@ -261,69 +261,12 @@ public class FunctionsAdmin {
         }
     }
 
-    /***************************************************************
-     * retrieveClass
-     ***************************************************************/
-    private static GroupFitnessClass retrieveClass(Session session) {
-        Scanner scanner = HibernateUtil.getScanner();
-
-        System.out.println("\n=================== Existing Classes ===================== ");
-        List<GroupFitnessClass> classes = session.createQuery(
-                "FROM GroupFitnessClass",
-                GroupFitnessClass.class
-        ).getResultList();
-
-        if (classes.isEmpty()) {
-            System.out.println("No classes found in the system");
-            return null;
-        }
-
-        for (GroupFitnessClass gfc : classes) {
-            System.out.println(
-                "ID: " + gfc.getClassId() +
-                " | Name: " + gfc.getClassName() +
-                " | Capacity: " + gfc.getCapacity() +
-                " | Current: " + gfc.getCurrentMembers() +
-                " | Trainer: " + (gfc.getTrainer() != null ? gfc.getTrainer().getName() : "None")
-            );
-        }
-        System.out.println("===========================================================");
-
-        GroupFitnessClass selected = null;
-
-        while (selected == null) {
-            try {
-                System.out.print("\nEnter the Class ID: ");
-                Long classId = Long.parseLong(scanner.nextLine().trim());
-
-                // PK lookup on classId
-                selected = session.get(GroupFitnessClass.class, classId);
-
-                if (selected == null) {
-                    System.out.println("No class found with ID: " + classId);
-                    System.out.println("1. Retry");
-                    System.out.println("2. Quit");
-                    System.out.print("Enter your choice: ");
-                    int choice = Integer.parseInt(scanner.nextLine().trim());
-                    if (choice == 2) {
-                        return null;
-                    }
-                }
-
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a numeric class ID.");
-            }
-        }
-
-        return selected;
-    }
-
     // ====== just for testing ======
 
     /***************************************************************
-     * 1) Define new classes
+     * adminClassManagementDefineNewClass
      ***************************************************************/
-    private static void adminDefineNewClass(Session session) {
+    private static void adminClassManagementDefineNewClass(Session session) {
         Scanner scanner = HibernateUtil.getScanner();
 
         try {
@@ -335,15 +278,10 @@ public class FunctionsAdmin {
                 return;
             }
 
-            System.out.print("Assign a trainer now? (y/n): ");
-            String ans = scanner.nextLine().trim().toLowerCase();
-
-            Trainer trainer = null;
-            if (ans.equals("y")) {
-                trainer = FunctionsTrainer.retrieveTrainer(session);
-                if (trainer == null) {
-                    System.out.println("No trainer selected. Class will be created without a trainer.");
-                }
+            Trainer trainer = FunctionsTrainer.retrieveTrainer(session);
+            if (trainer == null) {
+                System.out.println("No trainer selected. Class will be created without a trainer.");
+                return;
             }
 
             session.beginTransaction();
@@ -353,6 +291,34 @@ public class FunctionsAdmin {
             if (trainer != null) {
                 gfc.setTrainer(trainer);
             }
+            /*
+             * I removed the option to choose whether you want a trainer. Trainer should be
+             * mandatory
+             * 
+             * What you need to change. Create the gfc with this. GroupFitnessClass gfc =
+             * new GroupFitnessClass(trainer, className);
+             * 
+             * You must also update the trainers availability. I would ask for the class
+             * time now. Check out what I did in memberPtSessionSchedulingBookPrompt()
+             * on how to update the time
+             * 
+             * This will automatically create set the capacity at the default. However, you
+             * should manually ask the user for the capacity.
+             * If valid, update the capacity (is an int, and the current members is not
+             * greater than capacity (not relevant now, but when they update it))
+             * 
+             * 
+             * 
+             * You must also update the schedule entity. This includes the fitnessclass, and
+             * admin
+             * You also need the sched details, the roomnumber, dayofweek, start and end
+             * time
+             * Example sched4.setDetails(1, "SUNDAY", 11, 12);
+             * 
+             * 
+             * 
+             * 
+             */
 
             session.persist(gfc);
             session.getTransaction().commit();
@@ -368,14 +334,14 @@ public class FunctionsAdmin {
         }
     }
 
-        /***************************************************************
-     * 2) Assign trainer / room / time to a class
+    /***************************************************************
+     * adminClassManagementAssignTrainerRoomTime
      ***************************************************************/
-        private static void adminAssignTrainerRoomTime(Session session, Admin admin) {
+    private static void adminClassManagementAssignTrainerRoomTime(Session session, Admin admin) {
         Scanner scanner = HibernateUtil.getScanner();
 
         try {
-            GroupFitnessClass gfc = retrieveClass(session);
+            GroupFitnessClass gfc = FunctionsExtra.retrieveGroupFitnessClass(session);
             if (gfc == null) {
                 return;
             }
@@ -412,9 +378,8 @@ public class FunctionsAdmin {
 
             List<ClassSchedule> schedules = session.createQuery(
                     "FROM ClassSchedule cs WHERE cs.groupFitnessClass = :gfc",
-                    ClassSchedule.class
-            ).setParameter("gfc", gfc)
-            .getResultList();
+                    ClassSchedule.class).setParameter("gfc", gfc)
+                    .getResultList();
 
             ClassSchedule schedule;
 
@@ -459,11 +424,12 @@ public class FunctionsAdmin {
             System.out.println("Failed to assign trainer/room/time: " + e.getMessage());
             e.printStackTrace();
         }
-}
+    }
 
-
-
-    private static void adminUpdateSchedule(Session session) {
+    /***************************************************************
+     * adminClassManagementUpdateSchedule
+     ***************************************************************/
+    private static void adminClassManagementUpdateSchedule(Session session) {
         System.out.println("[TODO] Update class schedule");
     }
 

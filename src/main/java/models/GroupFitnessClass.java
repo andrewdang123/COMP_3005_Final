@@ -39,7 +39,7 @@ public class GroupFitnessClass {
         this.trainer = trainer;
         this.className = className;
         this.currentMembers = 0;
-        this.capacity = 4;
+        this.capacity = 5;
     }
 
     // --- Safe counter adjustment ---
