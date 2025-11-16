@@ -232,8 +232,7 @@ public class FunctionsAdmin {
                 System.out.println("0. Exit");
                 System.out.println("1. Define new class");
                 System.out.println("2. Assign trainer / room / time to a class");
-                System.out.println("3. Update existing class schedule");
-                System.out.print("Enter choice (0 - 3): ");
+                System.out.print("Enter choice (0 - 2): ");
 
                 String choice = scanner.nextLine().trim();
                 switch (choice) {
@@ -242,9 +241,6 @@ public class FunctionsAdmin {
                         break;
                     case "2":
                         adminClassManagementAssignTrainerRoomTime(session, admin);
-                        break;
-                    case "3":
-                        adminClassManagementUpdateSchedule(session);
                         break;
                     case "0":
                         System.out.println("Returning...");
@@ -300,7 +296,9 @@ public class FunctionsAdmin {
              * 
              * You must also update the trainers availability. I would ask for the class
              * time now. Check out what I did in memberPtSessionSchedulingBookPrompt()
-             * on how to update the time
+             * on how to update the time. I created two functions called
+             * trainerCheckAvailability and trainerAdjustAvailability
+             * which would be good help for you
              * 
              * This will automatically create set the capacity at the default. However, you
              * should manually ask the user for the capacity.
@@ -424,13 +422,6 @@ public class FunctionsAdmin {
             System.out.println("Failed to assign trainer/room/time: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    /***************************************************************
-     * adminClassManagementUpdateSchedule
-     ***************************************************************/
-    private static void adminClassManagementUpdateSchedule(Session session) {
-        System.out.println("[TODO] Update class schedule");
     }
 
 }

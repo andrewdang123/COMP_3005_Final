@@ -1,5 +1,6 @@
 package app;
 
+import java.time.LocalTime;
 import java.util.*;
 
 import org.hibernate.Session;
@@ -69,6 +70,53 @@ public class FunctionsTrainer {
             System.out.println("Unexpected error: " + e.getMessage());
             return null;
         }
+    }
+
+    /***************************************************************
+     * trainerCheckAvailability
+     ***************************************************************/
+    public static boolean trainerCheckAvailability(Trainer trainer, String dayInput, int startHour,
+            int endHour) {
+        return trainer.getAvailabilities().stream()
+                .anyMatch(a -> a.getDayOfWeek().toString().equalsIgnoreCase(dayInput)
+                        && startHour >= a.getStartTime().getHour()
+                        && endHour <= a.getEndTime().getHour());
+    }
+
+    /***************************************************************
+     * trainerAdjustAvailability
+     ***************************************************************/
+    public static void trainerAdjustAvailability(Trainer trainer, String dayInput, int startHour,
+            int endHour) {
+        List<TrainerAvailability> updatedAvailabilities = new ArrayList<>();
+        for (TrainerAvailability a : trainer.getAvailabilities()) {
+            if (a.getDayOfWeek().equals(java.time.DayOfWeek.valueOf(dayInput))) {
+                LocalTime availStart = a.getStartTime();
+                LocalTime availEnd = a.getEndTime();
+                if (availStart.getHour() <= startHour && availEnd.getHour() >= endHour) {
+                    if (availStart.getHour() < startHour) {
+                        updatedAvailabilities.add(new TrainerAvailability(
+                                trainer,
+                                a.getDayOfWeek().toString(),
+                                availStart.getHour(),
+                                startHour));
+                    }
+                    if (availEnd.getHour() > endHour) {
+                        updatedAvailabilities.add(new TrainerAvailability(
+                                trainer,
+                                a.getDayOfWeek().toString(),
+                                endHour,
+                                availEnd.getHour()));
+                    }
+                } else {
+                    updatedAvailabilities.add(a);
+                }
+            } else {
+                updatedAvailabilities.add(a);
+            }
+        }
+        trainer.getAvailabilities().clear();
+        trainer.getAvailabilities().addAll(updatedAvailabilities);
     }
 
     /***************************************************************

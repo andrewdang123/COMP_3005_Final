@@ -306,35 +306,7 @@ public class FunctionsMember {
             session.persist(ptSession);
 
             // Update trainer availability (split or adjust slots)
-            List<TrainerAvailability> updatedAvailabilities = new ArrayList<>();
-            for (TrainerAvailability a : trainer.getAvailabilities()) {
-                if (a.getDayOfWeek().equals(java.time.DayOfWeek.valueOf(dayInput))) {
-                    LocalTime availStart = a.getStartTime();
-                    LocalTime availEnd = a.getEndTime();
-                    if (availStart.getHour() <= startHour && availEnd.getHour() >= endHour) {
-                        if (availStart.getHour() < startHour) {
-                            updatedAvailabilities.add(new TrainerAvailability(
-                                    trainer,
-                                    a.getDayOfWeek().toString(),
-                                    availStart.getHour(),
-                                    startHour));
-                        }
-                        if (availEnd.getHour() > endHour) {
-                            updatedAvailabilities.add(new TrainerAvailability(
-                                    trainer,
-                                    a.getDayOfWeek().toString(),
-                                    endHour,
-                                    availEnd.getHour()));
-                        }
-                    } else {
-                        updatedAvailabilities.add(a);
-                    }
-                } else {
-                    updatedAvailabilities.add(a);
-                }
-            }
-            trainer.getAvailabilities().clear();
-            trainer.getAvailabilities().addAll(updatedAvailabilities);
+            FunctionsTrainer.trainerAdjustAvailability(trainer, dayInput, startHour, endHour);
 
             session.merge(trainer);
             session.getTransaction().commit();
@@ -379,10 +351,7 @@ public class FunctionsMember {
             }
 
             // --- Check trainer availability ---
-            boolean available = trainer.getAvailabilities().stream()
-                    .anyMatch(a -> a.getDayOfWeek().toString().equalsIgnoreCase(dayInput)
-                            && startHour >= a.getStartTime().getHour()
-                            && endHour <= a.getEndTime().getHour());
+            boolean available = FunctionsTrainer.trainerCheckAvailability(trainer, dayInput, startHour, endHour);
 
             if (!available) {
                 System.out.println("Trainer is not available on that day/time. Cancelling booking.");
