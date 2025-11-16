@@ -230,7 +230,7 @@ public class FunctionsAdmin {
             while (true) {
                 System.out.println("\n===================== Class Management =====================");
                 System.out.println("0. Exit");
-                System.out.println("1. Define new class");
+                System.out.println("1. Define a new class");
                 System.out.println("2. Assign trainer / room / time to a class");
                 System.out.print("Enter choice (0 - 2): ");
 

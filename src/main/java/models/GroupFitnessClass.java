@@ -130,7 +130,7 @@ public class GroupFitnessClass {
 
     @Override
     public String toString() {
-        return "ID: " + getClassId() + " | Name: " + getClassName();
+        return "ID: " + getClassId() + " | Name: " + getClassName() + " | Trainer: " + trainer.getName();
     }
 
 }
