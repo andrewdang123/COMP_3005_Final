@@ -279,6 +279,7 @@ public class FunctionsAdmin {
                 System.out.println("No trainer selected. Class will be created without a trainer.");
                 return;
             }
+            trainer.printAvailabilities();
 
             session.beginTransaction();
 
