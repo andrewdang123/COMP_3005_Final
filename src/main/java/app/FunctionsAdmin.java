@@ -237,7 +237,7 @@ public class FunctionsAdmin {
                 String choice = scanner.nextLine().trim();
                 switch (choice) {
                     case "1":
-                        adminClassManagementDefineNewClass(session);
+                        adminClassManagementDefineNewClass(session, admin);
                         break;
                     case "2":
                         adminClassManagementAssignTrainerRoomTime(session, admin);
@@ -262,7 +262,7 @@ public class FunctionsAdmin {
     /***************************************************************
      * adminClassManagementDefineNewClass
      ***************************************************************/
-    private static void adminClassManagementDefineNewClass(Session session) {
+    private static void adminClassManagementDefineNewClass(Session session, Admin admin) {
         Scanner scanner = HibernateUtil.getScanner();
 
         try {
@@ -281,13 +281,31 @@ public class FunctionsAdmin {
             }
             trainer.printAvailabilities();
 
+            // ---- New: ask for capacity (optional) ----
+            int capacity = 4;
+            System.out.print("Enter class capacity (default 4): ");
+            String capInput = scanner.nextLine().trim();
+            if (!capInput.isEmpty()) {
+                try {
+                    int capParsed = Integer.parseInt(capInput);
+                    if (capParsed <= 0) {
+                        System.out.println("Capacity must be positive. default 4.");
+                    } else {
+                        capacity = capParsed;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid capacity. default 4.");
+                }
+            }
+
             session.beginTransaction();
 
-            GroupFitnessClass gfc = new GroupFitnessClass();
-            gfc.setClassName(className);
+            GroupFitnessClass gfc = new GroupFitnessClass(trainer, className);
+            gfc.setCapacity(capacity);
+            /*gfc.setClassName(className);
             if (trainer != null) {
                 gfc.setTrainer(trainer);
-            }
+            }*/
             /*
              * I removed the option to choose whether you want a trainer. Trainer should be
              * mandatory
@@ -307,16 +325,12 @@ public class FunctionsAdmin {
              * greater than capacity (not relevant now, but when they update it))
              * 
              * 
-             * 
              * You must also update the schedule entity. This includes the fitnessclass, and
              * admin
              * You also need the sched details, the roomnumber, dayofweek, start and end
              * time
              * Example sched4.setDetails(1, "SUNDAY", 11, 12);
-             * 
-             * 
-             * 
-             * 
+             *
              */
 
             session.persist(gfc);
