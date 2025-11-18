@@ -281,59 +281,66 @@ public class FunctionsAdmin {
             }
             trainer.printAvailabilities();
 
-            // ---- New: ask for capacity (optional) ----
-            int capacity = 4;
-            System.out.print("Enter class capacity (default 4): ");
+            int capacity = 5;
+            System.out.print("Enter class capacity (default 5): ");
             String capInput = scanner.nextLine().trim();
             if (!capInput.isEmpty()) {
                 try {
                     int capParsed = Integer.parseInt(capInput);
                     if (capParsed <= 0) {
-                        System.out.println("Capacity must be positive. default 4.");
+                        System.out.println("Capacity must be positive. default 5.");
                     } else {
                         capacity = capParsed;
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid capacity. default 4.");
+                    System.out.println("Invalid capacity. default 5.");
                 }
+            }
+
+            System.out.print("Enter training day (e.g., MONDAY): ");
+            String dayInput = scanner.nextLine().trim().toUpperCase();
+            try {
+                DayOfWeek.valueOf(dayInput);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid day entered. Cancelling class creation.");
+                return;
+            }
+
+            int startHour, endHour, roomNum;
+            try {
+                System.out.print("Enter start time (hour 0-23): ");
+                startHour = Integer.parseInt(scanner.nextLine().trim());
+
+                System.out.print("Enter end time (hour 0-23): ");
+                endHour = Integer.parseInt(scanner.nextLine().trim());
+
+                System.out.print("Enter room number: ");
+                roomNum = Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid numeric input. Cancelling class creation.");
+                return;
+            }
+
+            boolean available = FunctionsTrainer.trainerCheckAvailability(
+                    trainer, dayInput, startHour, endHour);
+
+            if (!available) {
+                System.out.println("Trainer is not available on that day/time. Cancelling class creation.");
+                return;
             }
 
             session.beginTransaction();
 
             GroupFitnessClass gfc = new GroupFitnessClass(trainer, className);
             gfc.setCapacity(capacity);
-            /*gfc.setClassName(className);
-            if (trainer != null) {
-                gfc.setTrainer(trainer);
-            }*/
-            /*
-             * I removed the option to choose whether you want a trainer. Trainer should be
-             * mandatory
-             * 
-             * What you need to change. Create the gfc with this. GroupFitnessClass gfc =
-             * new GroupFitnessClass(trainer, className);
-             * 
-             * You must also update the trainers availability. I would ask for the class
-             * time now. Check out what I did in memberPtSessionSchedulingBookPrompt()
-             * on how to update the time. I created two functions called
-             * trainerCheckAvailability and trainerAdjustAvailability
-             * which would be good help for you
-             * 
-             * This will automatically create set the capacity at the default. However, you
-             * should manually ask the user for the capacity.
-             * If valid, update the capacity (is an int, and the current members is not
-             * greater than capacity (not relevant now, but when they update it))
-             * 
-             * 
-             * You must also update the schedule entity. This includes the fitnessclass, and
-             * admin
-             * You also need the sched details, the roomnumber, dayofweek, start and end
-             * time
-             * Example sched4.setDetails(1, "SUNDAY", 11, 12);
-             *
-             */
-
+        
             session.persist(gfc);
+            ClassSchedule schedule = new ClassSchedule(gfc, admin);
+            schedule.setDetails(roomNum, dayInput, startHour, endHour);
+            session.persist(schedule);
+            FunctionsTrainer.trainerAdjustAvailability(trainer, dayInput, startHour, endHour);
+            session.merge(trainer);
+            
             session.getTransaction().commit();
 
             System.out.println("New class created with ID " + gfc.getClassId() + ".");
