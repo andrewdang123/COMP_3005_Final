@@ -150,7 +150,7 @@ public class FunctionsTrainer {
                             availEnd.getHour()));
                 }
 
-                session.remove(avail);
+                trainer.removeAvailability(session, avail);
                 for (TrainerAvailability t : newAvailabilities) {
                     session.persist(t);
                     trainer.getAvailabilities().add(t);

@@ -2,6 +2,8 @@ package models;
 
 import jakarta.persistence.*;
 import java.util.*;
+import org.hibernate.Session;
+
 
 @Entity
 @Table(name = "trainer")
@@ -58,9 +60,11 @@ public class Trainer {
         availability.setTrainer(this);
     }
 
-    public void removeAvailability(TrainerAvailability availability) {
-        availabilities.remove(availability);
+    public void removeAvailability(Session session, TrainerAvailability availability) {
+        if (availability == null) return;
+        this.availabilities.remove(availability);
         availability.setTrainer(null);
+        session.remove(availability);
     }
 
     public void printAvailabilities() {
