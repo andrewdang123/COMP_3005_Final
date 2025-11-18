@@ -281,7 +281,7 @@ public class FunctionsAdmin {
             }
             trainer.printAvailabilities();
 
-            int capacity = 5;
+           int capacity = 5;
             System.out.print("Enter class capacity (press Enter to use default 5): ");
             String capInput = scanner.nextLine().trim();
             if (!capInput.isEmpty()) {
@@ -299,6 +299,7 @@ public class FunctionsAdmin {
                     System.out.println("Invalid capacity. Using default 5.");
                 }
             }
+
 
 
             System.out.print("Enter training day (e.g., MONDAY): ");
