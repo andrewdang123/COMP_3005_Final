@@ -282,20 +282,24 @@ public class FunctionsAdmin {
             trainer.printAvailabilities();
 
             int capacity = 5;
-            System.out.print("Enter class capacity (default 5): ");
+            System.out.print("Enter class capacity (press Enter to use default 5): ");
             String capInput = scanner.nextLine().trim();
             if (!capInput.isEmpty()) {
                 try {
                     int capParsed = Integer.parseInt(capInput);
-                    if (capParsed <= 0) {
-                        System.out.println("Capacity must be positive. default 5.");
+
+                    if (capParsed < 5) {
+                        System.out.println("Capacity must be at least 5. Setting capacity to 5.");
+                        capacity = 5;
                     } else {
                         capacity = capParsed;
                     }
+
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid capacity. default 5.");
+                    System.out.println("Invalid capacity. Using default 5.");
                 }
             }
+
 
             System.out.print("Enter training day (e.g., MONDAY): ");
             String dayInput = scanner.nextLine().trim().toUpperCase();
