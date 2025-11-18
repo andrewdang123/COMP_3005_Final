@@ -372,6 +372,8 @@ public class FunctionsAdmin {
                 return;
             }
 
+            trainer.printAvailabilities();
+
             System.out.print("Room number: ");
             int roomNum = Integer.parseInt(scanner.nextLine().trim());
 
@@ -392,39 +394,44 @@ public class FunctionsAdmin {
             System.out.print("End time (hour 0-23): ");
             int endHour = Integer.parseInt(scanner.nextLine().trim());
 
+            boolean available = FunctionsTrainer.trainerCheckAvailability(
+                    trainer, dayInput, startHour, endHour);
+            if (!available) {
+                System.out.println("Trainer is not available on that day/time. Cancelling class creation.");
+                return;
+            }
+
             session.beginTransaction();
 
-            gfc.setTrainer(trainer);
+            
 
             List<ClassSchedule> schedules = session.createQuery(
                     "FROM ClassSchedule cs WHERE cs.groupFitnessClass = :gfc",
                     ClassSchedule.class).setParameter("gfc", gfc)
                     .getResultList();
 
-            ClassSchedule schedule;
+            ClassSchedule schedule = schedules.get(0);
+            ClassScheduleDetails details = schedule.getDetails();
 
-            if (schedules.isEmpty()) {
-                schedule = new ClassSchedule(gfc, admin);
-                schedule.setDetails(roomNum, dayOfWeek, startHour, endHour);
-                session.persist(schedule);
 
+            Trainer oldTrainer = gfc.getTrainer();
+            Schedule oldTrainerSchedule = details.getScheduleTime(); 
+
+            FunctionsTrainer.trainerRestoreAvailability(session, oldTrainer, oldTrainerSchedule);
+
+            gfc.setTrainer(trainer);
+            FunctionsTrainer.trainerAdjustAvailability(trainer, dayInput, startHour, endHour);
+            session.merge(trainer);
+
+            details.setRoomNum(roomNum);
+            Schedule scheduleTime = details.getScheduleTime();
+            if (scheduleTime == null) {
+                scheduleTime = new Schedule(dayOfWeek, startHour, endHour);
+                details.setScheduleTime(scheduleTime);
             } else {
-                schedule = schedules.get(0);
-                ClassScheduleDetails details = schedule.getDetails();
-                if (details == null) {
-                    schedule.setDetails(roomNum, dayOfWeek, startHour, endHour);
-                } else {
-                    details.setRoomNum(roomNum);
-                    Schedule scheduleTime = details.getScheduleTime();
-                    if (scheduleTime == null) {
-                        scheduleTime = new Schedule(dayOfWeek, startHour, endHour);
-                        details.setScheduleTime(scheduleTime);
-                    } else {
-                        scheduleTime.setDayOfWeek(dayOfWeek);
-                        scheduleTime.setStartTime(startHour);
-                        scheduleTime.setEndTime(endHour);
-                    }
-                }
+                scheduleTime.setDayOfWeek(dayOfWeek);
+                scheduleTime.setStartTime(startHour);
+                scheduleTime.setEndTime(endHour);
             }
 
             session.getTransaction().commit();

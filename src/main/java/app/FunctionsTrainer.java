@@ -13,6 +13,7 @@ import models.LatestHealthMetricDTO;
 import models.Member;
 import models.PersonalTrainingSession;
 import models.PersonalTrainingSessionDetails;
+import models.Schedule;
 import models.Trainer;
 import models.TrainerAvailability;
 import services.MemberService;
@@ -117,6 +118,57 @@ public class FunctionsTrainer {
         }
         trainer.getAvailabilities().clear();
         trainer.getAvailabilities().addAll(updatedAvailabilities);
+    }
+
+    /***************************************************************
+     * trainerRestoreAvailability
+     ***************************************************************/
+    public static void trainerRestoreAvailability(Session session, Trainer trainer, Schedule canceledTime) {
+        // --- Restore trainer availability ---
+        boolean restored = false;
+        for (TrainerAvailability avail : trainer.getAvailabilities()) {
+            if (avail.getDayOfWeek().equals(canceledTime.getDayOfWeek())) {
+                LocalTime availStart = avail.getStartTime();
+                LocalTime availEnd = avail.getEndTime();
+
+                if (availEnd.getHour() <= canceledTime.getStartTime().getHour() ||
+                        availStart.getHour() >= canceledTime.getEndTime().getHour())
+                    continue;
+
+                // Split availability
+                List<TrainerAvailability> newAvailabilities = new ArrayList<>();
+                if (availStart.getHour() < canceledTime.getStartTime().getHour()) {
+                    newAvailabilities.add(new TrainerAvailability(trainer,
+                            avail.getDayOfWeek().toString(),
+                            availStart.getHour(),
+                            canceledTime.getStartTime().getHour()));
+                }
+                if (availEnd.getHour() > canceledTime.getEndTime().getHour()) {
+                    newAvailabilities.add(new TrainerAvailability(trainer,
+                            avail.getDayOfWeek().toString(),
+                            canceledTime.getEndTime().getHour(),
+                            availEnd.getHour()));
+                }
+
+                session.remove(avail);
+                for (TrainerAvailability t : newAvailabilities) {
+                    session.persist(t);
+                    trainer.getAvailabilities().add(t);
+                }
+
+                restored = true;
+                break;
+            }
+        }
+
+        if (!restored) {
+            TrainerAvailability restoredSlot = new TrainerAvailability(trainer,
+                    canceledTime.getDayOfWeek().toString(),
+                    canceledTime.getStartTime().getHour(),
+                    canceledTime.getEndTime().getHour());
+            session.persist(restoredSlot);
+            trainer.getAvailabilities().add(restoredSlot);
+        }
     }
 
     /***************************************************************
