@@ -305,9 +305,6 @@ public class FunctionsMember {
 
             session.persist(ptSession);
 
-            // Update trainer availability (split or adjust slots)
-            FunctionsTrainer.trainerAdjustAvailability(trainer, dayInput, startHour, endHour);
-
             session.merge(trainer);
             session.getTransaction().commit();
 

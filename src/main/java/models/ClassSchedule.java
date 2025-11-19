@@ -2,6 +2,7 @@ package models;
 
 import java.time.DayOfWeek;
 
+import app.FunctionsTrainer;
 import jakarta.persistence.*;
 
 @Entity
@@ -31,6 +32,30 @@ public class ClassSchedule {
     public ClassSchedule(GroupFitnessClass groupFitnessClass, Admin admin) {
         this.groupFitnessClass = groupFitnessClass;
         this.admin = admin;
+    }
+
+    @PrePersist
+    public void beforeInsert() {
+        Trainer trainer = this.getGroupFitnessClass().getTrainer();
+        String dayOfWeek = this.getDetails().getScheduleTime().getDayOfWeek().toString();
+        int startTime = this.getDetails().getScheduleTime().getStartTime().getHour();
+        int endTime = this.getDetails().getScheduleTime().getEndTime().getHour();
+        if (!FunctionsTrainer.trainerCheckAvailability(trainer, dayOfWeek, startTime, endTime)) {
+            throw new RuntimeException("Trainer " + trainer.getName() + " unavailable at that time");
+        }
+        FunctionsTrainer.trainerAdjustAvailability(trainer, dayOfWeek, startTime, endTime);
+    }
+
+    @PreUpdate
+    public void beforeUpdate() {
+        Trainer trainer = this.getGroupFitnessClass().getTrainer();
+        String dayOfWeek = this.getDetails().getScheduleTime().getDayOfWeek().toString();
+        int startTime = this.getDetails().getScheduleTime().getStartTime().getHour();
+        int endTime = this.getDetails().getScheduleTime().getEndTime().getHour();
+        if (!FunctionsTrainer.trainerCheckAvailability(trainer, dayOfWeek, startTime, endTime)) {
+            throw new RuntimeException("Trainer " + trainer.getName() + " unavailable at that time");
+        }
+        FunctionsTrainer.trainerAdjustAvailability(trainer, dayOfWeek, startTime, endTime);
     }
 
     // --- Helper method to set details ---

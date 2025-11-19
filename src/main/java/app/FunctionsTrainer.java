@@ -5,14 +5,12 @@ import java.util.*;
 
 import org.hibernate.Session;
 
-import jakarta.persistence.TypedQuery;
 import models.ClassSchedule;
 import models.ClassScheduleDetails;
 import models.GroupFitnessClass;
 import models.LatestHealthMetricDTO;
 import models.Member;
 import models.PersonalTrainingSession;
-import models.PersonalTrainingSessionDetails;
 import models.Schedule;
 import models.Trainer;
 import models.TrainerAvailability;

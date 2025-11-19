@@ -103,7 +103,6 @@ public class GroupFitnessClass {
         // Add new member
         GroupFitnessClassMembers classMember = new GroupFitnessClassMembers(this, member);
         members.add(classMember);
-        System.out.println("Member added successfully to class: " + className);
         return true;
     }
 

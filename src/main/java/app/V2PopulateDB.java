@@ -81,7 +81,7 @@ public class V2PopulateDB {
 
         Trainer trainer2 = new Trainer("Jordan Price", "jordan_price@gmail.com");
         TrainerAvailability t2a1 = new TrainerAvailability(trainer2, "TUESDAY", 8, 12);
-        TrainerAvailability t2a2 = new TrainerAvailability(trainer2, "THURSDAY", 14, 18);
+        TrainerAvailability t2a2 = new TrainerAvailability(trainer2, "THURSDAY", 14, 16);
         TrainerAvailability t2a3 = new TrainerAvailability(trainer2, "MONDAY", 16, 18);
         trainer2.addAvailability(t2a1);
         trainer2.addAvailability(t2a2);
@@ -155,8 +155,8 @@ public class V2PopulateDB {
         session.persist(new GroupFitnessClassMembers(strength101, member4));
 
         ClassSchedule sched1 = new ClassSchedule(strength101, admin1);
-        session.persist(sched1);
         sched1.setDetails(1, "MONDAY", 15, 16);
+        session.persist(sched1);
 
         GroupFitnessClass mobilityFlow = new GroupFitnessClass(trainer2, "Mobility Flow");
         session.persist(mobilityFlow);
@@ -164,24 +164,24 @@ public class V2PopulateDB {
         mobilityFlow.addMember(member3);
 
         ClassSchedule sched2 = new ClassSchedule(mobilityFlow, admin2);
+        sched2.setDetails(1, "THURSDAY", 15, 16);
         session.persist(sched2);
-        sched2.setDetails(1, "THURSDAY", 16, 17);
 
         GroupFitnessClass coreBlast = new GroupFitnessClass(trainer3, "Core Blast");
         coreBlast.addMember(member7);
         coreBlast.addMember(member8);
         session.persist(coreBlast);
         ClassSchedule sched3 = new ClassSchedule(coreBlast, admin3);
-        session.persist(sched3);
         sched3.setDetails(1, "FRIDAY", 11, 12);
+        session.persist(sched3);
 
         GroupFitnessClass sundayStretch = new GroupFitnessClass(trainer4, "Sunday Stretch");
         sundayStretch.addMember(member9);
         sundayStretch.addMember(member10);
         session.persist(sundayStretch);
         ClassSchedule sched4 = new ClassSchedule(sundayStretch, admin1);
-        session.persist(sched4);
         sched4.setDetails(1, "SUNDAY", 11, 12);
+        session.persist(sched4);
 
         session.getTransaction().commit();
         session.close();

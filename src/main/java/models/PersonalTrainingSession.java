@@ -3,6 +3,8 @@ package models;
 import jakarta.persistence.*;
 import java.time.DayOfWeek;
 
+import app.FunctionsTrainer;
+
 @Entity
 @Table(name = "personal_training_sessions")
 public class PersonalTrainingSession {
@@ -42,6 +44,30 @@ public class PersonalTrainingSession {
         this.trainer = trainer;
         this.personalTrainingSesssionDetails = new PersonalTrainingSessionDetails(this, roomNum, dayOfWeek, startTime,
                 endTime);
+    }
+
+    @PrePersist
+    public void beforeInsert() {
+        Trainer trainer = this.getTrainer();
+        String dayOfWeek = this.getSessionDetails().getSessionTime().getDayOfWeek().toString();
+        int startTime = this.getSessionDetails().getSessionTime().getStartTime().getHour();
+        int endTime = this.getSessionDetails().getSessionTime().getEndTime().getHour();
+        if (!FunctionsTrainer.trainerCheckAvailability(trainer, dayOfWeek, startTime, endTime)) {
+            throw new RuntimeException("Trainer " + trainer.getName() + " unavailable at that time");
+        }
+        FunctionsTrainer.trainerAdjustAvailability(trainer, dayOfWeek, startTime, endTime);
+    }
+
+    @PreUpdate
+    public void beforeUpdate() {
+        Trainer trainer = this.getTrainer();
+        String dayOfWeek = this.getSessionDetails().getSessionTime().getDayOfWeek().toString();
+        int startTime = this.getSessionDetails().getSessionTime().getStartTime().getHour();
+        int endTime = this.getSessionDetails().getSessionTime().getEndTime().getHour();
+        if (!FunctionsTrainer.trainerCheckAvailability(trainer, dayOfWeek, startTime, endTime)) {
+            throw new RuntimeException("Trainer " + trainer.getName() + " unavailable at that time");
+        }
+        FunctionsTrainer.trainerAdjustAvailability(trainer, dayOfWeek, startTime, endTime);
     }
 
     // getters and setters

@@ -279,9 +279,8 @@ public class FunctionsAdmin {
                 System.out.println("No trainer selected. Class will be created without a trainer.");
                 return;
             }
-            trainer.printAvailabilities();
 
-           int capacity = 5;
+            int capacity = 5;
             System.out.print("Enter class capacity (press Enter to use default 5): ");
             String capInput = scanner.nextLine().trim();
             if (!capInput.isEmpty()) {
@@ -299,8 +298,7 @@ public class FunctionsAdmin {
                     System.out.println("Invalid capacity. Using default 5.");
                 }
             }
-
-
+            trainer.printAvailabilities();
 
             System.out.print("Enter training day (e.g., MONDAY): ");
             String dayInput = scanner.nextLine().trim().toUpperCase();
@@ -338,14 +336,13 @@ public class FunctionsAdmin {
 
             GroupFitnessClass gfc = new GroupFitnessClass(trainer, className);
             gfc.setCapacity(capacity);
-        
+
             session.persist(gfc);
             ClassSchedule schedule = new ClassSchedule(gfc, admin);
             schedule.setDetails(roomNum, dayInput, startHour, endHour);
             session.persist(schedule);
-            FunctionsTrainer.trainerAdjustAvailability(trainer, dayInput, startHour, endHour);
             session.merge(trainer);
-            
+
             session.getTransaction().commit();
 
             System.out.println("New class created with ID " + gfc.getClassId() + ".");
@@ -377,10 +374,10 @@ public class FunctionsAdmin {
                 return;
             }
 
-            trainer.printAvailabilities();
-
             System.out.print("Room number: ");
             int roomNum = Integer.parseInt(scanner.nextLine().trim());
+
+            trainer.printAvailabilities();
 
             System.out.print("Day of week (e.g., MONDAY): ");
             String dayInput = scanner.nextLine().trim().toUpperCase();
@@ -408,24 +405,18 @@ public class FunctionsAdmin {
 
             session.beginTransaction();
 
-            
-
-            List<ClassSchedule> schedules = session.createQuery(
-                    "FROM ClassSchedule cs WHERE cs.groupFitnessClass = :gfc",
-                    ClassSchedule.class).setParameter("gfc", gfc)
-                    .getResultList();
-
-            ClassSchedule schedule = schedules.get(0);
+            ClassSchedule schedule = session.createQuery(
+                    "FROM ClassSchedule cs WHERE cs.groupFitnessClass = :gfc", ClassSchedule.class)
+                    .setParameter("gfc", gfc)
+                    .getSingleResult();
             ClassScheduleDetails details = schedule.getDetails();
 
-
             Trainer oldTrainer = gfc.getTrainer();
-            Schedule oldTrainerSchedule = details.getScheduleTime(); 
+            Schedule oldTrainerSchedule = details.getScheduleTime();
 
             FunctionsTrainer.trainerRestoreAvailability(session, oldTrainer, oldTrainerSchedule);
 
             gfc.setTrainer(trainer);
-            FunctionsTrainer.trainerAdjustAvailability(trainer, dayInput, startHour, endHour);
             session.merge(trainer);
 
             details.setRoomNum(roomNum);
