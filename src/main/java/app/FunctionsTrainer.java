@@ -19,59 +19,6 @@ import services.MemberService;
 public class FunctionsTrainer {
 
     /***************************************************************
-     * retrieveTrainer
-     ***************************************************************/
-    public static Trainer retrieveTrainer(Session session) {
-        Scanner scanner = HibernateUtil.getScanner();
-
-        try {
-            System.out.println("\n================ Existing Trainers ================ ");
-            var trainers = session.createQuery("from Trainer", Trainer.class).list();
-
-            if (trainers.isEmpty()) {
-                System.out.println("No trainers found in the system");
-                return null;
-            }
-
-            for (Trainer t : trainers) {
-                System.out.println(t.toString());
-            }
-            System.out.println("=================================================== ");
-
-            Trainer trainer = null;
-            boolean found = false;
-
-            while (!found) {
-                System.out.print("\nEnter the Trainer ID: ");
-                Long trainerId = Long.parseLong(scanner.nextLine().trim());
-
-                trainer = session.get(Trainer.class, trainerId);
-
-                if (trainer == null) {
-                    System.out.println("\nNo trainer found with ID: " + trainerId);
-                    System.out.println("1. Retry");
-                    System.out.println("2. Quit");
-                    System.out.print("Enter your choice: ");
-                    int choice = Integer.parseInt(scanner.nextLine().trim());
-
-                    if (choice == 2) {
-                        System.out.println("Returning to main menu...");
-                        return null;
-                    }
-                } else {
-                    found = true;
-                }
-            }
-
-            return trainer;
-
-        } catch (Exception e) {
-            System.out.println("Unexpected error: " + e.getMessage());
-            return null;
-        }
-    }
-
-    /***************************************************************
      * trainerCheckAvailability
      ***************************************************************/
     public static boolean trainerCheckAvailability(Trainer trainer, String dayInput, int startHour,
@@ -176,7 +123,7 @@ public class FunctionsTrainer {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Scanner scanner = HibernateUtil.getScanner();
         try {
-            Trainer trainer = retrieveTrainer(session);
+            Trainer trainer = FunctionsRetrieve.retrieveTrainer(session);
             if (trainer == null) {
                 return;
             }
@@ -345,7 +292,7 @@ public class FunctionsTrainer {
     public static void trainerScheduleView() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-            Trainer trainer = retrieveTrainer(session);
+            Trainer trainer = FunctionsRetrieve.retrieveTrainer(session);
             if (trainer == null) {
                 return;
             }
@@ -422,7 +369,7 @@ public class FunctionsTrainer {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Scanner scanner = HibernateUtil.getScanner();
         try {
-            Trainer trainer = retrieveTrainer(session);
+            Trainer trainer = FunctionsRetrieve.retrieveTrainer(session);
             if (trainer == null) {
                 return;
             }

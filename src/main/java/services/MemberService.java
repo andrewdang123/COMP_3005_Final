@@ -1,8 +1,6 @@
 package services;
 
 import models.LatestHealthMetricDTO;
-import models.HealthMetric;
-import models.Member;
 import org.hibernate.Session;
 
 import java.util.List;

@@ -18,59 +18,6 @@ import org.hibernate.Session;
 public class FunctionsMember {
 
     /***************************************************************
-     * retrieveMember
-     ***************************************************************/
-    public static Member retrieveMember(Session session) {
-        Scanner scanner = HibernateUtil.getScanner();
-
-        try {
-            System.out.println("\n=== Existing Members ===");
-            var members = session.createQuery("from Member", Member.class).list();
-
-            if (members.isEmpty()) {
-                System.out.println("No members found in the system");
-                return null;
-            }
-
-            for (Member m : members) {
-                System.out.println(m.toString());
-            }
-            System.out.println("=========================");
-
-            Member member = null;
-            boolean found = false;
-
-            while (!found) {
-                System.out.print("\nEnter the Member ID: ");
-                Long memberId = Long.parseLong(scanner.nextLine().trim());
-
-                member = session.get(Member.class, memberId);
-
-                if (member == null) {
-                    System.out.println("\nNo member found with ID: " + memberId);
-                    System.out.println("1. Retry");
-                    System.out.println("2. Quit");
-                    System.out.print("Enter your choice: ");
-                    int choice = Integer.parseInt(scanner.nextLine().trim());
-
-                    if (choice == 2) {
-                        System.out.println("Returning to main menu...");
-                        return null;
-                    }
-                } else {
-                    found = true;
-                }
-            }
-
-            return member;
-
-        } catch (Exception e) {
-            System.out.println("Unexpected error: " + e.getMessage());
-            return null;
-        }
-    }
-
-    /***************************************************************
      * memberUserRegistration
      ***************************************************************/
     public static void memberUserRegistration() {
@@ -127,7 +74,7 @@ public class FunctionsMember {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            Member member = retrieveMember(session);
+            Member member = FunctionsRetrieve.retrieveMember(session);
             if (member == null) {
                 return;
             }
@@ -189,7 +136,7 @@ public class FunctionsMember {
     public static void memberHealthHistory() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-            Member member = retrieveMember(session);
+            Member member = FunctionsRetrieve.retrieveMember(session);
             if (member == null) {
                 return;
             }
@@ -249,11 +196,11 @@ public class FunctionsMember {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            Member member = retrieveMember(session);
+            Member member = FunctionsRetrieve.retrieveMember(session);
             if (member == null)
                 return;
 
-            Trainer trainer = FunctionsTrainer.retrieveTrainer(session);
+            Trainer trainer = FunctionsRetrieve.retrieveTrainer(session);
             if (trainer == null)
                 return;
 
@@ -511,11 +458,11 @@ public class FunctionsMember {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            Member member = retrieveMember(session);
+            Member member = FunctionsRetrieve.retrieveMember(session);
             if (member == null) {
                 return;
             }
-            GroupFitnessClass groupFitnessClass = FunctionsExtra.retrieveGroupFitnessClass(session);
+            GroupFitnessClass groupFitnessClass = FunctionsRetrieve.retrieveGroupFitnessClass(session);
             if (groupFitnessClass == null) {
                 return;
             }

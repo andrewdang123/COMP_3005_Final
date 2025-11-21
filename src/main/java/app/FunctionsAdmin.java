@@ -18,59 +18,6 @@ import models.Trainer;
 public class FunctionsAdmin {
 
     /***************************************************************
-     * retrieveAdmin
-     ***************************************************************/
-    public static Admin retrieveAdmin(Session session) {
-        Scanner scanner = HibernateUtil.getScanner();
-
-        try {
-            System.out.println("\n===================== Existing Admins ===================== ");
-            var admins = session.createQuery("from Admin", Admin.class).list();
-
-            if (admins.isEmpty()) {
-                System.out.println("No admins found in the system");
-                return null;
-            }
-
-            for (Admin a : admins) {
-                System.out.println(a.toString());
-            }
-            System.out.println("===========================================================");
-
-            Admin admin = null;
-            boolean found = false;
-
-            while (!found) {
-                System.out.print("\nEnter the Admin ID: ");
-                Long adminId = Long.parseLong(scanner.nextLine().trim());
-
-                admin = session.get(Admin.class, adminId);
-
-                if (admin == null) {
-                    System.out.println("\nNo admin found with ID: " + adminId);
-                    System.out.println("1. Retry");
-                    System.out.println("2. Quit");
-                    System.out.print("Enter your choice: ");
-                    int choice = Integer.parseInt(scanner.nextLine().trim());
-
-                    if (choice == 2) {
-                        System.out.println("Returning to main menu...");
-                        return null;
-                    }
-                } else {
-                    found = true;
-                }
-            }
-
-            return admin;
-
-        } catch (Exception e) {
-            System.out.println("Unexpected error: " + e.getMessage());
-            return null;
-        }
-    }
-
-    /***************************************************************
      * adminEquipmentMaintenance
      ***************************************************************/
     public static void adminEquipmentMaintenance() {
@@ -78,7 +25,7 @@ public class FunctionsAdmin {
         Scanner scanner = HibernateUtil.getScanner();
 
         try {
-            Admin admin = retrieveAdmin(session);
+            Admin admin = FunctionsRetrieve.retrieveAdmin(session);
             if (admin == null) {
                 return;
             }
@@ -119,7 +66,7 @@ public class FunctionsAdmin {
     private static void adminEquipmentMaintenanceUpdate(Session session, Admin admin) {
         Scanner scanner = HibernateUtil.getScanner();
         try {
-            EquipmentManagement equipmentManagement = FunctionsExtra.retrieveEquipmentManagement(session);
+            EquipmentManagement equipmentManagement = FunctionsRetrieve.retrieveEquipmentManagement(session);
             if (equipmentManagement == null) {
                 System.out.println("No equipment found to update.");
                 return;
@@ -222,7 +169,7 @@ public class FunctionsAdmin {
         Scanner scanner = HibernateUtil.getScanner();
 
         try {
-            Admin admin = retrieveAdmin(session);
+            Admin admin = FunctionsRetrieve.retrieveAdmin(session);
             if (admin == null) {
                 return;
             }
@@ -274,7 +221,7 @@ public class FunctionsAdmin {
                 return;
             }
 
-            Trainer trainer = FunctionsTrainer.retrieveTrainer(session);
+            Trainer trainer = FunctionsRetrieve.retrieveTrainer(session);
             if (trainer == null) {
                 System.out.println("No trainer selected. Class will be created without a trainer.");
                 return;
@@ -363,12 +310,12 @@ public class FunctionsAdmin {
         Scanner scanner = HibernateUtil.getScanner();
 
         try {
-            GroupFitnessClass gfc = FunctionsExtra.retrieveGroupFitnessClass(session);
+            GroupFitnessClass gfc = FunctionsRetrieve.retrieveGroupFitnessClass(session);
             if (gfc == null) {
                 return;
             }
 
-            Trainer trainer = FunctionsTrainer.retrieveTrainer(session);
+            Trainer trainer = FunctionsRetrieve.retrieveTrainer(session);
             if (trainer == null) {
                 System.out.println("No trainer selected. Aborting.");
                 return;
