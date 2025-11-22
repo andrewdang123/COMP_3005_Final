@@ -17,23 +17,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * GroupFitnessClass models a specific group class (e.g. "Strength 101"):
- * - classId is the primary key; the DB creates a PK index on this, used whenever
- *   we look up or join by class ID.
- * - trainer is a @ManyToOne FK to Trainer stored as trainer_id; queries that find
- *   all classes for a trainer (e.g. in trainerScheduleView) use the FK index on
- *   trainer_id for fast lookups.
- * - currentMembers + capacity track how many people are in this class and its limit.
- *   In the database, there is a trigger on GroupFitnessClassMembers that automatically
- *   updates currentMembers whenever a row is inserted/deleted, so the count stays in
- *   sync with the membership table.
- * - members is a @OneToMany collection of GroupFitnessClassMembers (the join table
- *   between this class and Member).
- * - addMember(...) enforces capacity and “no duplicates” in memory; the actual insert
- *   of GroupFitnessClassMembers (done elsewhere) will fire the trigger that increments
- *   currentMembers in the DB.
- * - incrementMembers()/decrementMembers() are helper methods if we ever want to
- *   manage the count purely from the application side.
+ * GroupFitnessClass represents a single fitness class.
+ * - classId is the PK (indexed), and trainer_id is an FK (indexed) for fast
+ *   lookups like “all classes for a trainer.”
+ * - Tracks currentMembers and capacity.
+ * - The membership table (GroupFitnessClassMembers) updates this count through
+ *   trigger-like logic so currentMembers always matches actual enrollment.
+ * - members is the 1–many collection of enrolled members.
+ * - addMember(...) prevents duplicates and full-class issues before inserting
+ *   into the join table.
  */
 
 @Entity

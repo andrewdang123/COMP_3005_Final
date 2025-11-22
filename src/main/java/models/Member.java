@@ -17,20 +17,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Member represents a gym member:
- * - memberId is the primary key; the DB creates a PK index on this column,
- *   which is used by lookups like session.get(Member, id) and joins from
- *   other tables (e.g., HealthMetric, GroupFitnessClassMembers).
- * - email is marked unique = true; this creates a UNIQUE index on email so:
- *   • we can enforce “one account per email” at the DB level,
- *   • lookups by email are efficient if needed.
- * - dateOfBirth is an embedded DateOfBirth value object; its fields are stored
- *   as birth_day, birth_month, and birth_year columns in this table.
- * - targetWeight and targetBmi store goals that trainers can see in the
- *   trainerMemberLookup flow.
- * - healthMetrics is a 1–many relationship to HealthMetric; the HealthMetric
- *   table has an FK on member_id (indexed), which is what powers queries and
- *   the LatestHealthMetricDTO “view” used to show the latest metric per member.
+ * Member stores basic user info.
+ * - memberId is the PK (indexed) and email has a UNIQUE index.
+ * - dateOfBirth is embedded into this table.
+ * - targetWeight/targetBmi store fitness goals.
+ * - Linked to HealthMetric through a 1–many FK (indexed), which is used for
+ *   queries like showing a member’s latest health metric.
  */
 
 @Entity

@@ -17,24 +17,13 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 /**
- * TrainerAvailability represents a single “free time slot” for a trainer:
- * - trainerAvailabilityId is the primary key; the DB creates a PK index on this
- *   column so each slot can be referenced or updated efficiently.
- * - trainer is a @ManyToOne link back to Trainer stored as trainer_id; queries
- *   like “all availability for a specific trainer” use the FK index on trainer_id.
- * - dayOfWeek, startTime, and endTime describe when the trainer is free.
- *   These are used heavily by:
- *     • FunctionsTrainer.trainerCheckAvailability(...) to validate bookings.
- *     • ClassSchedule / PersonalTrainingSession lifecycle methods that adjust
- *       and restore availability when sessions/classes are created, updated,
- *       or cancelled.
- *
- * DB NOTE:
- * - There are no explicit database triggers or views declared on this entity.
- * - Application-level logic (in FunctionsTrainer and various @PrePersist/@PreUpdate
- *   callbacks) reads and rewrites these rows to ensure trainers are not double-booked.
- * - Primary key and foreign key indexes (trainerAvailabilityId, trainer_id) are what
- *   make those checks efficient.
+ * TrainerAvailability stores one “free time slot” for a trainer.
+ * - PK trainerAvailabilityId and FK trainer_id are indexed, so lookups (like
+ *   finding all availability for a trainer) are efficient.
+ * - dayOfWeek, startTime, and endTime define when the trainer is available.
+ * - Used by booking logic to confirm availability and update time slots.
+ * - No DB triggers or views—availability is managed fully in application
+ *   code through lifecycle checks in FunctionsTrainer and @PrePersist/@PreUpdate.
  */
 
 @Entity

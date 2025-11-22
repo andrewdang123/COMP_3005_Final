@@ -15,20 +15,14 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 /**
- * HealthMetric stores a single snapshot of a member's health:
- * - metricId is the primary key; the DB creates a PK index on this column so
- *   lookups by metricId are efficient.
- * - member is a @ManyToOne FK to Member (member_id); queries such as
- *   “all metrics for a given member” use the FK index on member_id.
- * - currentWeight and currentBmi are the recorded values for that snapshot.
- * - timestamp records when this metric was created/updated.
+ * HealthMetric stores one health snapshot for a member.
+ * - metricId is the PK (indexed) and member_id is an FK (indexed) for fast
+ *   lookups like “metrics for this member.”
+ * - Holds weight, BMI, and a timestamp.
  *
- * TRIGGER-LIKE BEHAVIOUR (entity lifecycle callbacks):
- * - @PrePersist runs automatically before INSERT and sets timestamp = now.
- * - @PreUpdate runs automatically before UPDATE and refreshes timestamp.
- *   → This works like an application-level trigger that auto-stamps each
- *     health metric with the current time so later queries (including the
- *     latest-metric view/DTO used by MemberService) can sort or filter by it.
+ * Trigger-like callbacks:
+ * - @PrePersist and @PreUpdate auto-set the timestamp, acting like an
+ *   application-level trigger so queries can easily fetch the latest metric.
  */
 
 @Entity

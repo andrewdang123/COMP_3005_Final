@@ -14,23 +14,14 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
-/*
- * “The PT session entity is indexed on sessionId and uses FK indexes on member_id and
- * trainer_id. The important part is the @PrePersist/@PreUpdate callbacks, which act like
- * application-level triggers to enforce ‘no double booking’ for trainers and to keep their
- * availability in sync whenever PT sessions are created or changed.”
- * 
- * TRIGGER-LIKE BEHAVIOUR (entity lifecycle callbacks):
- * - @PrePersist (beforeInsert):
- *   • Runs right before INSERT.
- *   • Reads the trainer, day, start, and end time from the details.
- *   • Calls FunctionsTrainer.trainerCheckAvailability(...) to ensure the trainer is free.
- *   • If trainer is not available, throws a RuntimeException and the transaction rolls back.
- *   • If they are available, calls FunctionsTrainer.trainerAdjustAvailability(...) to
- *     update the trainer’s availability model so that slot is no longer free.
- * - @PreUpdate (beforeUpdate):
- *   • Same logic, but for UPDATE: prevents rescheduling a session into a busy slot and
- *     updates availability when the time changes.
+/**
+ * PersonalTrainingSession uses PK and FK indexes (sessionId, member_id, trainer_id)
+ * for fast lookups. Its @PrePersist/@PreUpdate methods act like application-level
+ * triggers to prevent double-booking:
+ * - Before insert/update, it checks trainer availability.
+ * - If unavailable, it throws an error and cancels the transaction.
+ * - If available, it updates the trainer’s availability so the slot becomes “taken.”
+ * This keeps all PT scheduling consistent and conflict-free.
  */
 
 @Entity

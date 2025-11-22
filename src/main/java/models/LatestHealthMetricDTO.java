@@ -3,13 +3,10 @@ package models;
 import java.time.LocalDateTime;
 
 /**
- * LatestHealthMetricDTO is a simple Data Transfer Object (DTO), not an @Entity:
- * - It represents the *latest* HealthMetric for each member returned by a query
- *   in MemberService (often built using GROUP BY / MAX(timestamp) or a DB view).
- * - It is populated directly from a SELECT query (e.g., constructor expression)
- *   rather than from a mapped table.
- * - Contains: memberId, memberName, currentWeight, currentBmi, and the timestamp
- *   of that latest metric.
+ * LatestHealthMetricDTO is a simple DTO (not an entity).
+ * - Holds the *latest* HealthMetric for each member, created directly from a
+ *   SELECT query in MemberService.
+ * - Stores memberId, name, weight, BMI, and the timestamp of the newest record.
  */
 
 public class LatestHealthMetricDTO {

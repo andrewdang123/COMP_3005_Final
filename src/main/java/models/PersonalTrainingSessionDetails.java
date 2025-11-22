@@ -12,18 +12,13 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 /**
- * PersonalTrainingSessionDetails stores the room and time for a PT session:
- * - Uses a shared primary key with PersonalTrainingSession:
- *   • sessionId is both the PK of this table and an FK back to
- *     PersonalTrainingSession via @MapsId.
- *   • The DB creates a primary key index on session_id, which makes joins
- *     between personal_training_sessions and personal_training_session_details fast.
- * - personalTrainingSession is the owning 1–1 parent; @MapsId guarantees there is
- *   exactly one details row per session.
- * - roomNum is the room where the session happens.
- * - sessionTime is an embedded Schedule (dayOfWeek + startTime + endTime);
- *   this is what the app uses in queries to check for room conflicts and to
- *   build the trainer’s schedule view.
+ * PersonalTrainingSessionDetails stores the room + time of a PT session.
+ * - Shares its primary key with PersonalTrainingSession via @MapsId, so each
+ *   session has exactly one details row. The PK/FK index on session_id makes
+ *   joins very fast.
+ * - roomNum is where the session occurs.
+ * - sessionTime is an embedded Schedule used for availability checks,
+ *   room-conflict checks, and schedule displays.
  */
 
 @Entity

@@ -10,19 +10,10 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 /**
- * Schedule is an @Embeddable value object used to store “day + time range”:
- * - It’s NOT its own table; it gets inlined into whatever entity embeds it
- *   (e.g., ClassScheduleDetails, PersonalTrainingSessionDetails) as columns.
- * - dayOfWeek is stored as a string (e.g., "MONDAY") via @Enumerated(EnumType.STRING).
- * - startTime and endTime are LocalTime values built from simple integer hours.
- * - This class is reused anywhere we need a day/time window (class schedule,
- *   PT session details, room-conflict checks, trainer schedule view, etc.).
- *
- * DB NOTE:
- * - Because this is @Embeddable, it doesn’t define its own primary key, trigger,
- *   view, or index. It just contributes columns (like schedule_day, schedule_start_time,
- *   schedule_end_time) to the owning entity’s table. Any indexing is done on those
- *   columns in the parent entity or via queries.
+ * Schedule is an @Embeddable value object for “day + time range.”
+ * - Not its own table—its fields become columns inside the parent entity.
+ * - Stores dayOfWeek (string), startTime, and endTime.
+ * - Reused for class schedules, PT sessions, and conflict checks.
  */
 
 @Embeddable

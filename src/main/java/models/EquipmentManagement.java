@@ -12,15 +12,11 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 /**
- * EquipmentManagement represents a high-level equipment issue record:
- * - equipmentId is the primary key (auto-generated); the DB will create a PK index
- *   on this column so lookups by ID are fast.
- * - admin is a @ManyToOne link to Admin, stored as admin_id with a foreign key
- *   constraint; queries that filter or join on admin_id can use the FK index.
- * - details is a @OneToOne to EquipmentManagementDetails, which stores the room,
- *   issue description, and repair status as a separate, normalized row.
- * - setDetails(...) is a helper that builds the details object and ties it back
- *   to this EquipmentManagement.
+ * EquipmentManagement is the main equipment issue record.
+ * - equipmentId is the PK (indexed).
+ * - admin_id is a @ManyToOne FK to Admin (indexed for fast filtering by admin).
+ * - details is a @OneToOne child row storing room, issue text, and repair status.
+ * - setDetails(...) creates and links the details entry to this equipment record.
  */
 
 @Entity

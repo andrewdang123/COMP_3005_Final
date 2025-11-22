@@ -18,10 +18,9 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 
-// DB INDEX NOTE:
-        // - Creates a UNIQUE index on (class_id, schedule_id).
-        // - Prevents duplicate schedule rows for the same class/schedule.
-        // - Speeds up lookups/join queries that filter by class_id + schedule_id.
+    // - Creates a UNIQUE index on (class_id, schedule_id).
+    // - Prevents duplicate schedule rows for the same class/schedule.
+    // - Speeds up lookups/join queries that filter by class_id + schedule_id.
 
 @Entity
 @Table(name = "class_schedule", indexes = {
@@ -53,15 +52,12 @@ public class ClassSchedule {
     }
 
     /**
-     * ENTITY “TRIGGER” NOTE (PrePersist):
-     * - Runs automatically right before INSERT of a ClassSchedule.
-     * - Reads the trainer + day + time from the associated GroupFitnessClass and details.
-     * - Uses FunctionsTrainer.trainerCheckAvailability(...) to validate that the trainer
-     *   is free for that slot; if not, throws RuntimeException and cancels the insert
-     *   (the transaction will roll back).
-     * - Calls FunctionsTrainer.trainerAdjustAvailability(...) to update the trainer’s
-     *   in-memory availability so the booked time is removed, keeping availability consistent.
-     * - This acts like an application-level trigger enforcing “no double-booking” for trainers.
+     * PrePersist “trigger” for ClassSchedule:
+     * - Fires before INSERT.
+     * - Checks trainer availability for the requested day/time.
+     * - If unavailable → throws an error and the INSERT is cancelled.
+     * - If available → removes that time slot from trainer availability.
+     * - Works like an application-level trigger that prevents trainer double-booking.
      */
 
     @PrePersist
@@ -77,13 +73,12 @@ public class ClassSchedule {
     }
 
     /**
-     * ENTITY “TRIGGER” NOTE (PreUpdate):
-     * - Runs automatically right before UPDATE of an existing ClassSchedule.
-     * - Re-validates the trainer’s availability for the (possibly new) day/time.
-     * - If the trainer is not available, throws RuntimeException so the update is blocked.
-     * - Calls trainerAdjustAvailability(...) again to adjust the trainer availability model
-     *   after a reschedule, keeping the trainer’s calendar in sync with this schedule.
-     * - Just like PrePersist, this is an application-level trigger on UPDATE.
+     * PreUpdate “trigger” for ClassSchedule:
+     * - Fires before UPDATE.
+     * - Re-checks trainer availability for the new time slot.
+     * - Blocks the update if the trainer is unavailable.
+     * - Adjusts trainer availability to reflect the updated schedule.
+     * - Acts as an application-level trigger preventing double-booking on updates.
      */
 
     @PreUpdate

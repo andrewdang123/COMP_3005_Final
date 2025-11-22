@@ -16,15 +16,11 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * ClassScheduleDetails stores the extra info for a ClassSchedule:
- * - Uses @MapsId so scheduleId is both:
- *   • the primary key of this table, and
- *   • a foreign key back to ClassSchedule (shared PK 1–1 relationship).
- *   → The DB will have an index on schedule_id as the primary key, which also
- *     makes joins on schedule_id between class_schedule and class_schedule_details fast.
- * - Embeds a Schedule object and maps its fields to concrete columns:
- *   schedule_day, schedule_start_time, schedule_end_time.
- * - Holds the room number and the exact day/time window for the class.
+ * ClassScheduleDetails adds room + time info to a ClassSchedule.
+ * - @MapsId: scheduleId is both the PK and an FK to ClassSchedule (shared 1–1).
+ *   → Creates a PK index on schedule_id, making joins very fast.
+ * - Embeds a Schedule (day + start/end time) as concrete columns.
+ * - Stores the room number and the exact timing for the class session.
  */
 
 @Entity

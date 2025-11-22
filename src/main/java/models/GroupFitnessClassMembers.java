@@ -12,26 +12,17 @@ import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 
 /**
- * GroupFitnessClassMembers is the join table between Member and GroupFitnessClass:
- * - classMemberId is the primary key; the DB creates a PK index on this column.
- * - class_id is a @ManyToOne FK to GroupFitnessClass; queries like
- *   “all members in a given class” use the FK index on class_id.
- * - member_id is a @ManyToOne FK to Member; queries like
- *   “all classes for a given member” use the FK index on member_id.
+ * GroupFitnessClassMembers is the join table linking members to fitness classes.
+ * - classMemberId is the PK; class_id and member_id are FK indexes used for fast
+ *   lookups like “members in a class” or “classes for a member.”
  *
- * “Trigger”-style logic:
- * - @PrePersist runs before a new row is inserted:
- *   • Prevents duplicate registrations of the same Member in the same class.
- *   • Enforces capacity by checking currentMembers vs capacity.
- *   • Calls groupFitnessClass.incrementMembers() so the in-memory counter matches
- *     the number of join rows.
- * - @PreRemove runs before a row is deleted:
- *   • Calls groupFitnessClass.decrementMembers() to keep the count in sync.
+ * Trigger-like callbacks:
+ * - @PrePersist blocks duplicates, enforces class capacity, and increments the
+ *   class’s member count.
+ * - @PreRemove decrements the count when someone is removed.
  *
- * Together, these lifecycle callbacks act like application-level triggers that:
- * - enforce business rules (no duplicates, no over-capacity),
- * - and keep GroupFitnessClass.currentMembers consistent with the membership table.
- * (The database can also have a trigger on this table to enforce the same logic at the DB level.)
+ * These callbacks act as application-level triggers to enforce rules and keep
+ * currentMembers accurate.
  */
 
 @Entity
