@@ -1,26 +1,36 @@
 package app;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import org.hibernate.Session;
+
 import models.GroupFitnessClass;
 import models.GroupFitnessClassMembers;
 import models.HealthMetric;
 import models.Member;
 import models.PersonalTrainingSession;
 import models.PersonalTrainingSessionDetails;
+import models.Schedule;
 import models.Trainer;
 import models.TrainerAvailability;
-import models.Schedule;
-
-import java.util.*;
-import java.time.LocalTime;
-
-import org.hibernate.Session;
 
 public class FunctionsMember {
 
     /***************************************************************
      * memberUserRegistration
      ***************************************************************/
-    public static void memberUserRegistration() {
+    /**
+     * Handles new member registration:
+     * - Opens a Hibernate session and starts a transaction.
+     * - Collects basic info (name, email, gender, date of birth) from input.
+     * - Creates a Member entity and persists it to the database.
+     * - Commits the transaction on success, rolls back on error.
+     * - Loops until registration succeeds and prints the member details.
+     */
+     public static void memberUserRegistration() {
         Scanner scanner = HibernateUtil.getScanner();
         boolean success = false;
 
@@ -53,7 +63,6 @@ public class FunctionsMember {
                     session.close();
                     System.out.println("User Registered!");
 
-                    // Display current details
                     member.memberPrint();
                 } catch (Exception e) {
                     session.getTransaction().rollback();
@@ -69,6 +78,14 @@ public class FunctionsMember {
     /***************************************************************
      * memberProfileManagement
      ***************************************************************/
+    /**
+     * Manages a member's profile:
+     * - Retrieves the logged-in member from the database.
+     * - Displays current details and allows updating name, email, and gender.
+     * - Prompts for target weight and target BMI.
+     * - Starts a transaction, updates the member entity, merges it, and commits.
+     * - Prints updated targets and then redirects to health metric logging.
+     */
     public static void memberProfileManagement() {
         Scanner scanner = HibernateUtil.getScanner();
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -79,10 +96,8 @@ public class FunctionsMember {
                 return;
             }
 
-            // Display current details
             member.memberPrint();
 
-            // Update personal details
             System.out.print("Enter new name (or press Enter to keep current): ");
             String newName = scanner.nextLine().trim();
             if (!newName.isEmpty()) {
@@ -101,14 +116,12 @@ public class FunctionsMember {
                 member.setGender(newGender);
             }
 
-            // Update fitness goals
             System.out.print("Enter your target weight (kg): ");
             int targetWeight = Integer.parseInt(scanner.nextLine().trim());
 
             System.out.print("Enter your target BMI: ");
             int targetBMI = Integer.parseInt(scanner.nextLine().trim());
 
-            // Save updates
             session.beginTransaction();
             member.setTargetWeight(targetWeight);
             member.setTargetBmi(targetBMI);
@@ -133,6 +146,12 @@ public class FunctionsMember {
     /***************************************************************
      * memberHealthHistory
      ***************************************************************/
+    /**
+     * Entry point for logging health metrics:
+     * - Opens a session and retrieves the logged-in member.
+     * - Delegates to the overloaded memberHealthHistory(Member) method
+     *   to collect and persist the health metrics for that member.
+     */
     public static void memberHealthHistory() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -151,12 +170,19 @@ public class FunctionsMember {
     /***************************************************************
      * memberHealthHistory
      ***************************************************************/
+    /**
+     * Logs a single health metric for the given member:
+     * - Opens a session and prompts for current weight and BMI.
+     * - Starts a transaction, creates a HealthMetric entity linked
+     *   to the member, persists it, and commits the transaction.
+     * - Prints the recorded values and rolls back if logging fails.
+     */
+
     public static void memberHealthHistory(Member member) {
         Scanner scanner = HibernateUtil.getScanner();
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            // Prompt for metrics only, no ID
             System.out.print("\nEnter current weight (kg, integer): ");
             int currentWeight = Integer.parseInt(scanner.nextLine().trim());
 
@@ -191,6 +217,15 @@ public class FunctionsMember {
     /***************************************************************
      * memberPtSessionScheduling
      ***************************************************************/
+    /**
+     * Manages personal training session scheduling for a member:
+     * - Opens a session and retrieves the logged-in member and a trainer.
+     * - Prompts the user to choose between booking a new session
+     *   or rescheduling an existing one.
+     * - Delegates to memberPtSessionSchedulingBookPrompt or
+     *   memberPtSessionSchedulingReschedule based on the choice.
+     */
+
     public static void memberPtSessionScheduling() {
         Scanner scanner = HibernateUtil.getScanner();
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -204,7 +239,6 @@ public class FunctionsMember {
             if (trainer == null)
                 return;
 
-            // Ask user if they want to reschedule first
             while (true) {
                 System.out.println("\nDo you want to:");
                 System.out.println("1. Book a new PT session");
@@ -234,6 +268,16 @@ public class FunctionsMember {
     /***************************************************************
      * memberPtSessionSchedulingBook
      ***************************************************************/
+    /**
+     * Books a personal training session:
+     * - Starts a transaction on the provided session.
+     * - Creates a PersonalTrainingSession linked to the member and trainer.
+     * - Creates PersonalTrainingSessionDetails with room and time (Schedule).
+     * - Links details to the session, persists the session, merges trainer,
+     *   and commits the transaction.
+     * - Prints the session details after successful booking.
+     */
+
     public static void memberPtSessionSchedulingBook(Session session, Member member, Trainer trainer,
             String dayInput, int startHour, int endHour, int roomNum) {
         try {
@@ -247,7 +291,6 @@ public class FunctionsMember {
             details.setRoomNum(roomNum);
             details.setSessionTime(new Schedule(dayInput, startHour, endHour));
 
-            // link both sides
             ptSession.setSessionDetails(details);
 
             session.persist(ptSession);
@@ -264,6 +307,21 @@ public class FunctionsMember {
             e.printStackTrace();
         }
     }
+
+    /***************************************************************
+     * memberPtSessionSchedulingBookPrompt
+     ***************************************************************/
+    /**
+     * Prompts a member for PT booking details and validates them:
+     * - Prints trainer availability.
+     * - Collects day, start time, end time, and room number from input.
+     * - Uses FunctionsTrainer.trainerCheckAvailability to ensure the trainer
+     *   is free in the requested slot.
+     * - Runs an HQL query to count overlapping PersonalTrainingSessionDetails
+     *   in the same room and time window to detect room conflicts.
+     * - Calls memberPtSessionSchedulingBook to perform the actual booking
+     *   if both trainer and room are free.
+     */
 
     private static void memberPtSessionSchedulingBookPrompt(Session session, Member member, Trainer trainer) {
         Scanner scanner = HibernateUtil.getScanner();
@@ -294,7 +352,6 @@ public class FunctionsMember {
                 return;
             }
 
-            // --- Check trainer availability ---
             boolean available = FunctionsTrainer.trainerCheckAvailability(trainer, dayInput, startHour, endHour);
 
             if (!available) {
@@ -302,7 +359,6 @@ public class FunctionsMember {
                 return;
             }
 
-            // --- Check room conflicts ---
             boolean roomConflict = session.createQuery(
                     "SELECT COUNT(p) FROM PersonalTrainingSessionDetails p " +
                             "WHERE p.roomNum = :roomNum " +
@@ -321,7 +377,6 @@ public class FunctionsMember {
                 return;
             }
 
-            // --- Book the session ---
             memberPtSessionSchedulingBook(session, member, trainer, dayInput, startHour, endHour, roomNum);
 
         } catch (Exception e) {
@@ -333,11 +388,22 @@ public class FunctionsMember {
     /***************************************************************
      * memberPtSessionSchedulingReschedule
      ***************************************************************/
+    /**
+     * Reschedules a personal training session:
+     * - Queries all existing PersonalTrainingSession rows for the member
+     *   with the selected trainer and displays them.
+     * - Lets the user pick a session to cancel.
+     * - Starts a transaction, removes the selected session from the database,
+     *   and restores the trainer's availability by updating TrainerAvailability
+     *   slots based on the cancelled time.
+     * - Commits the transaction after availability is restored.
+     * - Prompts the member to book a new session using the booking prompt.
+     */
+    
     public static void memberPtSessionSchedulingReschedule(Session session, Member member, Trainer trainer) {
         Scanner scanner = HibernateUtil.getScanner();
 
         try {
-            // --- Retrieve existing sessions for this member with this trainer ---
             List<PersonalTrainingSession> sessions = session.createQuery(
                     "FROM PersonalTrainingSession s WHERE s.member = :member AND s.trainer = :trainer",
                     PersonalTrainingSession.class)
@@ -351,7 +417,6 @@ public class FunctionsMember {
                 return;
             }
 
-            // --- Display sessions ---
             System.out.println("\nExisting sessions with " + trainer.getName() + ":");
             for (int i = 0; i < sessions.size(); i++) {
                 PersonalTrainingSession s = sessions.get(i);
@@ -361,7 +426,6 @@ public class FunctionsMember {
                         " in Room " + s.getSessionDetails().getRoomNum());
             }
 
-            // --- Choose session to cancel ---
             System.out.print("Enter the number of the session to reschedule (or 0 to cancel): ");
             int choice;
             try {
@@ -386,10 +450,8 @@ public class FunctionsMember {
 
             session.beginTransaction();
 
-            // Remove session
             session.remove(toCancel);
 
-            // --- Restore trainer availability ---
             boolean restored = false;
             for (TrainerAvailability avail : trainer.getAvailabilities()) {
                 if (avail.getDayOfWeek().equals(canceledTime.getDayOfWeek())) {
@@ -400,7 +462,6 @@ public class FunctionsMember {
                             availStart.getHour() >= canceledTime.getEndTime().getHour())
                         continue;
 
-                    // Split availability
                     List<TrainerAvailability> newAvailabilities = new ArrayList<>();
                     if (availStart.getHour() < canceledTime.getStartTime().getHour()) {
                         newAvailabilities.add(new TrainerAvailability(trainer,
@@ -440,7 +501,6 @@ public class FunctionsMember {
             System.out.println("Session cancelled and trainer availability restored.");
             System.out.println("Please enter new session details to reschedule.");
 
-            // --- Prompt for new session booking ---
             memberPtSessionSchedulingBookPrompt(session, member, trainer);
 
         } catch (Exception e) {
@@ -454,6 +514,15 @@ public class FunctionsMember {
     /***************************************************************
      * memberGroupClassRegistration
      ***************************************************************/
+    /**
+     * Registers a member for a group fitness class:
+     * - Opens a session and retrieves the logged-in member and a GroupFitnessClass.
+     * - Starts a transaction, creates a GroupFitnessClassMembers link entity
+     *   between the class and the member, and persists it.
+     * - Relies on a database trigger on the GroupFitnessClassMembers insert
+     *   to automatically update the current member count for the class.
+     * - Commits the transaction on success and rolls back on error.
+     */
     public static void memberGroupClassRegistration() {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
@@ -468,10 +537,6 @@ public class FunctionsMember {
             }
             System.out.println(groupFitnessClass.toString());
             try {
-                /*
-                 * Mention that this uses a trigger in it which automatically increments the
-                 * current member count
-                 */
                 session.beginTransaction();
                 session.persist(new GroupFitnessClassMembers(groupFitnessClass, member));
                 session.getTransaction().commit();

@@ -1,7 +1,6 @@
 package app;
 
 import java.time.DayOfWeek;
-import java.util.List;
 import java.util.Scanner;
 
 import org.hibernate.Session;
@@ -20,6 +19,12 @@ public class FunctionsAdmin {
     /***************************************************************
      * adminEquipmentMaintenance
      ***************************************************************/
+     /**
+     * Opens a Hibernate session, retrieves the logged-in admin,
+     * displays the equipment maintenance submenu, and routes the
+     * choice to either update existing reports or add a new issue.
+     * Closes the session when the admin exits this menu.
+     */
     public static void adminEquipmentMaintenance() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Scanner scanner = HibernateUtil.getScanner();
@@ -63,6 +68,14 @@ public class FunctionsAdmin {
     /***************************************************************
      * adminEquipmentMaintenanceUpdate
      ***************************************************************/
+    /**
+     * Retrieves an existing EquipmentManagement record, prompts the
+     * admin for updated room number, issue description, and repair
+     * status, starts a transaction, updates the associated
+     * EquipmentManagementDetails object, merges the changes, and
+     * commits the transaction. Rolls back the transaction on error.
+     */
+
     private static void adminEquipmentMaintenanceUpdate(Session session, Admin admin) {
         Scanner scanner = HibernateUtil.getScanner();
         try {
@@ -127,6 +140,14 @@ public class FunctionsAdmin {
     /***************************************************************
      * adminEquipmentMaintenanceAdd
      ***************************************************************/
+    /**
+     * Prompts the admin for room number, issue description, and
+     * repair status, starts a transaction, creates a new
+     * EquipmentManagement entity linked to the admin, sets its
+     * details, persists it to the database, and commits the
+     * transaction. Rolls back the transaction if an error occurs.
+     */
+
     private static void adminEquipmentMaintenanceAdd(Session session, Admin admin) {
         Scanner scanner = HibernateUtil.getScanner();
         try {
@@ -164,6 +185,12 @@ public class FunctionsAdmin {
     /***************************************************************
      * adminClassManagement
      ***************************************************************/
+    /**
+     * Opens a Hibernate session, retrieves the logged-in admin,
+     * displays the class management submenu, and routes choices to
+     * either defining a new class or assigning trainer/room/time
+     * for an existing class. Closes the session on exit.
+     */
     public static void adminClassManagement() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Scanner scanner = HibernateUtil.getScanner();
@@ -204,11 +231,17 @@ public class FunctionsAdmin {
         }
     }
 
-    // ====== just for testing ======
-
     /***************************************************************
      * adminClassManagementDefineNewClass
      ***************************************************************/
+    /**
+     * Collects class information from the admin (name, trainer,
+     * capacity, day, time, room), checks that the trainer is
+     * available, starts a transaction, creates a new
+     * GroupFitnessClass and corresponding ClassSchedule with
+     * schedule details, updates the trainer entity, and commits
+     * the transaction. Rolls back the transaction on failure.
+     */
     private static void adminClassManagementDefineNewClass(Session session, Admin admin) {
         Scanner scanner = HibernateUtil.getScanner();
 
@@ -306,6 +339,14 @@ public class FunctionsAdmin {
     /***************************************************************
      * adminClassManagementAssignTrainerRoomTime
      ***************************************************************/
+     /**
+     * Selects an existing GroupFitnessClass and a Trainer, collects
+     * the new room, day, and time, verifies trainer availability,
+     * starts a transaction, loads the related ClassSchedule using
+     * HQL, restores the previous trainer’s availability, updates the
+     * class’s trainer and schedule details (room and time), and
+     * commits the transaction. Rolls back the transaction on error.
+     */
     private static void adminClassManagementAssignTrainerRoomTime(Session session, Admin admin) {
         Scanner scanner = HibernateUtil.getScanner();
 

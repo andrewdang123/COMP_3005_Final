@@ -1,7 +1,9 @@
 package app;
 
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 import org.hibernate.Session;
 
@@ -21,6 +23,14 @@ public class FunctionsTrainer {
     /***************************************************************
      * trainerCheckAvailability
      ***************************************************************/
+    /**
+     * Checks if a trainer is available in a given time window:
+     * - Scans the trainer's in-memory availability list (no DB call).
+     * - Matches on dayOfWeek and ensures the requested start/end hours
+     *   are fully inside an existing availability slot.
+     * - Returns true if at least one slot can cover that requested time.
+     */
+
     public static boolean trainerCheckAvailability(Trainer trainer, String dayInput, int startHour,
             int endHour) {
         return trainer.getAvailabilities().stream()
@@ -32,6 +42,17 @@ public class FunctionsTrainer {
     /***************************************************************
      * trainerAdjustAvailability
      ***************************************************************/
+    /**
+     * Adjusts a trainer's availability in memory after booking a time:
+     * - Iterates through the trainer's existing availability slots.
+     * - For the matching day, splits or trims the slot around the
+     *   booked [startHour, endHour] window, so the booked time is removed.
+     * - Rebuilds the trainer.getAvailabilities() list with updated slots.
+     * - This method only changes the object graph; it does not touch
+     *   the database or use any indexes/triggers directly.
+     * - The caller is responsible for persisting the updated availability.
+     */
+
     public static void trainerAdjustAvailability(Trainer trainer, String dayInput, int startHour,
             int endHour) {
         List<TrainerAvailability> updatedAvailabilities = new ArrayList<>();
@@ -68,8 +89,20 @@ public class FunctionsTrainer {
     /***************************************************************
      * trainerRestoreAvailability
      ***************************************************************/
+    /**
+     * Restores a trainer's availability after a session is cancelled:
+     * - Takes a Session (with an active transaction expected from caller),
+     *   the Trainer, and the cancelled Schedule.
+     * - Looks for overlapping TrainerAvailability slots on the same day,
+     *   removes the old slot, and persists new split slots that include
+     *   the cancelled time back into the trainer's availability set.
+     * - If no overlapping slot is found, inserts a new TrainerAvailability
+     *   that exactly matches the cancelled time window.
+     * - Uses session.persist() and trainer.removeAvailability(), but does
+     *   not start or commit the transaction itself; the caller controls that.
+     */
+
     public static void trainerRestoreAvailability(Session session, Trainer trainer, Schedule canceledTime) {
-        // --- Restore trainer availability ---
         boolean restored = false;
         for (TrainerAvailability avail : trainer.getAvailabilities()) {
             if (avail.getDayOfWeek().equals(canceledTime.getDayOfWeek())) {
@@ -80,7 +113,6 @@ public class FunctionsTrainer {
                         availStart.getHour() >= canceledTime.getEndTime().getHour())
                     continue;
 
-                // Split availability
                 List<TrainerAvailability> newAvailabilities = new ArrayList<>();
                 if (availStart.getHour() < canceledTime.getStartTime().getHour()) {
                     newAvailabilities.add(new TrainerAvailability(trainer,
@@ -119,6 +151,16 @@ public class FunctionsTrainer {
     /***************************************************************
      * trainerSetAvailability
      ***************************************************************/
+    /**
+     * Top-level menu for a trainer to manage availability:
+     * - Opens a Hibernate session and retrieves a Trainer via FunctionsRetrieve.
+     * - Prints current availability slots.
+     * - Lets the user:
+     *   1) Update an existing availability (trainerSetAvailabilityUpdate), or
+     *   2) Add a new availability slot (trainerSetAvailabilityAdd).
+     * - The child methods handle their own transactions for DB writes.
+     */
+
     public static void trainerSetAvailability() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Scanner scanner = HibernateUtil.getScanner();
@@ -161,6 +203,19 @@ public class FunctionsTrainer {
     /***************************************************************
      * trainerSetAvailabilityUpdate
      ***************************************************************/
+    /**
+     * Updates an existing TrainerAvailability record:
+     * - Shows all existing availability slots for the trainer.
+     * - Prompts for an Availability ID and finds that object in the
+     *   trainer's in-memory list (no extra DB query for it).
+     * - Allows updating:
+     *   - Day of week,
+     *   - Start time, and
+     *   - End time (keeping old values if input is blank or invalid).
+     * - Starts a transaction, merges the updated TrainerAvailability,
+     *   and commits.
+     */
+
     public static void trainerSetAvailabilityUpdate(Session session, Trainer trainer) {
         Scanner scanner = HibernateUtil.getScanner();
 
@@ -180,7 +235,6 @@ public class FunctionsTrainer {
             return;
         }
 
-        // Retrieve the specific availability
         TrainerAvailability selectedAvailability = null;
         for (TrainerAvailability avail : trainer.getAvailabilities()) {
             if (avail.getTrainerAvailabilityId().equals(availabilityId)) {
@@ -251,6 +305,16 @@ public class FunctionsTrainer {
     /***************************************************************
      * trainerSetAvailabilityAdd
      ***************************************************************/
+    /**
+     * Adds a new availability slot for a trainer:
+     * - Prompts for a valid day of week, start hour, and end hour.
+     * - Starts a transaction and creates a new TrainerAvailability
+     *   linked to the trainer.
+     * - Calls trainer.addAvailability(), which should persist the new
+     *   slot (often with session.persist() inside that method).
+     * - Commits the transaction on success.
+     */
+
     public static void trainerSetAvailabilityAdd(Session session, Trainer trainer) {
         Scanner scanner = HibernateUtil.getScanner();
         System.out.print("Enter training day (e.g., MONDAY): ");
@@ -289,6 +353,21 @@ public class FunctionsTrainer {
     /***************************************************************
      * trainerScheduleView
      ***************************************************************/
+    /**
+     * Shows the full schedule (PT sessions + group classes) for a trainer:
+     * - Retrieves a Trainer via FunctionsRetrieve.
+     * - Queries PersonalTrainingSession where p.trainer = :trainer and prints them.
+     *   → These lookups benefit from an index on the trainer_id foreign key
+     *     in the PersonalTrainingSession table.
+     * - Queries GroupFitnessClass where g.trainer = :trainer.
+     *   → Also benefits from an index on trainer_id in the GroupFitnessClass table.
+     * - For each GroupFitnessClass, queries ClassSchedule where cs.groupFitnessClass = :gfc.
+     *   → This uses an index on the group_fitness_class_id foreign key in ClassSchedule
+     *     (that’s the “THIS USES THAT INDEX” comment).
+     * - Prints schedule details (room, day, start, end) via ClassScheduleDetails
+     *   and its embedded Schedule.
+     */
+
     public static void trainerScheduleView() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -297,7 +376,6 @@ public class FunctionsTrainer {
                 return;
             }
 
-            // Retrieve all personal training sessions for this trainer
             List<PersonalTrainingSession> sessions = session.createQuery(
                     "FROM PersonalTrainingSession p WHERE p.trainer = :trainer",
                     PersonalTrainingSession.class)
@@ -306,7 +384,6 @@ public class FunctionsTrainer {
 
             if (sessions.isEmpty()) {
                 System.out.println("\nNo scheduled sessions found for trainer: " + trainer.getName());
-                // return;
             }
             System.out.println("\n===================== Personal Trainer Schedule =====================");
             for (PersonalTrainingSession s : sessions) {
@@ -326,7 +403,6 @@ public class FunctionsTrainer {
             }
 
             System.out.println("\n======================== Group Trainer Schedule ========================");
-            // THIS USES THAT INDEX
             for (GroupFitnessClass gfc : classes) {
                 List<ClassSchedule> schedules = session.createQuery(
                         "FROM ClassSchedule cs WHERE cs.groupFitnessClass = :gfc",
@@ -365,6 +441,24 @@ public class FunctionsTrainer {
     /***************************************************************
      * trainerMemberLookup
      ***************************************************************/
+    /**
+     * Lets a trainer see their PT members and view each member's latest health metric:
+     * - Opens a session and starts a transaction (read-focused).
+     * - Retrieves a Trainer via FunctionsRetrieve.
+     * - Runs a DISTINCT query on PersonalTrainingSession to get all Members
+     *   who have at least one session with this trainer:
+     *     SELECT DISTINCT p.member FROM PersonalTrainingSession p WHERE p.trainer = :trainer
+     *   → This query benefits from an index on trainer_id in PersonalTrainingSession,
+     *     and on member_id (FK) when joining to Member.
+     * - Displays these members and prompts the trainer to select a Member ID.
+     * - Uses MemberService.getLatestHealthMetrics() to fetch LatestHealthMetricDTOs:
+     *   this DTO represents a pre-aggregated "latest metric per member" view of the
+     *   HealthMetric table (implemented as a query or a logical view in the service).
+     * - Searches the DTO list for the selected member's latest metric and prints
+     *   weight, BMI, and timestamp.
+     * - Commits the transaction after the lookup; rolls back on error.
+     */
+
     public static void trainerMemberLookup() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Scanner scanner = HibernateUtil.getScanner();
@@ -426,7 +520,6 @@ public class FunctionsTrainer {
                 }
             }
 
-            // Retrieve latest health metric for the selected member
             MemberService memberService = new MemberService(session);
             List<LatestHealthMetricDTO> latestMetrics = memberService.getLatestHealthMetrics();
 

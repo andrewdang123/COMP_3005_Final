@@ -1,8 +1,19 @@
 package app;
 
 import java.util.Scanner;
-import org.hibernate.cfg.Configuration;
+
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+
+/**
+ * HibernateUtil is the central setup class for Hibernate.
+ * - Builds the SessionFactory once at startup using hibernate.cfg.xml.
+ * - Provides a shared Scanner for all user input.
+ * - getSessionFactory() is used across the app to open sessions for DB work.
+ * - shutdown() closes both the SessionFactory and the input scanner when the app ends.
+ * - This class handles all Hibernate configuration so other classes can focus on logic.
+ */
 
 public class HibernateUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();

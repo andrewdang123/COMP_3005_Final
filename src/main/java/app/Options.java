@@ -4,6 +4,21 @@ import java.util.Scanner;
 
 public class Options {
 
+    /**
+     * Options defines the entire text-based menu system for the app.
+     * - FunctionEnum is a small “command” interface that every menu enum implements.
+     * - MemberFunctionEnum / TrainerFunctionEnum / AdminFunctionEnum each represent
+     *   a role-specific menu: each constant maps a code + description to a Runnable
+     *   that calls the corresponding Functions* method.
+     * - ViewFunctionEnum is the top-level menu (choose Member / Trainer / Admin);
+     *   MainApp calls runView(ViewFunctionEnum.class) to start here.
+     * - runView(...) is a generic menu loop: it prints options, reads a code,
+     *   finds the matching enum constant, and executes its action.
+     * - This file is all application logic: it does not use any database views,
+     *   triggers, or indexes directly – it just routes to the functions that do.
+     */
+
+
     public static void placeholder() {
         System.out.println("FUBAR");
     }

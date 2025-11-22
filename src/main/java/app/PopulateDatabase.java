@@ -15,6 +15,19 @@ import models.PersonalTrainingSession;
 import models.Trainer;
 import models.TrainerAvailability;
 
+/**
+ * PopulateDatabase is a one-time seed script for demo/testing data.
+ * - Opens a Hibernate Session and wraps everything in a single transaction.
+ * - Inserts sample Members (with HealthMetric records), Trainers (with TrainerAvailability),
+ *   Admins, PersonalTrainingSession rows, EquipmentManagement issues, and GroupFitnessClass
+ *   with ClassSchedule + GroupFitnessClassMembers.
+ * - This sets up all the foreign-key relationships so later queries can use indexes on IDs
+ *   (member_id, trainer_id, class_id, etc.) for fast lookups.
+ * - When GroupFitnessClassMembers are inserted, the database trigger that updates the
+ *   group class's current member count will also fire.
+ * - After seeding, the transaction is committed and the Session/SessionFactory are closed.
+ */
+
 public class PopulateDatabase {
 
     /***************************************************************

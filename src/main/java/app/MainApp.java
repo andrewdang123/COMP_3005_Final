@@ -1,14 +1,16 @@
 package app;
 
-import app.HibernateUtil;
 import app.Options.ViewFunctionEnum;
-//import models.Member;
-import org.hibernate.cfg.Configuration;
 
-import java.util.Scanner;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+/**
+ * MainApp is the entry point of the entire application.
+ * - Calls Options.runView() to display the main menu and route the user
+ *   to Member/Admin/Trainer functions based on their selection.
+ * - Uses HibernateUtil to manage the SessionFactory lifecycle.
+ * - When the program finishes, HibernateUtil.shutdown() cleanly closes
+ *   the database connection and input scanner.
+ * - This class only starts the app; all logic is handled in the other modules.
+ */
 
 public class MainApp {
 
