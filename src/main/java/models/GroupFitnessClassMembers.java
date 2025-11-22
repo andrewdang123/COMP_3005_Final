@@ -1,6 +1,38 @@
 package models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.Table;
+
+/**
+ * GroupFitnessClassMembers is the join table between Member and GroupFitnessClass:
+ * - classMemberId is the primary key; the DB creates a PK index on this column.
+ * - class_id is a @ManyToOne FK to GroupFitnessClass; queries like
+ *   “all members in a given class” use the FK index on class_id.
+ * - member_id is a @ManyToOne FK to Member; queries like
+ *   “all classes for a given member” use the FK index on member_id.
+ *
+ * “Trigger”-style logic:
+ * - @PrePersist runs before a new row is inserted:
+ *   • Prevents duplicate registrations of the same Member in the same class.
+ *   • Enforces capacity by checking currentMembers vs capacity.
+ *   • Calls groupFitnessClass.incrementMembers() so the in-memory counter matches
+ *     the number of join rows.
+ * - @PreRemove runs before a row is deleted:
+ *   • Calls groupFitnessClass.decrementMembers() to keep the count in sync.
+ *
+ * Together, these lifecycle callbacks act like application-level triggers that:
+ * - enforce business rules (no duplicates, no over-capacity),
+ * - and keep GroupFitnessClass.currentMembers consistent with the membership table.
+ * (The database can also have a trigger on this table to enforce the same logic at the DB level.)
+ */
 
 @Entity
 @Table(name = "group_fitness_class_members")
@@ -26,6 +58,14 @@ public class GroupFitnessClassMembers {
         this.member = member;
     }
 
+    /**
+     * PrePersist “trigger”:
+     * - Check if this member is already in the class (prevents duplicate join rows).
+     * - Check if the class is already at capacity.
+     * - If both checks pass, increment currentMembers on the parent class.
+     * - Throwing RuntimeException here cancels the insert and rolls back the transaction.
+     */
+
     @PrePersist
     public void onPrePersist() {
         if (groupFitnessClass != null) {
@@ -49,6 +89,12 @@ public class GroupFitnessClassMembers {
             groupFitnessClass.incrementMembers();
         }
     }
+
+    /**
+     * PreRemove “trigger”:
+     * - Before this membership row is deleted, decrement the parent class’s
+     *   currentMembers counter so it stays in sync.
+     */
 
     @PreRemove
     public void onPreRemove() {

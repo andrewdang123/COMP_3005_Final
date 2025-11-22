@@ -1,9 +1,40 @@
 package models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+
+/**
+ * GroupFitnessClass models a specific group class (e.g. "Strength 101"):
+ * - classId is the primary key; the DB creates a PK index on this, used whenever
+ *   we look up or join by class ID.
+ * - trainer is a @ManyToOne FK to Trainer stored as trainer_id; queries that find
+ *   all classes for a trainer (e.g. in trainerScheduleView) use the FK index on
+ *   trainer_id for fast lookups.
+ * - currentMembers + capacity track how many people are in this class and its limit.
+ *   In the database, there is a trigger on GroupFitnessClassMembers that automatically
+ *   updates currentMembers whenever a row is inserted/deleted, so the count stays in
+ *   sync with the membership table.
+ * - members is a @OneToMany collection of GroupFitnessClassMembers (the join table
+ *   between this class and Member).
+ * - addMember(...) enforces capacity and “no duplicates” in memory; the actual insert
+ *   of GroupFitnessClassMembers (done elsewhere) will fire the trigger that increments
+ *   currentMembers in the DB.
+ * - incrementMembers()/decrementMembers() are helper methods if we ever want to
+ *   manage the count purely from the application side.
+ */
 
 @Entity
 @Table(name = "group_fitness_classes")

@@ -1,8 +1,31 @@
 package models;
 
 import java.time.DayOfWeek;
-import jakarta.persistence.*;
+
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+
+/**
+ * ClassScheduleDetails stores the extra info for a ClassSchedule:
+ * - Uses @MapsId so scheduleId is both:
+ *   • the primary key of this table, and
+ *   • a foreign key back to ClassSchedule (shared PK 1–1 relationship).
+ *   → The DB will have an index on schedule_id as the primary key, which also
+ *     makes joins on schedule_id between class_schedule and class_schedule_details fast.
+ * - Embeds a Schedule object and maps its fields to concrete columns:
+ *   schedule_day, schedule_start_time, schedule_end_time.
+ * - Holds the room number and the exact day/time window for the class.
+ */
 
 @Entity
 @Table(name = "class_schedule_details")

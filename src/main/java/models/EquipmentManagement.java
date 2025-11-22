@@ -1,6 +1,27 @@
 package models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+/**
+ * EquipmentManagement represents a high-level equipment issue record:
+ * - equipmentId is the primary key (auto-generated); the DB will create a PK index
+ *   on this column so lookups by ID are fast.
+ * - admin is a @ManyToOne link to Admin, stored as admin_id with a foreign key
+ *   constraint; queries that filter or join on admin_id can use the FK index.
+ * - details is a @OneToOne to EquipmentManagementDetails, which stores the room,
+ *   issue description, and repair status as a separate, normalized row.
+ * - setDetails(...) is a helper that builds the details object and ties it back
+ *   to this EquipmentManagement.
+ */
 
 @Entity
 @Table(name = "equipment_management")

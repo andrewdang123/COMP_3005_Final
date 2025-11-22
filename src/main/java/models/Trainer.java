@@ -1,9 +1,39 @@
 package models;
 
-import jakarta.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.Session;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+/**
+ * Trainer represents a personal trainer in the system:
+ * - trainerId is the primary key; the DB creates a PK index on this column.
+ *   → Used in joins and lookups like “find all classes or PT sessions for this trainer”.
+ * - email is marked unique = true; this creates a UNIQUE index on email so:
+ *   → the DB enforces one trainer per email,
+ *   → email lookups are efficient if used in queries.
+ * - availabilities is the 1–many list of TrainerAvailability rows for this trainer;
+ *   those rows store day/time ranges the trainer is free.
+ *
+ * How this ties into “triggers” and scheduling:
+ * - The booking logic for both:
+ *     • Group classes (`ClassSchedule` @PrePersist/@PreUpdate), and
+ *     • Personal training sessions (`PersonalTrainingSession` @PrePersist/@PreUpdate)
+ *   uses the trainer’s availabilities list to check if a requested slot is free
+ *   (via FunctionsTrainer.trainerCheckAvailability).
+ * - When a slot is booked, those same callbacks adjust the availability data
+ *   (FunctionsTrainer.trainerAdjustAvailability / trainerRestoreAvailability),
+ *   so this Trainer entity is the central source of truth for what times are free.
+ */
 
 @Entity
 @Table(name = "trainer")

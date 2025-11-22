@@ -1,8 +1,16 @@
 package models;
 
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
+/**
+ * DateOfBirth is an @Embeddable value object:
+ * - It gets stored inline as three columns (day, month, year) in the owning entity
+ *   (e.g., Member), rather than as its own table.
+ * - Uses Bean Validation (@Min/@Max) to enforce valid ranges for day (1–31)
+ *   and month (1–12) at the model level.
+ */
 
 @Embeddable
 public class DateOfBirth {

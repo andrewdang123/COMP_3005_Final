@@ -1,8 +1,24 @@
 package models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * EquipmentManagementDetails stores the detailed info for an equipment issue:
+ * - detailsId is the primary key (auto-generated); the DB will create a PK index
+ *   on this column so lookups by detailsId are efficient.
+ * - equipment is a @OneToOne link back to EquipmentManagement via equipment_id
+ *   with a foreign key constraint; joins or filters on equipment_id can use that FK index.
+ * - roomNum, issue, and repairStatus capture where the equipment is and what’s wrong.
+ */
 @Entity
 @Table(name = "equipment_management_details")
 public class EquipmentManagementDetails {
