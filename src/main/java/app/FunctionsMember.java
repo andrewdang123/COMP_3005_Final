@@ -1,7 +1,6 @@
 package app;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,7 +14,6 @@ import models.PersonalTrainingSession;
 import models.PersonalTrainingSessionDetails;
 import models.Schedule;
 import models.Trainer;
-import models.TrainerAvailability;
 
 public class FunctionsMember {
 
