@@ -30,7 +30,7 @@ public class FunctionsMember {
      * - Commits the transaction on success, rolls back on error.
      * - Loops until registration succeeds and prints the member details.
      */
-     public static void memberUserRegistration() {
+    public static void memberUserRegistration() {
         Scanner scanner = HibernateUtil.getScanner();
         boolean success = false;
 
@@ -150,7 +150,7 @@ public class FunctionsMember {
      * Entry point for logging health metrics:
      * - Opens a session and retrieves the logged-in member.
      * - Delegates to the overloaded memberHealthHistory(Member) method
-     *   to collect and persist the health metrics for that member.
+     * to collect and persist the health metrics for that member.
      */
     public static void memberHealthHistory() {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -174,7 +174,7 @@ public class FunctionsMember {
      * Logs a single health metric for the given member:
      * - Opens a session and prompts for current weight and BMI.
      * - Starts a transaction, creates a HealthMetric entity linked
-     *   to the member, persists it, and commits the transaction.
+     * to the member, persists it, and commits the transaction.
      * - Prints the recorded values and rolls back if logging fails.
      */
 
@@ -221,9 +221,9 @@ public class FunctionsMember {
      * Manages personal training session scheduling for a member:
      * - Opens a session and retrieves the logged-in member and a trainer.
      * - Prompts the user to choose between booking a new session
-     *   or rescheduling an existing one.
+     * or rescheduling an existing one.
      * - Delegates to memberPtSessionSchedulingBookPrompt or
-     *   memberPtSessionSchedulingReschedule based on the choice.
+     * memberPtSessionSchedulingReschedule based on the choice.
      */
 
     public static void memberPtSessionScheduling() {
@@ -274,7 +274,7 @@ public class FunctionsMember {
      * - Creates a PersonalTrainingSession linked to the member and trainer.
      * - Creates PersonalTrainingSessionDetails with room and time (Schedule).
      * - Links details to the session, persists the session, merges trainer,
-     *   and commits the transaction.
+     * and commits the transaction.
      * - Prints the session details after successful booking.
      */
 
@@ -316,11 +316,11 @@ public class FunctionsMember {
      * - Prints trainer availability.
      * - Collects day, start time, end time, and room number from input.
      * - Uses FunctionsTrainer.trainerCheckAvailability to ensure the trainer
-     *   is free in the requested slot.
+     * is free in the requested slot.
      * - Runs an HQL query to count overlapping PersonalTrainingSessionDetails
-     *   in the same room and time window to detect room conflicts.
+     * in the same room and time window to detect room conflicts.
      * - Calls memberPtSessionSchedulingBook to perform the actual booking
-     *   if both trainer and room are free.
+     * if both trainer and room are free.
      */
 
     private static void memberPtSessionSchedulingBookPrompt(Session session, Member member, Trainer trainer) {
@@ -391,15 +391,15 @@ public class FunctionsMember {
     /**
      * Reschedules a personal training session:
      * - Queries all existing PersonalTrainingSession rows for the member
-     *   with the selected trainer and displays them.
+     * with the selected trainer and displays them.
      * - Lets the user pick a session to cancel.
      * - Starts a transaction, removes the selected session from the database,
-     *   and restores the trainer's availability by updating TrainerAvailability
-     *   slots based on the cancelled time.
+     * and restores the trainer's availability by updating TrainerAvailability
+     * slots based on the cancelled time.
      * - Commits the transaction after availability is restored.
      * - Prompts the member to book a new session using the booking prompt.
      */
-    
+
     public static void memberPtSessionSchedulingReschedule(Session session, Member member, Trainer trainer) {
         Scanner scanner = HibernateUtil.getScanner();
 
@@ -452,49 +452,7 @@ public class FunctionsMember {
 
             session.remove(toCancel);
 
-            boolean restored = false;
-            for (TrainerAvailability avail : trainer.getAvailabilities()) {
-                if (avail.getDayOfWeek().equals(canceledTime.getDayOfWeek())) {
-                    LocalTime availStart = avail.getStartTime();
-                    LocalTime availEnd = avail.getEndTime();
-
-                    if (availEnd.getHour() <= canceledTime.getStartTime().getHour() ||
-                            availStart.getHour() >= canceledTime.getEndTime().getHour())
-                        continue;
-
-                    List<TrainerAvailability> newAvailabilities = new ArrayList<>();
-                    if (availStart.getHour() < canceledTime.getStartTime().getHour()) {
-                        newAvailabilities.add(new TrainerAvailability(trainer,
-                                avail.getDayOfWeek().toString(),
-                                availStart.getHour(),
-                                canceledTime.getStartTime().getHour()));
-                    }
-                    if (availEnd.getHour() > canceledTime.getEndTime().getHour()) {
-                        newAvailabilities.add(new TrainerAvailability(trainer,
-                                avail.getDayOfWeek().toString(),
-                                canceledTime.getEndTime().getHour(),
-                                availEnd.getHour()));
-                    }
-
-                    trainer.removeAvailability(session, avail);
-                    for (TrainerAvailability t : newAvailabilities) {
-                        session.persist(t);
-                        trainer.getAvailabilities().add(t);
-                    }
-
-                    restored = true;
-                    break;
-                }
-            }
-
-            if (!restored) {
-                TrainerAvailability restoredSlot = new TrainerAvailability(trainer,
-                        canceledTime.getDayOfWeek().toString(),
-                        canceledTime.getStartTime().getHour(),
-                        canceledTime.getEndTime().getHour());
-                session.persist(restoredSlot);
-                trainer.getAvailabilities().add(restoredSlot);
-            }
+            FunctionsTrainer.trainerRestoreAvailability(session, trainer, canceledTime);
 
             session.getTransaction().commit();
 
@@ -518,9 +476,9 @@ public class FunctionsMember {
      * Registers a member for a group fitness class:
      * - Opens a session and retrieves the logged-in member and a GroupFitnessClass.
      * - Starts a transaction, creates a GroupFitnessClassMembers link entity
-     *   between the class and the member, and persists it.
+     * between the class and the member, and persists it.
      * - Relies on a database trigger on the GroupFitnessClassMembers insert
-     *   to automatically update the current member count for the class.
+     * to automatically update the current member count for the class.
      * - Commits the transaction on success and rolls back on error.
      */
     public static void memberGroupClassRegistration() {
