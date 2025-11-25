@@ -121,10 +121,17 @@ public class FunctionsMember {
             int targetBMI = Integer.parseInt(scanner.nextLine().trim());
 
             session.beginTransaction();
-            member.setTargetWeight(targetWeight);
-            member.setTargetBmi(targetBMI);
-            session.merge(member);
-            session.getTransaction().commit();
+            try {
+                member.setTargetWeight(targetWeight);
+                member.setTargetBmi(targetBMI);
+                session.merge(member);
+                session.getTransaction().commit();
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+                System.out.println(
+                        "Failed to register user (possibly non-unique or invalid data). Please try again.");
+                return;
+            }
 
             System.out.println("Profile updated successfully!");
             System.out.println("Member ID: " + member.getMemberId());
