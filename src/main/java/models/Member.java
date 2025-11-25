@@ -22,7 +22,7 @@ import jakarta.validation.constraints.NotNull;
  * - dateOfBirth is embedded into this table.
  * - targetWeight/targetBmi store fitness goals.
  * - Linked to HealthMetric through a 1–many FK (indexed), which is used for
- *   queries like showing a member’s latest health metric.
+ * queries like showing a member’s latest health metric.
  */
 
 @Entity
@@ -160,6 +160,6 @@ public class Member {
 
     @Override
     public String toString() {
-        return "ID: " + getMemberId() + " | Name: " + getName();
+        return "ID: " + getMemberId() + " | Name: " + getName() + " | Email: " + getEmail();
     }
 }
