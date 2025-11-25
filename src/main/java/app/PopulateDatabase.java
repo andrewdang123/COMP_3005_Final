@@ -18,14 +18,19 @@ import models.TrainerAvailability;
 /**
  * PopulateDatabase is a one-time seed script for demo/testing data.
  * - Opens a Hibernate Session and wraps everything in a single transaction.
- * - Inserts sample Members (with HealthMetric records), Trainers (with TrainerAvailability),
- *   Admins, PersonalTrainingSession rows, EquipmentManagement issues, and GroupFitnessClass
- *   with ClassSchedule + GroupFitnessClassMembers.
- * - This sets up all the foreign-key relationships so later queries can use indexes on IDs
- *   (member_id, trainer_id, class_id, etc.) for fast lookups.
- * - When GroupFitnessClassMembers are inserted, the database trigger that updates the
- *   group class's current member count will also fire.
- * - After seeding, the transaction is committed and the Session/SessionFactory are closed.
+ * - Inserts sample Members (with HealthMetric records), Trainers (with
+ * TrainerAvailability),
+ * Admins, PersonalTrainingSession rows, EquipmentManagement issues, and
+ * GroupFitnessClass
+ * with ClassSchedule + GroupFitnessClassMembers.
+ * - This sets up all the foreign-key relationships so later queries can use
+ * indexes on IDs
+ * (member_id, trainer_id, class_id, etc.) for fast lookups.
+ * - When GroupFitnessClassMembers are inserted, the database trigger that
+ * updates the
+ * group class's current member count will also fire.
+ * - After seeding, the transaction is committed and the Session/SessionFactory
+ * are closed.
  */
 
 public class PopulateDatabase {
@@ -141,24 +146,22 @@ public class PopulateDatabase {
 
         // ===== EquipmentManagement =====
         EquipmentManagement eq1 = new EquipmentManagement(admin2);
-        EquipmentManagement eq2 = new EquipmentManagement(admin1);
-        EquipmentManagement eq3 = new EquipmentManagement(admin3);
-        EquipmentManagement eq4 = new EquipmentManagement(admin1);
-        EquipmentManagement eq5 = new EquipmentManagement(admin2);
-        EquipmentManagement eq6 = new EquipmentManagement(admin3);
-
         eq1.setDetails(104, "Treadmill #2: Belt alignment noise", "Open");
-        eq2.setDetails(219, "Yoga Mat: Minor tear near edge", "In progress");
-        eq3.setDetails(327, "Rowing Machine: Cable fraying", "Open");
-        eq4.setDetails(451, "Dumbbell: Loose handle", "In progress");
-        eq5.setDetails(508, "Elliptical #1: Resistance inconsistent", "Open");
-        eq6.setDetails(623, "Cable Machine: Pulley squeak", "In progress");
-
         session.persist(eq1);
+        EquipmentManagement eq2 = new EquipmentManagement(admin1);
+        eq2.setDetails(219, "Yoga Mat: Minor tear near edge", "In progress");
         session.persist(eq2);
+        EquipmentManagement eq3 = new EquipmentManagement(admin3);
+        eq3.setDetails(327, "Rowing Machine: Cable fraying", "Open");
         session.persist(eq3);
+        EquipmentManagement eq4 = new EquipmentManagement(admin1);
+        eq4.setDetails(451, "Dumbbell: Loose handle", "In progress");
         session.persist(eq4);
+        EquipmentManagement eq5 = new EquipmentManagement(admin2);
+        eq5.setDetails(508, "Elliptical #1: Resistance inconsistent", "Open");
         session.persist(eq5);
+        EquipmentManagement eq6 = new EquipmentManagement(admin3);
+        eq6.setDetails(623, "Cable Machine: Pulley squeak", "In progress");
         session.persist(eq6);
 
         // ===== GroupFitnessClass =====

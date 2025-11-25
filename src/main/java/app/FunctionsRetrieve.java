@@ -20,10 +20,11 @@ public class FunctionsRetrieve {
      * - Runs an HQL query "from Member" to list all members.
      * - Prints each member so the user can see available IDs.
      * - Prompts for a Member ID and uses session.get(Member, id)
-     *   to load the selected member.
+     * to load the selected member.
      * - Allows retry or quit if the ID is not found.
      * - Returns the chosen Member or null if the user quits or an error occurs.
-     * - session.get(Member, id) uses the Member table's primary key index for fast lookup.
+     * - session.get(Member, id) uses the Member table's primary key index for fast
+     * lookup.
      */
 
     public static Member retrieveMember(Session session) {
@@ -84,12 +85,12 @@ public class FunctionsRetrieve {
      * - Executes "from Trainer" to load and display all trainers.
      * - Prints each trainer so the user can see valid trainer IDs.
      * - Prompts for a Trainer ID and uses session.get(Trainer, id)
-     *   to fetch the selected trainer.
+     * to fetch the selected trainer.
      * - Lets the user retry or quit when an invalid ID is entered.
      * - Returns the selected Trainer or null if the user quits or an error occurs.
-     * - session.get(Trainer, id) uses the Trainer table's primary key index for fast lookup.
+     * - session.get(Trainer, id) uses the Trainer table's primary key index for
+     * fast lookup.
      */
-
 
     public static Trainer retrieveTrainer(Session session) {
         Scanner scanner = HibernateUtil.getScanner();
@@ -149,10 +150,11 @@ public class FunctionsRetrieve {
      * - Runs "from Admin" to fetch and list all admins.
      * - Displays each admin so the user can see valid IDs.
      * - Prompts for an Admin ID and uses session.get(Admin, id)
-     *   to load the chosen admin.
+     * to load the chosen admin.
      * - Offers retry or quit when the ID is invalid.
      * - Returns the selected Admin or null if the user quits or an error occurs.
-     * - session.get(Admin, id) uses the Admin table's primary key index for fast lookup.
+     * - session.get(Admin, id) uses the Admin table's primary key index for fast
+     * lookup.
      */
 
     public static Admin retrieveAdmin(Session session) {
@@ -213,10 +215,11 @@ public class FunctionsRetrieve {
      * - Executes "from GroupFitnessClass" to list all classes.
      * - Prints each class so the user can see available class IDs.
      * - Prompts for a class ID and uses session.get(GroupFitnessClass, id)
-     *   to retrieve that class.
+     * to retrieve that class.
      * - Allows retrying or quitting if the ID is not found.
      * - Returns the chosen GroupFitnessClass or null on quit or error.
-     * - session.get(GroupFitnessClass, id) uses the class table's primary key index for fast lookup.
+     * - session.get(GroupFitnessClass, id) uses the class table's primary key index
+     * for fast lookup.
      */
 
     public static GroupFitnessClass retrieveGroupFitnessClass(Session session) {
@@ -276,11 +279,14 @@ public class FunctionsRetrieve {
      * Retrieves an EquipmentManagement record from the database:
      * - Runs "from EquipmentManagement" to load and display all equipment entries.
      * - Shows each entry so the user can see valid equipment IDs.
-     * - Prompts for an EquipmentManagement ID and uses session.get(EquipmentManagement, id)
-     *   to load the selected record.
+     * - Prompts for an EquipmentManagement ID and uses
+     * session.get(EquipmentManagement, id)
+     * to load the selected record.
      * - Lets the user retry or quit if the ID is invalid.
-     * - Returns the chosen EquipmentManagement or null if the user quits or an error occurs.
-     * - session.get(EquipmentManagement, id) uses the EquipmentManagement table's primary key index.
+     * - Returns the chosen EquipmentManagement or null if the user quits or an
+     * error occurs.
+     * - session.get(EquipmentManagement, id) uses the EquipmentManagement table's
+     * primary key index.
      */
 
     public static EquipmentManagement retrieveEquipmentManagement(Session session) {
@@ -288,8 +294,9 @@ public class FunctionsRetrieve {
 
         try {
             System.out.println("\n========================= Existing Equipment Management =========================");
-            var equipmentManagements = session.createQuery("from EquipmentManagement", EquipmentManagement.class)
-                    .list();
+            var equipmentManagements = session.createQuery(
+                    "from EquipmentManagement e order by e.id",
+                    EquipmentManagement.class).list();
 
             if (equipmentManagements.isEmpty()) {
                 System.out.println("No equipment found in the system.");

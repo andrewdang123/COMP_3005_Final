@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-
 @Entity
 @Table(name = "admins")
 public class Admin {
@@ -18,11 +17,12 @@ public class Admin {
 
     @Column(nullable = false)
     private String name;
-    
+
     @Column(nullable = false, unique = true)
     private String email;
 
-    public Admin() {}
+    public Admin() {
+    }
 
     public Admin(String name, String email) {
         this.name = name;
@@ -30,13 +30,25 @@ public class Admin {
     }
 
     // Getters and setters
-    public Long getAdminId() { return adminId; }
+    public Long getAdminId() {
+        return adminId;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String toString() {
         return adminId + "\t" + name + "\t" + email;
