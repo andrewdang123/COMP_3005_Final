@@ -7,6 +7,7 @@ Dylan Nakamura 101306225
 Final Assignment for COMP 3005
 
 Video Link: https://youtu.be/lsxquLjcUhg
+GitHub Link: https://github.com/andrewdang123/COMP_3005_Final.git
 
 What is needed to run:
 Download Maven: https://maven.apache.org/download.cgi 
