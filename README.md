@@ -9,6 +9,8 @@ Final Assignment for COMP 3005
 Video Link: https://youtu.be/lsxquLjcUhg
 GitHub Link: https://github.com/andrewdang123/COMP_3005_Final.git
 
+The report is a bit more comprehensive in terms of the assumptions made for the ER Diagram.
+
 What is needed to run:
 Download Maven: https://maven.apache.org/download.cgi 
     Download Binary zip archive, extract to a location of choice. 
