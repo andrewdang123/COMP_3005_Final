@@ -6,7 +6,7 @@ Dylan Nakamura 101306225
 
 Final Assignment for COMP 3005
 
-Video Link: *Add Video Link Later* 
+Video Link: https://youtu.be/lsxquLjcUhg
 
 What is needed to run:
 Download Maven: https://maven.apache.org/download.cgi 
@@ -28,4 +28,4 @@ For Viewing the Database:
         For example, my directory is
             jdbc:h2:~/SchoolCode\COMP 3005\COMP_3005_Final\data\testdb
 
-Video Link: *Add Video Link Later* 
+Video Link: https://youtu.be/lsxquLjcUhg
