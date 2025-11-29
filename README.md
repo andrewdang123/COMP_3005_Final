@@ -6,7 +6,7 @@ Dylan Nakamura 101306225
 
 Final Assignment for COMP 3005
 
-Video Link: https://youtu.be/lsxquLjcUhg
+Video Link: https://www.youtube.com/watch?v=IFLuM35CU1M
 GitHub Link: https://github.com/andrewdang123/COMP_3005_Final.git
 
 The report is a bit more comprehensive in terms of the assumptions made for the ER Diagram.
@@ -31,4 +31,4 @@ For Viewing the Database:
         For example, my directory is
             jdbc:h2:~/SchoolCode\COMP 3005\COMP_3005_Final\data\testdb
 
-Video Link: https://youtu.be/lsxquLjcUhg
+Video Link: https://www.youtube.com/watch?v=IFLuM35CU1M
